@@ -12,4 +12,4 @@ heroku config:unset <key>
 heroku config:get <key>
 ```
 
-# Link: https://lit-hollows-66072.herokuapp.com/
+# Link: https://tranquil-dusk-87753.herokuapp.com/
