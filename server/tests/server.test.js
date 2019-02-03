@@ -301,7 +301,7 @@ describe("PATCH /records/:id", () => {
     });
 
     it("should not update the record created by other user", (done) => {
-        var hexID = records[0]._id.toHexString();
+        var hexID = records[1]._id.toHexString();
         var body = {
             disease: "Updated disease",
             medication: "Updated medication",
@@ -309,7 +309,7 @@ describe("PATCH /records/:id", () => {
         };
         request(app)
             .patch(`/records/${hexID}`)
-            .set("x-auth", users[1].tokens[0].token)
+            .set("x-auth", users[0].tokens[0].token)
             .send(body)
             .expect(404)
             .end(done);

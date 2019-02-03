@@ -14,7 +14,7 @@ var UserSchema = new mongoose.Schema({
         validate: {
             // validator: (value) => {
             //     return validator.isEmail(value);
-            // }
+            // },
             validator: validator.isEmail,
             message: `{VALUE} is not a valid email!`
         }
@@ -60,7 +60,7 @@ UserSchema.methods.generateAuthToken = function() {
         return token;//Returns the token defined above
     });
 };
-UserSchema.methods.removeToken = function(token) {
+UserSchema.methods.removeToken = function (token) {
     var user = this;
 
     return user.updateOne({
@@ -79,10 +79,10 @@ UserSchema.statics.findByToken = function(token) {
     try {
         decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch(err) {
-        return Promise.reject();
-        // return new Promise((resolve, reject) => {
-        //     reject();
-        // });
+        // return Promise.reject();
+        return new Promise((resolve, reject) => {
+            reject();
+        });
     }
     
     return User.findOne({
