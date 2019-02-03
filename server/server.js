@@ -29,6 +29,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => res.send(`SERVER IS UP ON ${port}`));
 
 app.post("/users", (req, res) => userSignUp(req, res));
 
