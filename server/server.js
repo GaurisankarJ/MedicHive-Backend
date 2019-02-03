@@ -56,7 +56,7 @@ mongo.MongoClient.connect(process.env.MONGODB_URI, (err, client) => {
         console.log("Unable to connect to MongoDB server!", err);
     }
     console.log("Connected to MongoDB server!");
-    db = client.db("MedicHive");
+    db = client.db("heroku_5jlwn49z");
 
     const gfs = new GridFS(db, mongo);
     const storage = GridFSStorage({
