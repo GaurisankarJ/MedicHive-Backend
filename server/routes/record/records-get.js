@@ -1,4 +1,4 @@
-const { Record } = require("./../models/record.js");
+const { Record } = require("../../models/record.js");
 
 const getRecords = (req, res) => {
     Record.find({ _creator: req.user._id }).then((records) => {
@@ -7,7 +7,7 @@ const getRecords = (req, res) => {
         }
         res.send({ records });
     }, (err) => {
-        console.log(err);
+        if (process.env.NODE_ENV != "test") { console.log(err); }
         res.status(400).send(err);
     });
 };

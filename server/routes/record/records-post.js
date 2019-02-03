@@ -1,4 +1,4 @@
-const { Record } = require("./../models/record.js");
+const { Record } = require("../../models/record.js");
 
 const postRecords = (req, res) => {
     var record = new Record({
@@ -11,8 +11,8 @@ const postRecords = (req, res) => {
     record.save().then((doc) => {
         res.send(doc);
     }, (err) => {
-        console.log(err);
-        res.status(400).send(err);
+        if (process.env.NODE_ENV != "test") { console.log(process.env); }
+        res.status(400).send();
     });
 };
 

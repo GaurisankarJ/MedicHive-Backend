@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const { ObjectID } = require("mongodb");
 
-const { Record } = require("./../models/record.js");
+const { Record } = require("../../models/record.js");
 
 const patchRecords = (req, res) => {
     var id = req.params.id;
@@ -13,12 +13,12 @@ const patchRecords = (req, res) => {
     }
     Record.findOneAndUpdate({ _id: id, _creator: req.user._id }, { $set: body }, { new: true }).then((record) => {
         if (!record) {
-            res.status(404).send();
+            return res.status(404).send();
         }
         res.status(200).send({ record });
     }).catch((err) => {
-        console.log(err);
-        res.status(400).send(err);
+        if (process.env.NODE_ENV != "test") { console.log(err); }
+        res.status(400).send();
     });
 };
 

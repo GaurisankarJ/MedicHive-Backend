@@ -176,7 +176,6 @@ describe("POST /records", () => {
             .send(body)
             .expect(200)
             .expect((res) => {
-                console.log(res.body.disease);
                 expect(res.body.disease).toBe(body.disease);
             })
             .end((err, res) => {
@@ -312,6 +311,26 @@ describe("PATCH /records/:id", () => {
             .set("x-auth", users[0].tokens[0].token)
             .send(body)
             .expect(404)
+            .end(done);
+    });
+});
+
+describe("GET /downloads", () => {
+    it("should return an array", (done) => {
+        request(app)
+            .get("/downloads")
+            .set("x-auth", users[0].tokens[0].token)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body).toBeTruthy();
+            })
+            .end(done);
+    });
+
+    it("should not create record with invalid body data", (done) => {
+        request(app)
+            .get("/downloads")
+            .expect(401)
             .end(done);
     });
 });
