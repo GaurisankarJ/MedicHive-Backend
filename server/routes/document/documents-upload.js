@@ -4,16 +4,16 @@ const GridFSStorage = require("multer-gridfs-storage");
 const { gfs } = require("../../db/mongoose.js");
 
 const storage = GridFSStorage({
-    gfs: gfs,
+    gfs,
     url: process.env.MONGODB_URI,
     file: (req, file) => {
         return {
             filename: file.originalname,
-            metadata: req.user._id
+            metadata: [req.user._id, req.header("x-type")]
         };
     }
 });
-const upload = multer({ storage: storage }).single("file");
+const upload = multer({ storage }).single("file");
 
 const documentUpload = (req, res) => { // [authenticate, upload.single("file")]
     upload(req, res, (err) => {

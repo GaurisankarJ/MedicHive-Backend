@@ -7,22 +7,26 @@ const getDocuments = (req, res) => {
             console.log("Unable to connect to MongoDB server!", err);
         }
 
-        var regex = new RegExp("([^/]+)$", "gi");
-        var dbName = process.env.MONGODB_URI.match(regex);
+        const regex = new RegExp("([^/]+)$", "gi");
+        const dbName = process.env.MONGODB_URI.match(regex);
 
-        db = client.db(dbName[0]);
+        const db = client.db(dbName[0]);
 
         const gfs = new GridFS(db, mongo);
-        gfs.files.find({ metadata: req.user._id }).toArray(function (err, files) {
-            if (err) {
-                console.log(err);
-                res.status(404).send(err);
+        gfs.files.find({ metadata: req.user._id }).toArray((error, files) => {
+            if (error) {
+                console.log(error);
+                res.status(400).send();
             }
-            var docs = files.map((file) => {
+            if (!files) {
+                res.status(404).send();
+            }
+            const docs = files.map((file) => {
                 return {
                     _id: file._id,
                     name: file.filename,
-                    date: file.uploadDate
+                    date: file.uploadDate,
+                    type: file.metadata[1]
                 };
             });
             res.send({ docs });

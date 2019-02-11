@@ -1,23 +1,39 @@
 const mongoose = require("mongoose");
 
-var RecordSchema = new mongoose.Schema({
-    disease: {
-        type: String,
-        required: true,
+const RecordSchema = new mongoose.Schema({
+    allergy: {
+        type: [String],
         minlength: 1,
         trim: true
     },
     medication: {
-        type: String,
-        required: true,
+        type: [String],
         minlength: 1,
         trim: true
     },
-    doctor: {
-        type: String,
-        required: true,
+    problem: {
+        type: [String],
         minlength: 1,
         trim: true
+    },
+    immunization: {
+        type: [String],
+        minlength: 1,
+        trim: true
+    },
+    vital_sign: {
+        type: [String],
+        minlength: 1,
+        trim: true
+    },
+    procedure: {
+        type: [String],
+        minlength: 1,
+        trim: true
+    },
+    log: {
+        type: [String],
+        required: true
     },
     enteredAt: {
         type: String,
@@ -29,6 +45,6 @@ var RecordSchema = new mongoose.Schema({
     }
 });
 
-var Record = mongoose.model("Record", RecordSchema);
+const Record = mongoose.model("Record", RecordSchema);
 
 module.exports = { Record };
