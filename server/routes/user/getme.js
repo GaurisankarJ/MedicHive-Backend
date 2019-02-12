@@ -5,7 +5,7 @@ const { UserDetails } = require("../../models/user_details.js");
 const userGetMe = async (req, res) => {
     try {
         let userDetails = await UserDetails.find({ _creator: req.user._id });
-        if (!userDetails) {
+        if (_.isEmpty(userDetails)) {
             res.status(404).send();
         }
         userDetails = _.pick(userDetails[0], ["age", "weight", "sex", "occupation", "address"]);

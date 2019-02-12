@@ -1,9 +1,11 @@
+const _ = require("lodash");
+
 const { Record } = require("../../models/record.js");
 
 const patchRecord = async (req, res) => {
     try {
         const record = await Record.find({ _creator: req.user._id });
-        if (!record) {
+        if (_.isEmpty(record)) {
             res.status(404).send();
         }
         const body = record[0];

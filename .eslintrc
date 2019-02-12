@@ -9,7 +9,8 @@
     "env": {
         "node": true,
         "es6": true,
-        "browser": true
+        "browser": true,
+        "mocha": true
     },
     "rules": {
         "comma-dangle": [ 
@@ -49,6 +50,13 @@
             "as-needed",
             {
                 "requireReturnForObjectLiteral": true
+            }
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "ImportDeclaration": "always",
+                "ExportDeclaration": "never"
             }
         ],
         "react/jsx-filename-extension": 0

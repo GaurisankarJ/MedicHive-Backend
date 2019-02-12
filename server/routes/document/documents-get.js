@@ -15,7 +15,7 @@ const getDocuments = (req, res) => {
         const gfs = new GridFS(db, mongo);
         gfs.files.find({ metadata: req.user._id }).toArray((error, files) => {
             if (error) {
-                console.log(error);
+                if (process.env.NODE_ENV !== "test") { console.log(error); }
                 res.status(400).send();
             }
             if (!files) {
