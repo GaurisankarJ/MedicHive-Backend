@@ -18,9 +18,6 @@ const getDocuments = (req, res) => {
                 if (process.env.NODE_ENV !== "test") { console.log(error); }
                 res.status(400).send();
             }
-            if (!files) {
-                res.status(404).send();
-            }
             const docs = files.map((file) => {
                 return {
                     _id: file._id,

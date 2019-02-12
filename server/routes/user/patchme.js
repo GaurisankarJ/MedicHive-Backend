@@ -12,13 +12,16 @@ const userPatchMe = async (req, res) => {
             { $set: body },
             { new: true }
         );
-        if (!user) {
-            res.status(404).send();
+        if (_.isEmpty(user)) {
+            throw new Error(404);
         }
 
         res.send(user._creator);
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
+        if (err.message === "404") {
+            res.status(404).send();
+        }
         res.status(400).send();
     }
 };

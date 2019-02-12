@@ -6,7 +6,7 @@ const patchRecord = async (req, res) => {
     try {
         const record = await Record.find({ _creator: req.user._id });
         if (_.isEmpty(record)) {
-            res.status(404).send();
+            throw new Error(404);
         }
         const body = record[0];
         body.enteredAt = new Date().toString();
@@ -46,8 +46,8 @@ const patchRecord = async (req, res) => {
             { $set: body },
             { new: true }
         );
-        if (!updatedRecord) {
-            res.status(404).send();
+        if (_.isEmpty(updatedRecord)) {
+            throw new Error(404);
         }
 
         res.send({
@@ -55,6 +55,9 @@ const patchRecord = async (req, res) => {
         });
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
+        if (err.message === "404") {
+            res.status(404).send();
+        }
         res.status(400).send();
     }
 };

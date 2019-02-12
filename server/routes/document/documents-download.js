@@ -22,9 +22,6 @@ const documentDownload = (req, res) => {
                     console.log(error);
                     res.status(400).send();
                 }
-                if (!files) {
-                    res.status(404).send();
-                }
 
                 // TEST WRITE STREAM
                 // const testWriteStream = fs.createWriteStream("file.jpg");
