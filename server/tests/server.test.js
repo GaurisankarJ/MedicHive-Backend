@@ -18,458 +18,458 @@ const { users, populateUsers, userDetails, populateUserDetails, records, populat
 
 // Testing life-cycle, beforeEach Hook
 // Populating Users
-beforeEach(populateUsers);
+// beforeEach(populateUsers);
 // Populating User Details
 // beforeEach(populateUserDetails);
 // Populating Records
 // beforeEach(populateRecords);
 
-describe("POST /users", () => {
-    it("should create a user and return _id, email, userType", (done) => {
-        const email = "example@example.com";
-        const password = "password123";
-        const userType = "b";
+// describe("POST /users", () => {
+//     it("should create a user and return _id, email, userType", (done) => {
+//         const email = "example@example.com";
+//         const password = "password123";
+//         const userType = "b";
 
-        request(app)
-            .post("/users")
-            .send({ email, password, userType })
-            .expect(200)
-            .expect((res) => {
-                expect(res.header["x-auth"]).toBeTruthy();
-                expect(res.body._id).toBeTruthy();
-                expect(res.body.email).toBe(email);
-                expect(res.body.userType).toBe(userType);
-            })
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//         request(app)
+//             .post("/users")
+//             .send({ email, password, userType })
+//             .expect(200)
+//             .expect((res) => {
+//                 expect(res.header["x-auth"]).toBeTruthy();
+//                 expect(res.body._id).toBeTruthy();
+//                 expect(res.body.email).toBe(email);
+//                 expect(res.body.userType).toBe(userType);
+//             })
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findOne({ email }).then((user) => {
-                    expect(user).toBeTruthy();
-                    expect(user.confirmation).toBeTruthy();
-                    expect(user.tokens).toBeTruthy();
-                    expect(user.password).not.toBe(password);
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findOne({ email }).then((user) => {
+//                     expect(user).toBeTruthy();
+//                     expect(user.confirmation).toBeTruthy();
+//                     expect(user.tokens).toBeTruthy();
+//                     expect(user.password).not.toBe(password);
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should return validation error if request email invalid", (done) => {
-        const email = "example";
-        const password = "password";
-        const userType = "b";
-        request(app)
-            .post("/users")
-            .send({ email, password, userType })
-            .expect(400)
-            .end(done);
-    });
+//     it("should return validation error if request email invalid", (done) => {
+//         const email = "example";
+//         const password = "password";
+//         const userType = "b";
+//         request(app)
+//             .post("/users")
+//             .send({ email, password, userType })
+//             .expect(400)
+//             .end(done);
+//     });
 
-    it("should return validation error if request password invalid", (done) => {
-        const email = "example@example.com";
-        const password = "pass";
-        const userType = "b";
-        request(app)
-            .post("/users")
-            .send({ email, password, userType })
-            .expect(400)
-            .end(done);
-    });
+//     it("should return validation error if request password invalid", (done) => {
+//         const email = "example@example.com";
+//         const password = "pass";
+//         const userType = "b";
+//         request(app)
+//             .post("/users")
+//             .send({ email, password, userType })
+//             .expect(400)
+//             .end(done);
+//     });
 
-    it("should not create user if email in use", (done) => {
-        const email = "seller@example.com";
-        const password = "userOnePass";
-        const userType = "s";
-        request(app)
-            .post("/users")
-            .send({ email, password, userType })
-            .expect(400)
-            .end(done);
-    });
-});
+//     it("should not create user if email in use", (done) => {
+//         const email = "seller@example.com";
+//         const password = "userOnePass";
+//         const userType = "s";
+//         request(app)
+//             .post("/users")
+//             .send({ email, password, userType })
+//             .expect(400)
+//             .end(done);
+//     });
+// });
 
-describe("GET /confirm", () => {
-    it("should confirm a user", (done) => {
-        const userOne = users[0];
+// describe("GET /confirm", () => {
+//     it("should confirm a user", (done) => {
+//         const userOne = users[0];
 
-        request(app)
-            .get(`/confirm?secret=${userOne.confirmation[0].secret}`)
-            .expect(302)
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//         request(app)
+//             .get(`/confirm?secret=${userOne.confirmation[0].secret}`)
+//             .expect(302)
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findOne({ _id: userOne._id }).then((user) => {
-                    expect(user.isActive).toBeTruthy();
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findOne({ _id: userOne._id }).then((user) => {
+//                     expect(user.isActive).toBeTruthy();
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should not activate user if secret invalid", (done) => {
-        const secret = "secret";
-        request(app)
-            .get(`/confirm?secret=${secret}`)
-            .expect(404)
-            .end(done);
-    });
+//     it("should not activate user if secret invalid", (done) => {
+//         const secret = "secret";
+//         request(app)
+//             .get(`/confirm?secret=${secret}`)
+//             .expect(404)
+//             .end(done);
+//     });
 
-    it("should not activate user if request invalid", (done) => {
-        const secret = "secret";
-        request(app)
-            .get(`/confirm?email=${secret}`)
-            .expect(400)
-            .end(done);
-    });
-});
+//     it("should not activate user if request invalid", (done) => {
+//         const secret = "secret";
+//         request(app)
+//             .get(`/confirm?email=${secret}`)
+//             .expect(400)
+//             .end(done);
+//     });
+// });
 
-describe("GET /forgot", () => {
-    it("should send confirmation mail for user in database", (done) => {
-        const { email } = users[0];
+// describe("GET /forgot", () => {
+//     it("should send confirmation mail for user in database", (done) => {
+//         const { email } = users[0];
 
-        request(app)
-            .get(`/forgot?email=${email}`)
-            .expect(200)
-            .end(done);
-    });
+//         request(app)
+//             .get(`/forgot?email=${email}`)
+//             .expect(200)
+//             .end(done);
+//     });
 
-    it("should not send confirmation mail if user not in database", (done) => {
-        const { email } = "example@xyz.com";
+//     it("should not send confirmation mail if user not in database", (done) => {
+//         const { email } = "example@xyz.com";
 
-        request(app)
-            .get(`/forgot?email=${email}`)
-            .expect(404)
-            .end(done);
-    });
+//         request(app)
+//             .get(`/forgot?email=${email}`)
+//             .expect(404)
+//             .end(done);
+//     });
 
-    it("should not send confirmation mail if request invalid", (done) => {
-        const { email } = "example@xyz.com";
+//     it("should not send confirmation mail if request invalid", (done) => {
+//         const { email } = "example@xyz.com";
 
-        request(app)
-            .get(`/forgot?username=${email}`)
-            .expect(400)
-            .end(done);
-    });
-});
+//         request(app)
+//             .get(`/forgot?username=${email}`)
+//             .expect(400)
+//             .end(done);
+//     });
+// });
 
-describe("POST /forgot", () => {
-    it("should reset password if user in database", (done) => {
-        const body = {
-            password: "password",
-            confirm: "password"
-        };
-        const { secret } = users[0].confirmation[0];
+// describe("POST /forgot", () => {
+//     it("should reset password if user in database", (done) => {
+//         const body = {
+//             password: "password",
+//             confirm: "password"
+//         };
+//         const { secret } = users[0].confirmation[0];
 
-        request(app)
-            .post(`/forgot?secret=${secret}`)
-            .send(body)
-            .expect(302)
-            .end(done);
-    });
+//         request(app)
+//             .post(`/forgot?secret=${secret}`)
+//             .send(body)
+//             .expect(302)
+//             .end(done);
+//     });
 
-    it("should not reset password if password and confirm do not match", (done) => {
-        const body = {
-            password: "password",
-            confirm: "notpassword"
-        };
-        const { secret } = users[0].confirmation[0];
+//     it("should not reset password if password and confirm do not match", (done) => {
+//         const body = {
+//             password: "password",
+//             confirm: "notpassword"
+//         };
+//         const { secret } = users[0].confirmation[0];
 
-        request(app)
-            .post(`/forgot?secret=${secret}`)
-            .send(body)
-            .expect(400)
-            .end(done);
-    });
+//         request(app)
+//             .post(`/forgot?secret=${secret}`)
+//             .send(body)
+//             .expect(400)
+//             .end(done);
+//     });
 
-    it("should not reset password if secret invalid", (done) => {
-        const body = {
-            password: "password",
-            confirm: "password"
-        };
-        const { secret } = "secret";
+//     it("should not reset password if secret invalid", (done) => {
+//         const body = {
+//             password: "password",
+//             confirm: "password"
+//         };
+//         const { secret } = "secret";
 
-        request(app)
-            .post(`/forgot?secret=${secret}`)
-            .send(body)
-            .expect(404)
-            .end(done);
-    });
-});
+//         request(app)
+//             .post(`/forgot?secret=${secret}`)
+//             .send(body)
+//             .expect(404)
+//             .end(done);
+//     });
+// });
 
-describe("DELETE /users", () => {
-    it("should delete user if authenticated", (done) => {
-        request(app)
-            .delete("/users")
-            .set("x-auth", users[0].tokens[0].token)
-            .expect(200)
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+// describe("DELETE /users", () => {
+//     it("should delete user if authenticated", (done) => {
+//         request(app)
+//             .delete("/users")
+//             .set("x-auth", users[0].tokens[0].token)
+//             .expect(200)
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findOne({ email: users[0].email }).then((user) => {
-                    expect(user).toBeFalsy();
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findOne({ email: users[0].email }).then((user) => {
+//                     expect(user).toBeFalsy();
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should not delete user if unauthorized", (done) => {
-        request(app)
-            .delete("/users")
-            .expect(401)
-            .end(done);
-    });
-});
+//     it("should not delete user if unauthorized", (done) => {
+//         request(app)
+//             .delete("/users")
+//             .expect(401)
+//             .end(done);
+//     });
+// });
 
-describe("PATCH /users", () => {
-    it("should patch email of user if authenticated", (done) => {
-        const body = {
-            field: "email",
-            update: "sellerNew@example.com"
-        };
+// describe("PATCH /users", () => {
+//     it("should patch email of user if authenticated", (done) => {
+//         const body = {
+//             field: "email",
+//             update: "sellerNew@example.com"
+//         };
 
-        request(app)
-            .patch("/users")
-            .set("x-auth", users[0].tokens[0].token)
-            .send(body)
-            .expect(200)
-            .expect((res) => {
-                expect(res.body.message).toBe("username reset");
-                expect(res.body.email).toBe(body.update);
-            })
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//         request(app)
+//             .patch("/users")
+//             .set("x-auth", users[0].tokens[0].token)
+//             .send(body)
+//             .expect(200)
+//             .expect((res) => {
+//                 expect(res.body.message).toBe("username reset");
+//                 expect(res.body.email).toBe(body.update);
+//             })
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findOne({ email: body.update }).then((user) => {
-                    expect(user).toBeTruthy();
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findOne({ email: body.update }).then((user) => {
+//                     expect(user).toBeTruthy();
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should not patch email of user if email same", (done) => {
-        const body = {
-            field: "email",
-            update: "seller@example.com"
-        };
+//     it("should not patch email of user if email same", (done) => {
+//         const body = {
+//             field: "email",
+//             update: "seller@example.com"
+//         };
 
-        request(app)
-            .patch("/users")
-            .set("x-auth", users[0].tokens[0].token)
-            .send(body)
-            .expect(400)
-            .end(done);
-    });
+//         request(app)
+//             .patch("/users")
+//             .set("x-auth", users[0].tokens[0].token)
+//             .send(body)
+//             .expect(400)
+//             .end(done);
+//     });
 
-    it("should not patch email of user if not authenticated", (done) => {
-        const body = {
-            field: "email",
-            update: "sellerNew@example.com"
-        };
+//     it("should not patch email of user if not authenticated", (done) => {
+//         const body = {
+//             field: "email",
+//             update: "sellerNew@example.com"
+//         };
 
-        request(app)
-            .patch("/users")
-            .send(body)
-            .expect(401)
-            .end(done);
-    });
+//         request(app)
+//             .patch("/users")
+//             .send(body)
+//             .expect(401)
+//             .end(done);
+//     });
 
-    it("should patch password of user if authenticated", (done) => {
-        const body = {
-            field: "password",
-            update: "newPassword"
-        };
+//     it("should patch password of user if authenticated", (done) => {
+//         const body = {
+//             field: "password",
+//             update: "newPassword"
+//         };
 
-        request(app)
-            .patch("/users")
-            .set("x-auth", users[0].tokens[0].token)
-            .send(body)
-            .expect(200)
-            .expect((res) => {
-                expect(res.body.message).toBe("password reset");
-                expect(res.body.email).toBe(users[0].email);
-            })
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//         request(app)
+//             .patch("/users")
+//             .set("x-auth", users[0].tokens[0].token)
+//             .send(body)
+//             .expect(200)
+//             .expect((res) => {
+//                 expect(res.body.message).toBe("password reset");
+//                 expect(res.body.email).toBe(users[0].email);
+//             })
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findByCredentials(users[0].email, body.update).then((user) => {
-                    expect(user).toBeTruthy();
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findByCredentials(users[0].email, body.update).then((user) => {
+//                     expect(user).toBeTruthy();
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should not patch password of user if password same", (done) => {
-        const body = {
-            field: "password",
-            update: "userOnePass"
-        };
+//     it("should not patch password of user if password same", (done) => {
+//         const body = {
+//             field: "password",
+//             update: "userOnePass"
+//         };
 
-        request(app)
-            .patch("/users")
-            .set("x-auth", users[0].tokens[0].token)
-            .send(body)
-            .expect(400)
-            .end(done);
-    });
+//         request(app)
+//             .patch("/users")
+//             .set("x-auth", users[0].tokens[0].token)
+//             .send(body)
+//             .expect(400)
+//             .end(done);
+//     });
 
-    it("should not patch password of user if not authenticated", (done) => {
-        const body = {
-            field: "email",
-            update: "sellerNew@example.com"
-        };
+//     it("should not patch password of user if not authenticated", (done) => {
+//         const body = {
+//             field: "email",
+//             update: "sellerNew@example.com"
+//         };
 
-        request(app)
-            .patch("/users")
-            .send(body)
-            .expect(401)
-            .end(done);
-    });
-});
+//         request(app)
+//             .patch("/users")
+//             .send(body)
+//             .expect(401)
+//             .end(done);
+//     });
+// });
 
-describe("POST /users/login", () => {
-    it("should resolve user with valid email and password, return x-auth", (done) => {
-        request(app)
-            .post("/users/login")
-            .send({
-                email: users[1].email,
-                password: users[1].password
-            })
-            .expect(200)
-            .expect((res) => {
-                expect(res.header["x-auth"]).toBeTruthy();
-            })
-            .end((err, res) => {
-                if (err) {
-                    done(err);
-                }
+// describe("POST /users/login", () => {
+//     it("should resolve user with valid email and password, return x-auth", (done) => {
+//         request(app)
+//             .post("/users/login")
+//             .send({
+//                 email: users[1].email,
+//                 password: users[1].password
+//             })
+//             .expect(200)
+//             .expect((res) => {
+//                 expect(res.header["x-auth"]).toBeTruthy();
+//             })
+//             .end((err, res) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findOne({ email: res.body.email }).then((user) => {
-                    if (!user) {
-                        done();
-                    }
+//                 User.findOne({ email: res.body.email }).then((user) => {
+//                     if (!user) {
+//                         done();
+//                     }
 
-                    expect(user.toObject().tokens[1]).toMatchObject({
-                        access: "b-auth",
-                        token: res.header["x-auth"]
-                    });
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                     expect(user.toObject().tokens[1]).toMatchObject({
+//                         access: "b-auth",
+//                         token: res.header["x-auth"]
+//                     });
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should reject wrong password", (done) => {
-        request(app)
-            .post("/users/login")
-            .send({
-                email: users[1].email,
-                password: "wrongPassword"
-            })
-            .expect(404)
-            .expect((res) => {
-                expect(res.header["x-auth"]).toBeFalsy();
-            })
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//     it("should reject wrong password", (done) => {
+//         request(app)
+//             .post("/users/login")
+//             .send({
+//                 email: users[1].email,
+//                 password: "wrongPassword"
+//             })
+//             .expect(404)
+//             .expect((res) => {
+//                 expect(res.header["x-auth"]).toBeFalsy();
+//             })
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findById(users[1]._id).then((user) => {
-                    if (!user) {
-                        done();
-                    }
-                    expect(user.tokens.length).toBe(1);
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findById(users[1]._id).then((user) => {
+//                     if (!user) {
+//                         done();
+//                     }
+//                     expect(user.tokens.length).toBe(1);
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should reject invalid login, no password", (done) => {
-        request(app)
-            .post("/users/login")
-            .send({
-                email: users[1].email
-            })
-            .expect(400)
-            .expect((res) => {
-                expect(res.header["x-auth"]).toBeFalsy();
-            })
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//     it("should reject invalid login, no password", (done) => {
+//         request(app)
+//             .post("/users/login")
+//             .send({
+//                 email: users[1].email
+//             })
+//             .expect(400)
+//             .expect((res) => {
+//                 expect(res.header["x-auth"]).toBeFalsy();
+//             })
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findById(users[1]._id).then((user) => {
-                    if (!user) {
-                        done();
-                    }
-                    expect(user.tokens.length).toBe(1);
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findById(users[1]._id).then((user) => {
+//                     if (!user) {
+//                         done();
+//                     }
+//                     expect(user.tokens.length).toBe(1);
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should reject invalid login, no email", (done) => {
-        request(app)
-            .post("/users/login")
-            .send({
-                password: "password"
-            })
-            .expect(400)
-            .expect((res) => {
-                expect(res.header["x-auth"]).toBeFalsy();
-            })
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+//     it("should reject invalid login, no email", (done) => {
+//         request(app)
+//             .post("/users/login")
+//             .send({
+//                 password: "password"
+//             })
+//             .expect(400)
+//             .expect((res) => {
+//                 expect(res.header["x-auth"]).toBeFalsy();
+//             })
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findById(users[1]._id).then((user) => {
-                    if (!user) {
-                        done();
-                    }
-                    expect(user.tokens.length).toBe(1);
-                    done();
-                }).catch(e => done(e));
-            });
-    });
-});
+//                 User.findById(users[1]._id).then((user) => {
+//                     if (!user) {
+//                         done();
+//                     }
+//                     expect(user.tokens.length).toBe(1);
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
+// });
 
-describe("DELETE /users/logout", () => {
-    it("should remove auth token on logout", (done) => {
-        request(app)
-            .delete("/users/logout")
-            .set("x-auth", users[0].tokens[0].token)
-            .expect(200)
-            .end((err) => {
-                if (err) {
-                    done(err);
-                }
+// describe("DELETE /users/logout", () => {
+//     it("should remove auth token on logout", (done) => {
+//         request(app)
+//             .delete("/users/logout")
+//             .set("x-auth", users[0].tokens[0].token)
+//             .expect(200)
+//             .end((err) => {
+//                 if (err) {
+//                     done(err);
+//                 }
 
-                User.findById(users[0]._id).then((user) => {
-                    if (!user) {
-                        done();
-                    }
-                    expect(user.tokens.length).toBe(0);
-                    done();
-                }).catch(e => done(e));
-            });
-    });
+//                 User.findById(users[0]._id).then((user) => {
+//                     if (!user) {
+//                         done();
+//                     }
+//                     expect(user.tokens.length).toBe(0);
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
 
-    it("should not remove auth token if unauthorized", (done) => {
-        request(app)
-            .delete("/users/logout")
-            .expect(401)
-            .end(done);
-    });
-});
+//     it("should not remove auth token if unauthorized", (done) => {
+//         request(app)
+//             .delete("/users/logout")
+//             .expect(401)
+//             .end(done);
+//     });
+// });
 
 // describe("POST /users/me", () => {
 //     it("should return user id if authenticated", (done) => {
