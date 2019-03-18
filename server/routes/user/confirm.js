@@ -20,7 +20,7 @@ const userConfirm = async (req, res) => {
         }
 
         // Set isActive to true
-        await user.isActiveHandle();
+        await user.activate();
 
         // Redirect to home
         res.redirect(process.env.HOME);

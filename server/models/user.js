@@ -125,7 +125,7 @@ UserSchema.methods.generateConfirmationSecret = function () {
 };
 // ###################################################################
 // To set isActive
-UserSchema.methods.isActiveHandle = function () {
+UserSchema.methods.activate = function () {
     const user = this;
 
     // Set isActive as true

@@ -61,6 +61,8 @@ app.use(logger("combined", {
 
 app.get("/", (req, res) => res.send(`SERVER IS UP ON ${port}`));
 
+// ###################################################################
+// User Routes
 app.post("/users", (req, res) => userSignUp(req, res));
 
 app.get("/confirm", (req, res) => userConfirm(req, res));
@@ -71,11 +73,12 @@ app.post("/forgot", (req, res) => userForgotReset(req, res));
 
 app.post("/users/login", (req, res) => userLogin(req, res));
 
-app.delete("/users/logout", authenticate, (req, res) => userLogout(req, res));// REROUTE IN FRONT
+app.delete("/users/logout", authenticate, (req, res) => userLogout(req, res));
 
 app.delete("/users", authenticate, (req, res) => userDelete(req, res));
 
 app.patch("/users", authenticate, (req, res) => userPatch(req, res));
+// ###################################################################
 
 app.post("/users/me", authenticate, (req, res) => userSetMe(req, res));
 
