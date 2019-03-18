@@ -10,20 +10,30 @@ const userTwoId = new ObjectID();
 const users = [
     {
         _id: userOneId,
-        email: "sankar@example.com",
+        email: "seller@example.com",
         password: "userOnePass",
+        isActive: false,
+        userType: "s",
+        confirmation: [{
+            secret: jwt.sign({ _id: userOneId.toHexString(), access: "b-auth" }, process.env.USER_SECRET).toString()
+        }],
         tokens: [{
-            access: "auth",
-            token: jwt.sign({ _id: userOneId.toHexString(), access: "auth" }, process.env.JWT_SECRET).toString()
+            access: "b-auth",
+            token: jwt.sign({ _id: userOneId.toHexString(), access: "b-auth" }, process.env.JWT_SECRET).toString()
         }]
     },
     {
         _id: userTwoId,
-        email: "sankar1@example.com",
+        email: "buyer@example.com",
         password: "userTwoPass",
+        isActive: false,
+        userType: "b",
+        confirmation: [{
+            secret: jwt.sign({ _id: userOneId.toHexString(), access: "b-auth" }, process.env.USER_SECRET).toString()
+        }],
         tokens: [{
-            access: "auth",
-            token: jwt.sign({ _id: userTwoId.toHexString(), access: "auth" }, process.env.JWT_SECRET).toString()
+            access: "s-auth",
+            token: jwt.sign({ _id: userTwoId.toHexString(), access: "s-auth" }, process.env.JWT_SECRET).toString()
         }]
     }
 ];
@@ -59,12 +69,6 @@ const records = [
 ];
 
 // To clear and repopulate database before every test
-const populateRecords = (done) => {
-    Record.deleteMany({}).then(() => {
-        return Record.insertMany(records);
-    }).then(() => done());
-};
-
 const populateUsers = (done) => {
     User.deleteMany({}).then(() => {
         // insertMany won't run the middleware
@@ -81,6 +85,12 @@ const populateUserDetails = (done) => {
         const userDetailsTwo = new UserDetails(userDetails[1]).save();
 
         return Promise.all([userDetailsTwo]);
+    }).then(() => done());
+};
+
+const populateRecords = (done) => {
+    Record.deleteMany({}).then(() => {
+        return Record.insertMany(records);
     }).then(() => done());
 };
 

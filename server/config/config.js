@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV;
 
 if (env === "test" || env === "development") {
     const config = require("./config.json");

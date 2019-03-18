@@ -1,6 +1,6 @@
 const _ = require("lodash");
 
-const { UserDetails } = require("../../models/user_details.js");
+const { UserDetails } = require("../../../models/user_details.js");
 
 const userPatchMe = async (req, res) => {
     try {

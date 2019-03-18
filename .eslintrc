@@ -59,6 +59,7 @@
                 "ExportDeclaration": "never"
             }
         ],
+        "no-else-return": 0,
         "react/jsx-filename-extension": 0
     }
 }

@@ -1,19 +1,24 @@
 const { User } = require("./../models/user.js");
 
-const authenticate = (req, res, next) => {
-    const token = req.header("x-auth");
+const authenticate = async (req, res, next) => {
+    try {
+        // Get authentication token
+        const token = req.header("x-auth");
 
-    User.findByToken(token).then((user) => {
-        if (!user) {
-            return Promise.reject();
-        }
+        // Find user by token
+        const user = await User.findByToken(token);
+
+        // Populate req object with user and token
         req.user = user;
         req.token = token;
-        return next();
-    }).catch((err) => {
-        if (process.env.NODE_ENV !== "test") { console.log(err); }
+
+        // Return
+        next();
+    } catch (err) {
+        if (err && process.env.NODE_ENV !== "test") { console.log(err); }
+        // Error Unauthorized Request
         res.status(401).send();
-    });
+    }
 };
 
 module.exports = { authenticate };
