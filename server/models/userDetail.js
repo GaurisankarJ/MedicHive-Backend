@@ -1,6 +1,6 @@
 // *******************************************************************
 // ###################################################################
-// USER DETAILS BODY MODEL
+// USER DETAIL BODY MODEL
 // {
 //     name: "NAME",
 //     address: "ADDRESS",
@@ -27,7 +27,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 // Create UserDetails schema
-const UserDetailsSchema = new mongoose.Schema({
+const UserDetailSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -92,7 +92,7 @@ const UserDetailsSchema = new mongoose.Schema({
 // ###################################################################
 // OVERRIDE METHOD, for every call that returns a JSON object
 // ###################################################################
-UserDetailsSchema.methods.toJSON = function () {
+UserDetailSchema.methods.toJSON = function () {
     const userDetails = this;
     // Return an object
     const userDetailsObject = userDetails.toObject();
@@ -103,6 +103,6 @@ UserDetailsSchema.methods.toJSON = function () {
 // ###################################################################
 // *******************************************************************
 
-const UserDetails = mongoose.model("UserDetails", UserDetailsSchema);
+const UserDetail = mongoose.model("UserDetail", UserDetailSchema);
 
-module.exports = { UserDetails };
+module.exports = { UserDetail };

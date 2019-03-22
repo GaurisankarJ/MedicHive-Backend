@@ -5,16 +5,14 @@ const userConfirm = async (req, res) => {
     try {
         // Get secret from query body
         const { secret } = req.query;
-
-        // Check for secret
+        // Check secret
         if (!secret) {
             throw new Error();
         }
 
-        // Find and update isActive for user
+        // Get user
         const user = await User.findBySecret(secret);
-
-        // Check for user
+        // Check user
         if (!user) {
             throw new Error(404);
         }

@@ -1,10 +1,19 @@
+// ObjectID MongoDB
 const { ObjectID } = require("mongodb");
+// JSON Web Token Middleware
 const jwt = require("jsonwebtoken");
 
+// User Model
 const { User } = require("./../../models/user");
-const { UserDetails } = require("../../models/user-details");
+// UserDetails Model
+const { UserDetail } = require("../../models/userDetail");
+// Record Model
 const { Record } = require("./../../models/record");
 
+// *******************************************************************
+// ###################################################################
+// USER
+// ###################################################################
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const userThreeId = new ObjectID();
@@ -53,6 +62,25 @@ const users = [
     }
 ];
 
+// To clear and repopulate User database
+const populateUsers = (done) => {
+    User.deleteMany({}).then(() => {
+        // insertMany won't run the middleware
+        const userOne = new User(users[0]).save();
+        const userTwo = new User(users[1]).save();
+        const userThree = new User(users[2]).save();
+
+        // Wait for all promises mentioned in array to be resolved
+        return Promise.all([userOne, userTwo, userThree]);
+    }).then(() => done());
+};
+// ###################################################################
+// *******************************************************************
+
+// *******************************************************************
+// ###################################################################
+// USER DETAILS
+// ###################################################################
 const userDetailsIdOne = new ObjectID();
 const userDetailsIdTwo = new ObjectID();
 const userDetailsIdThree = new ObjectID();
@@ -83,6 +111,30 @@ const userDetails = [
     }
 ];
 
+// To clear UserDetails
+const deleteUserDetails = (done) => {
+    UserDetail.deleteMany({}).then(() => {
+        return Promise.resolve();
+    }).then(() => done());
+};
+
+// To clear and repopulate UserDetails database
+const populateUserDetails = (done) => {
+    UserDetail.deleteMany({}).then(() => {
+        const userDetailsOne = new UserDetail(userDetails[0]).save();
+        const userDetailsTwo = new UserDetail(userDetails[1]).save();
+        const userDetailsThree = new UserDetail(userDetails[2]).save();
+
+        return Promise.all([userDetailsOne, userDetailsTwo, userDetailsThree]);
+    }).then(() => done());
+};
+// ###################################################################
+// *******************************************************************
+
+// *******************************************************************
+// ###################################################################
+// RECORD
+// ###################################################################
 const recordIdOne = new ObjectID();
 const recordIdTwo = new ObjectID();
 const recordIdThree = new ObjectID();
@@ -194,33 +246,9 @@ const records = [
     }
 ];
 
-// To clear and repopulate User database before every test
-const populateUsers = (done) => {
-    User.deleteMany({}).then(() => {
-        // insertMany won't run the middleware
-        const userOne = new User(users[0]).save();
-        const userTwo = new User(users[1]).save();
-        const userThree = new User(users[2]).save();
-
-        // Wait for all promises mentioned in array to be resolved
-        return Promise.all([userOne, userTwo, userThree]);
-    }).then(() => done());
-};
-
-// To clear and repopulate UserDetails database before every test
-const populateUserDetails = (done) => {
-    UserDetails.deleteMany({}).then(() => {
-        const userDetailsOne = new UserDetails(userDetails[0]).save();
-        const userDetailsTwo = new UserDetails(userDetails[1]).save();
-        const userDetailsThree = new UserDetails(userDetails[2]).save();
-
-        return Promise.all([userDetailsOne, userDetailsTwo, userDetailsThree]);
-    }).then(() => done());
-};
-
-// To clear UserDetails
-const deleteUserDetails = (done) => {
-    UserDetails.deleteMany({}).then(() => {
+// To clear Record
+const deleteRecords = (done) => {
+    Record.deleteMany({}).then(() => {
         return Promise.resolve();
     }).then(() => done());
 };
@@ -231,21 +259,16 @@ const populateRecords = (done) => {
         return Record.insertMany(records);
     }).then(() => done());
 };
-
-// To clear Record
-const deleteRecords = (done) => {
-    Record.deleteMany({}).then(() => {
-        return Promise.resolve();
-    }).then(() => done());
-};
+// ###################################################################
+// *******************************************************************
 
 module.exports = {
     users,
     populateUsers,
     userDetails,
-    populateUserDetails,
     deleteUserDetails,
+    populateUserDetails,
     records,
-    populateRecords,
-    deleteRecords
+    deleteRecords,
+    populateRecords
 };

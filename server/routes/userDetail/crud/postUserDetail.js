@@ -2,9 +2,9 @@
 const _ = require("lodash");
 
 // UserDetails Model
-const { UserDetails } = require("../../../models/user-details.js");
+const { UserDetail } = require("../../../models/userDetail.js");
 
-const userSetMe = async (req, res) => {
+const postUserDetail = async (req, res) => {
     try {
         // Get userType
         const { userType } = req.user;
@@ -20,17 +20,16 @@ const userSetMe = async (req, res) => {
             const body = _.pick(req.body, ["name", "address", "seller"]);
             body._creator = req.user._id;
 
-            // Seller fields
-            const seller = ["age", "weight", "sex", "occupation"];
-
-            // Check seller
-            if (_.difference(Object.keys(body.seller), seller).length !== 0) {
+            // Keys
+            const keys = ["age", "weight", "sex", "occupation"];
+            // Check seller keys
+            if (_.difference(Object.keys(body.seller), keys).length !== 0) {
                 throw new Error();
             }
 
-            // Create an instance of UserDetails model
-            const userDetails = new UserDetails(body);
-            // Save the userDetails instance
+            // Create instance of UserDetails model
+            const userDetails = new UserDetail(body);
+            // Save userDetails instance
             await userDetails.save();
 
             // Send JSON body
@@ -40,9 +39,9 @@ const userSetMe = async (req, res) => {
             const body = _.pick(req.body, ["name", "address"]);
             body._creator = req.user._id;
 
-            // Create an instance of UserDetails model
-            const userDetails = new UserDetails(body);
-            // Save the userDetails instance
+            // Create instance of UserDetails model
+            const userDetails = new UserDetail(body);
+            // Save userDetails instance
             await userDetails.save();
 
             // Send JSON body
@@ -55,4 +54,4 @@ const userSetMe = async (req, res) => {
     }
 };
 
-module.exports = { userSetMe };
+module.exports = { postUserDetail };

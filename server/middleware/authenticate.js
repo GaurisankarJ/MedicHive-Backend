@@ -5,9 +5,8 @@ const authenticate = async (req, res, next) => {
         // Get authentication token
         const token = req.header("x-auth");
 
-        // Find user by token
+        // Get user
         const user = await User.findByToken(token);
-
         // Check user
         if (!user) {
             throw new Error();

@@ -9,7 +9,7 @@ const fs = require("fs");
 // Morgan Logger
 const logger = require("morgan");
 
-// Configuration Files
+// Environment Configuration
 require("./config/config.js");
 // MongoDB Configuration
 require("./db/mongoose.js");
@@ -19,29 +19,26 @@ require("./db/mongoose.js");
 // Routes
 // ###################################################################
 // USER
+const { postUserSignup } = require("./routes/user/crud/postUser.js");
+const { deleteUser } = require("./routes/user/crud/deleteUser.js");
+const { patchUser } = require("./routes/user/crud/patchUser.js");
 const { authenticate } = require("./middleware/authenticate.js");
-const { userSignUp } = require("./routes/user/signup.js");
-const { userConfirm } = require("./routes/user/confirm.js");
-const { userForgotMe } = require("./routes/user/forgot-get");
-const { userForgotReset } = require("./routes/user/forgot-post");
 const { userLogin } = require("./routes/user/login.js");
 const { userLogout } = require("./routes/user/logout.js");
-const { userDelete } = require("./routes/user/delete.js");
-const { userPatch } = require("./routes/user/patch.js");
+const { userConfirm } = require("./routes/user/confirm.js");
+const { userForgotMe, userForgotReset } = require("./routes/user/forgot");
 // ###################################################################
 // USER TYPE
-const { userSetMe } = require("./routes/user/types/setme.js");
-const { userGetMe } = require("./routes/user/types/getme.js");
-const { userDeleteMe } = require("./routes/user/types/deleteme.js");
-const { userPatchMe } = require("./routes/user/types/patchme.js");
+const { postUserDetail } = require("./routes/userDetail/crud/postUserDetail.js");
+const { getUserDetail } = require("./routes/userDetail/crud/getUserDetail.js");
+const { deleteUserDetail } = require("./routes/userDetail/crud/deleteUserDetail.js");
+const { patchUserDetail } = require("./routes/userDetail/crud/patchUserDetail.js");
 // ###################################################################
 // RECORD
-const { postRecord } = require("./routes/record/record-post.js");
-const { getRecord } = require("./routes/record/record-get.js");
-const { patchRecord } = require("./routes/record/record-patch.js");
-const { deleteRecord } = require("./routes/record/record-delete.js");
-const { patchRecordById } = require("./routes/record/record-patch.js");
-const { deleteRecordById } = require("./routes/record/record-delete.js");
+const { postRecord } = require("./routes/record/crud/postRecord.js");
+const { getRecord } = require("./routes/record/crud/getRecord.js");
+const { deleteRecord, deleteRecordById } = require("./routes/record/crud/deleteRecord.js");
+const { patchRecord, patchRecordById } = require("./routes/record/crud/patchRecord.js");
 // ###################################################################
 // DOCUMENT
 const { documentUpload } = require("./routes/document/documents-upload.js");
@@ -70,30 +67,30 @@ app.get("/", (req, res) => res.send(`SERVER IS UP ON ${port}`));
 
 // ###################################################################
 // User Routes
-app.post("/users", (req, res) => userSignUp(req, res));
+app.post("/users", (req, res) => postUserSignup(req, res));
 
-app.get("/confirm", (req, res) => userConfirm(req, res));
+app.delete("/users", authenticate, (req, res) => deleteUser(req, res));
 
-app.get("/forgot", (req, res) => userForgotMe(req, res));
-
-app.post("/forgot", (req, res) => userForgotReset(req, res));
+app.patch("/users", authenticate, (req, res) => patchUser(req, res));
 
 app.post("/users/login", (req, res) => userLogin(req, res));
 
 app.delete("/users/logout", authenticate, (req, res) => userLogout(req, res));
 
-app.delete("/users", authenticate, (req, res) => userDelete(req, res));
+app.get("/users/confirm", (req, res) => userConfirm(req, res));
 
-app.patch("/users", authenticate, (req, res) => userPatch(req, res));
+app.get("/users/forgot", (req, res) => userForgotMe(req, res));
+
+app.post("/users/forgot", (req, res) => userForgotReset(req, res));
 // ###################################################################
 // UserDetails Routes
-app.post("/users/me", authenticate, (req, res) => userSetMe(req, res));
+app.post("/users/me", authenticate, (req, res) => postUserDetail(req, res));
 
-app.get("/users/me", authenticate, (req, res) => userGetMe(req, res));
+app.get("/users/me", authenticate, (req, res) => getUserDetail(req, res));
 
-app.delete("/users/me", authenticate, (req, res) => userDeleteMe(req, res));
+app.delete("/users/me", authenticate, (req, res) => deleteUserDetail(req, res));
 
-app.patch("/users/me", authenticate, (req, res) => userPatchMe(req, res));
+app.patch("/users/me", authenticate, (req, res) => patchUserDetail(req, res));
 // ###################################################################
 // Record Routes
 app.post("/record", authenticate, (req, res) => postRecord(req, res));

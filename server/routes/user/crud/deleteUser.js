@@ -1,7 +1,7 @@
 // User Model
-const { User } = require("../../models/user.js");
+const { User } = require("../../../models/user.js");
 
-const userDelete = async (req, res) => {
+const deleteUser = async (req, res) => {
     try {
         // Delete user
         await User.deleteOne({ _id: req.user._id });
@@ -15,4 +15,4 @@ const userDelete = async (req, res) => {
     }
 };
 
-module.exports = { userDelete };
+module.exports = { deleteUser };

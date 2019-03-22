@@ -1,7 +1,7 @@
 // ObjectID
 const { ObjectID } = require("mongodb");
 // Record Model
-const { Record } = require("../../models/record.js");
+const { Record } = require("../../../models/record.js");
 
 const deleteRecord = async (req, res) => {
     try {

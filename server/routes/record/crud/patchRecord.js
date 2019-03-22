@@ -4,28 +4,26 @@ const _ = require("lodash");
 const { ObjectID } = require("mongodb");
 
 // Record Model
-const { Record } = require("../../models/record.js");
+const { Record } = require("../../../models/record.js");
 
 const patchRecord = async (req, res) => {
     try {
         // Get key, value from request body
         const { key, value } = req.body;
-
         // Check key and value
         if (!key || !value) {
             throw new Error();
         }
 
-        // Keys
-        const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
-
-        // Find record
+        // Get record
         const record = await Record.findOne({ _creator: req.user._id });
         // Check record
         if (!record) {
             throw new Error(404);
         }
 
+        // Keys
+        const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
         // Check key against keys
         if (_.indexOf(keys, key) < 0) {
             throw new Error();

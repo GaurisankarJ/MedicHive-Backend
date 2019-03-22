@@ -2,9 +2,9 @@
 const _ = require("lodash");
 
 // UserDetails Model
-const { UserDetails } = require("../../../models/user-details.js");
+const { UserDetail } = require("../../../models/userDetail.js");
 
-const userPatchMe = async (req, res) => {
+const patchUserDetail = async (req, res) => {
     try {
         // Get userType
         const { userType } = req.user;
@@ -21,7 +21,7 @@ const userPatchMe = async (req, res) => {
         const keys = ["name", "address"];
 
         // Find userDetails
-        const userDetails = await UserDetails.findOne({ _creator: req.user._id });
+        const userDetails = await UserDetail.findOne({ _creator: req.user._id });
         // Check userDetails
         if (!userDetails) {
             throw new Error(404);
@@ -43,7 +43,7 @@ const userPatchMe = async (req, res) => {
             }
 
             // Patch userDetails
-            await UserDetails.findOneAndUpdate(
+            await UserDetail.findOneAndUpdate(
                 { _creator: req.user._id },
                 { $set: userDetails },
                 { new: true }
@@ -61,7 +61,7 @@ const userPatchMe = async (req, res) => {
             }
 
             // Patch userDetails
-            await UserDetails.findOneAndUpdate(
+            await UserDetail.findOneAndUpdate(
                 { _creator: req.user._id },
                 { $set: userDetails },
                 { new: true }
@@ -81,4 +81,4 @@ const userPatchMe = async (req, res) => {
     }
 };
 
-module.exports = { userPatchMe };
+module.exports = { patchUserDetail };

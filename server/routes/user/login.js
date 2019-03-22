@@ -8,14 +8,14 @@ const userLogin = async (req, res) => {
     try {
         // Create body object from the request body
         const body = _.pick(req.body, ["email", "password"]);
-
         // Check email and password
         if (!body.email || !body.password) {
             throw new Error();
         }
 
-        // Find user by credentials
+        // Get user
         const user = await User.findByCredentials(body.email, body.password);
+        // Check user
         if (!user) {
             throw new Error(404);
         }
@@ -23,10 +23,10 @@ const userLogin = async (req, res) => {
         // Generate authentication tokens
         const token = await user.generateAuthToken();
 
-        // Send the header and user body JSON
+        // Send header and user body JSON
         res.header("x-auth", token).send(user);
     } catch (err) {
-        if (process.env.NODE_ENV !== "test") { console.log(err); }
+        if (err && process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found
         if (err && err.message === "404") {
             res.status(404).send();
