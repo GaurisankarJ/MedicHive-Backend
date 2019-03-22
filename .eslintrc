@@ -36,15 +36,7 @@
             "error",
             "never"
         ],
-        "no-underscore-dangle": [
-            "error",
-            {
-                "allow": [
-                    "_id",
-                    "_creator"
-                ]
-            }
-        ],
+        "no-underscore-dangle": 0,
         "arrow-body-style": [
             "warn",
             "as-needed",
@@ -60,6 +52,6 @@
             }
         ],
         "no-else-return": 0,
-        "react/jsx-filename-extension": 0
+        "max-len": 0
     }
 }

@@ -3,7 +3,7 @@ const { User } = require("../../models/user.js");
 
 const userDelete = async (req, res) => {
     try {
-        // Find and delete user
+        // Delete user
         await User.deleteOne({ _id: req.user._id });
 
         // Send the status

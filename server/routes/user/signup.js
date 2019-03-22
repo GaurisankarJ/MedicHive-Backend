@@ -1,7 +1,7 @@
 // Lodash
 const _ = require("lodash");
 
-// SendGrid, send confirmation mail
+// Send confirmation mail
 const { sendConfirmationMail } = require("../../utils/mail.js");
 
 // User Model
@@ -9,22 +9,28 @@ const { User } = require("../../models/user.js");
 
 const userSignUp = async (req, res) => {
     try {
-        // Create body object from the request body
+        // Create body object from request body
         const body = _.pick(req.body, ["email", "password", "userType"]);
 
-        // Create an instance of User model
+        // Check email, password and userType
+        if (!body.email || !body.password || !body.userType) {
+            throw new Error();
+        }
+
+        // Create instance of User model
         const user = new User(body);
         // Save the user instance
         await user.save();
+
         // Generate confirmation secret
         await user.generateConfirmationSecret();
         // Generate verification token
         const token = await user.generateAuthToken();
 
-        // Send confirmation male asynchronously
+        // Send confirmation mail asynchronously
         sendConfirmationMail(user.email, user.confirmation[0].secret);
 
-        // Send the header and body
+        // Send the header and user body JSON
         res.header("x-auth", token).send(user);
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }

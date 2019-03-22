@@ -32,15 +32,22 @@ const { userPatch } = require("./routes/user/patch.js");
 // USER TYPE
 const { userSetMe } = require("./routes/user/types/setme.js");
 const { userGetMe } = require("./routes/user/types/getme.js");
+const { userDeleteMe } = require("./routes/user/types/deleteme.js");
 const { userPatchMe } = require("./routes/user/types/patchme.js");
 // ###################################################################
+// RECORD
 const { postRecord } = require("./routes/record/record-post.js");
 const { getRecord } = require("./routes/record/record-get.js");
 const { patchRecord } = require("./routes/record/record-patch.js");
 const { deleteRecord } = require("./routes/record/record-delete.js");
+const { patchRecordById } = require("./routes/record/record-patch.js");
+const { deleteRecordById } = require("./routes/record/record-delete.js");
+// ###################################################################
+// DOCUMENT
 const { documentUpload } = require("./routes/document/documents-upload.js");
 const { getDocuments } = require("./routes/document/documents-get.js");
 const { documentDownload } = require("./routes/document/documents-download.js");
+// ###################################################################
 
 const app = express();
 const port = process.env.PORT;
@@ -79,26 +86,35 @@ app.delete("/users", authenticate, (req, res) => userDelete(req, res));
 
 app.patch("/users", authenticate, (req, res) => userPatch(req, res));
 // ###################################################################
-
+// UserDetails Routes
 app.post("/users/me", authenticate, (req, res) => userSetMe(req, res));
 
 app.get("/users/me", authenticate, (req, res) => userGetMe(req, res));
 
-app.patch("/users/me", authenticate, (req, res) => userPatchMe(req, res));
+app.delete("/users/me", authenticate, (req, res) => userDeleteMe(req, res));
 
+app.patch("/users/me", authenticate, (req, res) => userPatchMe(req, res));
+// ###################################################################
+// Record Routes
 app.post("/record", authenticate, (req, res) => postRecord(req, res));
 
 app.get("/record", authenticate, (req, res) => getRecord(req, res));
 
-app.patch("/record", authenticate, (req, res) => patchRecord(req, res));
-
 app.delete("/record", authenticate, (req, res) => deleteRecord(req, res));
 
+app.patch("/record", authenticate, (req, res) => patchRecord(req, res));
+
+app.delete("/record/:id", authenticate, (req, res) => deleteRecordById(req, res));
+
+app.patch("/record/:id", authenticate, (req, res) => patchRecordById(req, res));
+// ###################################################################
+// Document Routes
 app.post("/upload", authenticate, (req, res) => documentUpload(req, res));
 
 app.get("/downloads", authenticate, (req, res) => getDocuments(req, res));
 
 app.get("/download/:id", authenticate, (req, res) => documentDownload(req, res));
+// ###################################################################
 
 const listener = app.listen(port, () => {
     console.log(`Server running on port ${listener.address().port}!`);

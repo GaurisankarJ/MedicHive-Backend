@@ -1,17 +1,18 @@
 // UserDetails Model
 const { UserDetails } = require("../../../models/user-details.js");
 
-const userGetMe = async (req, res) => {
+const userDeleteMe = async (req, res) => {
     try {
-        // Get userDetails
-        const userDetails = await UserDetails.findOne({ _creator: req.user._id });
+        // Delete userDetails
+        const userDetails = await UserDetails.deleteOne({ _creator: req.user._id });
+
         // Check userDetails
-        if (!userDetails) {
+        if (userDetails.deletedCount !== 1) {
             throw new Error(404);
         }
 
-        // Send JSON body
-        res.send({ userType: req.user.userType, userDetails });
+        // Send the status
+        res.status(200).send();
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found
@@ -23,4 +24,4 @@ const userGetMe = async (req, res) => {
     }
 };
 
-module.exports = { userGetMe };
+module.exports = { userDeleteMe };

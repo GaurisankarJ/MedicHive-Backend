@@ -1,23 +1,22 @@
 // User Model
 const { User } = require("../../models/user.js");
 
-// Send forgot password email
+// Send forgot password mail
 const { sendResetMail } = require("../../utils/mail.js");
 
 const userForgotMe = async (req, res) => {
     try {
         // Get email from query body
         const { email } = req.query;
-
-        // Check for email
+        // Check email
         if (!email) {
             throw new Error();
         }
 
-        // Find user with "email"
+        // Get user
         const user = await User.findOne({ email });
 
-        // Check for user
+        // Check user
         if (!user) {
             throw new Error(404);
         }
@@ -25,7 +24,7 @@ const userForgotMe = async (req, res) => {
         // Send reset mail asynchronously
         sendResetMail(email, user.confirmation[0].secret);
 
-        // Send the status
+        // Send status
         res.status(200).send();
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }

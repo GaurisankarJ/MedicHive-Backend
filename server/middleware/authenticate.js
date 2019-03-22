@@ -8,6 +8,11 @@ const authenticate = async (req, res, next) => {
         // Find user by token
         const user = await User.findByToken(token);
 
+        // Check user
+        if (!user) {
+            throw new Error();
+        }
+
         // Populate req object with user and token
         req.user = user;
         req.token = token;

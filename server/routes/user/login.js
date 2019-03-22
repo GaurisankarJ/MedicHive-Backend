@@ -1,6 +1,7 @@
 // Lodash
 const _ = require("lodash");
 
+// User Model
 const { User } = require("../../models/user.js");
 
 const userLogin = async (req, res) => {
@@ -22,7 +23,7 @@ const userLogin = async (req, res) => {
         // Generate authentication tokens
         const token = await user.generateAuthToken();
 
-        // Send the header and body
+        // Send the header and user body JSON
         res.header("x-auth", token).send(user);
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }

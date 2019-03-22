@@ -8,8 +8,9 @@ const userForgotReset = async (req, res) => {
         // Get secret from query body
         const { secret } = req.query;
 
-        // Check passwords
-        if (password !== confirm) {
+
+        // Check password and confirm
+        if (!password || !confirm || password !== confirm) {
             throw new Error();
         }
 

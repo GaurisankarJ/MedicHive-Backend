@@ -3,37 +3,44 @@ const { User } = require("../../models/user.js");
 
 const userPatch = async (req, res) => {
     try {
-        // Get update parameters from request body
-        const { field, update } = req.body;
+        // Get key, value from request body
+        const { key, value } = req.body;
 
-        // Check if email or password to update
-        if (field === "email") {
-            // Check if user email is same as update
-            if (req.user.email === update) {
+        // Check key and value
+        if (!key || !value) {
+            throw new Error();
+        }
+
+        // Check if email or password to patch
+        if (key === "email") {
+            // Check if user email is same as value
+            if (req.user.email === value) {
                 throw new Error();
             }
 
             // Patch email
             const user = await User.findOneAndUpdate(
                 { _id: req.user._id },
-                { $set: { email: update } },
+                { $set: { email: value } },
                 { new: true }
             );
 
             // Send JSON body
-            res.json({ message: "username reset", email: user.email });
-        } else if (field === "password") {
-            // Check if user password is same as update
-            const check = await User.findByCredentials(req.user.email, update);
+            res.json({ message: `${key} reset`, email: user.email });
+        } else if (key === "password") {
+            // Check if user password is same as value
+            const check = await User.findByCredentials(req.user.email, value);
             if (check) {
                 throw new Error();
             }
 
             // Patch password
-            const user = await req.user.resetPassword(update);
+            const user = await req.user.resetPassword(value);
 
             // Send JSON body
-            res.json({ message: "password reset", email: user.email });
+            res.json({ message: `${key} reset`, email: user.email });
+        } else {
+            throw new Error();
         }
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }

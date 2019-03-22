@@ -29,7 +29,7 @@ const jwt = require("jsonwebtoken");
 // BCrypt Password Hashing Middleware
 const bcrypt = require("bcryptjs");
 
-// Creating a Schema
+// Create User schema
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -92,11 +92,11 @@ const UserSchema = new mongoose.Schema({
 // ###################################################################
 UserSchema.methods.toJSON = function () {
     const user = this;
-    // Return an object
+    // Create an object
     const userObject = user.toObject();
 
     // Return _id, email, userType from userObject
-    return _.pick(userObject, ["_id", "email", "userType"]);
+    return _.pick(userObject, ["email", "userType"]);
 };
 // ###################################################################
 // *******************************************************************
@@ -255,8 +255,9 @@ UserSchema.statics.findByCredentials = function (email, password) {
 
 // *******************************************************************
 // ###################################################################
-// MIDDLEWARE
+// HOOKS
 // ###################################################################
+// save Hook
 UserSchema.pre("save", function (next) {
     const user = this;
 
@@ -275,6 +276,26 @@ UserSchema.pre("save", function (next) {
     }
 });
 // ###################################################################
+// findOneAndUpdate Hook
+UserSchema.pre("findOneAndUpdate", function (next) {
+    const user = this;
+
+    const { email } = user._update.$set;
+
+    // Check email
+    if (!email) {
+        next();
+    }
+
+    // Validate email
+    if (validator.isEmail(email)) {
+        next();
+    } else {
+        throw new Error();
+    }
+});
+// ###################################################################
+// *******************************************************************
 // *******************************************************************
 
 const User = mongoose.model("User", UserSchema);
