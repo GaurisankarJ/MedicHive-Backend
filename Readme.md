@@ -1,3 +1,10 @@
+## Node
+
+```
+npm start, to run server
+npm test, to run all tests
+```
+
 ## Heroku 
 
 ```
