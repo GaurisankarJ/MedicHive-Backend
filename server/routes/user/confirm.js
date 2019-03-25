@@ -17,8 +17,12 @@ const userConfirm = async (req, res) => {
             throw new Error(404);
         }
 
-        // Set isActive to true
-        await user.activate();
+        // Patch userType
+        await User.findOneAndUpdate(
+            { _id: user._id },
+            { $set: { isActive: true } },
+            { new: true }
+        );
 
         // Redirect to home
         res.redirect(process.env.HOME);

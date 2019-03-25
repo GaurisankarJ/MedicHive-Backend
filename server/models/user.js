@@ -6,9 +6,9 @@
 //     password: "PASSWORD",
 //     isActive: "TRUE/FALSE",
 //     userType: "TYPE",
-//     confirmation: {
+//     confirmation: [{
 //         secret: "SECRET"
-//     },
+//     }],
 //     tokens: [{
 //         access: "AUTH",
 //         token: "TOKEN"
@@ -124,28 +124,6 @@ UserSchema.methods.generateConfirmationSecret = function () {
     user.confirmation.push({ secret });
 };
 // ###################################################################
-// To set isActive
-UserSchema.methods.activate = function () {
-    const user = this;
-
-    // Set isActive as true
-    user.isActive = true;
-
-    // Return user
-    return user.save();
-};
-// ###################################################################
-// To reset password
-UserSchema.methods.resetPassword = function (password) {
-    const user = this;
-
-    // Set password
-    user.password = password;
-
-    // Return user
-    return user.save();
-};
-// ###################################################################
 // To generate authentication token
 UserSchema.methods.generateAuthToken = function () {
     const user = this;
@@ -204,7 +182,9 @@ UserSchema.statics.findBySecret = function (secret) {
 
     // Return user
     return User.findOne({
-        _id: decoded._id
+        _id: decoded._id,
+        "confirmation.secret": secret,
+        "tokens.access": decoded.access
     });
 };
 // ###################################################################
@@ -228,7 +208,7 @@ UserSchema.statics.findByToken = function (token) {
     });
 };
 // ###################################################################
-// To find by email
+// To find by email, password
 UserSchema.statics.findByCredentials = function (email, password) {
     const User = this;
 
@@ -262,15 +242,14 @@ UserSchema.pre("save", function (next) {
     const user = this;
 
     if (user.isModified("password")) {
-        // Generate salt
-        bcrypt.genSalt(12, (err, salt) => {
-            // Generate hash
-            bcrypt.hash(user.password, salt, (error, hash) => {
-                // Store hash
-                user.password = hash;
-                next();
-            });
-        });
+        // Generate salt synchronously
+        const salt = bcrypt.genSaltSync(12);
+        // Generate hash synchronously
+        const hash = bcrypt.hashSync(user.password, salt);
+
+        // Store hash
+        user.password = hash;
+        next();
     } else {
         next();
     }
@@ -278,24 +257,40 @@ UserSchema.pre("save", function (next) {
 // ###################################################################
 // findOneAndUpdate Hook
 UserSchema.pre("findOneAndUpdate", function (next) {
-    const user = this;
+    const User = this;
 
-    const { email } = user._update.$set;
+    const { email } = User.getUpdate().$set;
+    const { password } = User.getUpdate().$set;
 
-    // Check email
-    if (!email) {
-        next();
-    }
-
-    // Validate email
-    if (validator.isEmail(email)) {
-        next();
-    } else {
+    // Check, validate email
+    if (email && !validator.isEmail(email)) {
         throw new Error();
     }
+
+    // Check, validate password
+    if (password && password.length < 6) {
+        throw new Error();
+    }
+
+    // Update password
+    if (password) {
+        try {
+            // Generate salt synchronously
+            const salt = bcrypt.genSaltSync(12);
+            // Generate hash synchronously
+            const hash = bcrypt.hashSync(password, salt);
+
+            // Store hash
+            User.getUpdate().$set.password = hash;
+            next();
+        } catch (e) {
+            throw new Error();
+        }
+    }
+
+    next();
 });
 // ###################################################################
-// *******************************************************************
 // *******************************************************************
 
 const User = mongoose.model("User", UserSchema);

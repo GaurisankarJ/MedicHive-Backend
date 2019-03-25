@@ -47,3 +47,13 @@
 //     // Send Email
 //     sgMail.send(message);
 // };
+
+// BCrypt
+// bcrypt.genSalt(12, (err, salt) => {
+//     // Generate hash
+//     bcrypt.hash(user.password, salt, (error, hash) => {
+//         // Store hash
+//         user.password = hash;
+//         next();
+//     });
+// });

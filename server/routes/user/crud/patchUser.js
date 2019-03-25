@@ -34,7 +34,11 @@ const patchUser = async (req, res) => {
             }
 
             // Patch password
-            const user = await req.user.resetPassword(value);
+            const user = await User.findOneAndUpdate(
+                { _id: req.user._id },
+                { $set: { password: value } },
+                { new: true }
+            );
 
             // Send JSON body
             res.json({ message: `${key} reset`, email: user.email });

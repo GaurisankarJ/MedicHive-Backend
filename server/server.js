@@ -1,9 +1,11 @@
 // Express Web Application Framework
 const express = require("express");
-// Request Body Parsing Middleware
-const bodyParser = require("body-parser");
 // Cross-Origin Resource Sharing
 const cors = require("cors");
+// HelmetJS Security
+const helmet = require("helmet");
+// Request Body Parsing Middleware
+const bodyParser = require("body-parser");
 // File System
 const fs = require("fs");
 // Morgan Logger
@@ -54,6 +56,10 @@ const corsOptions = {
     exposedHeaders: ["x-auth", "x-name", "x-type"]
 };
 app.use(cors(corsOptions));
+// Using helmetJS middleware
+app.use(helmet({
+    frameguard: { action: "deny" }
+}));
 // Using the body-parser middleware for JSON data
 app.use(bodyParser.json());
 // Using the body-parser middleware for URL encoded data

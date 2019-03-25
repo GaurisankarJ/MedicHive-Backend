@@ -76,56 +76,6 @@ const mongoose = require("mongoose");
 // JSON Web Token Middleware
 const jwt = require("jsonwebtoken");
 
-// const RecordSchema = new mongoose.Schema({
-//     allergy: {
-//         list: {
-//             type: [String],
-//             minlength: 1,
-//             trim: true
-//         },
-//         owner: {
-//             type: String,
-//             minlength: 1,
-//             trim: true
-//         }
-//     },
-//     medication: {
-//         type: [String],
-//         minlength: 1,
-//         trim: true
-//     },
-//     problem: {
-//         type: [String],
-//         minlength: 1,
-//         trim: true
-//     },
-//     immunization: {
-//         type: [String],
-//         minlength: 1,
-//         trim: true
-//     },
-//     vital_sign: {
-//         type: [String],
-//         minlength: 1,
-//         trim: true
-//     },
-//     procedure: {
-//         type: [String],
-//         minlength: 1,
-//         trim: true
-//     },
-//     log: {
-//         type: [String],
-//         required: true
-//     },
-//     _creator: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         required: true
-//     }
-// }, {
-//         timestamps: true
-//     });
-
 const RecordSchema = new mongoose.Schema({
     allergy: [{
         data: {

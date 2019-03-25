@@ -59,8 +59,12 @@ const userForgotReset = async (req, res) => {
             throw new Error(404);
         }
 
-        // Reset password
-        await user.resetPassword(password);
+        // Patch password
+        await User.findOneAndUpdate(
+            { _id: user._id },
+            { $set: { password } },
+            { new: true }
+        );
 
         // Redirect to home
         res.redirect(process.env.HOME);

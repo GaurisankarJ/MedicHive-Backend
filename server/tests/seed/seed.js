@@ -136,13 +136,13 @@ const populateUserDetails = (done) => {
 // RECORD
 // ###################################################################
 const recordIdOne = new ObjectID();
-const recordIdTwo = new ObjectID();
 const recordIdThree = new ObjectID();
 const records = [
     {
         _id: recordIdOne,
         allergy: [
             {
+                _id: new ObjectID(),
                 data: "Allergy",
                 owner: userOneId
             }
@@ -187,20 +187,10 @@ const records = [
         _creator: userOneId
     },
     {
-        _id: recordIdTwo,
-        log: [
-            {
-                event: "GENESIS",
-                data: "GENESIS",
-                enteredAt: new Date().toUTCString()
-            }
-        ],
-        _creator: userTwoId
-    },
-    {
         _id: recordIdThree,
         allergy: [
             {
+                _id: new ObjectID(),
                 data: "Allergy",
                 owner: userThreeId
             }
