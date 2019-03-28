@@ -52,6 +52,9 @@
             }
         ],
         "no-else-return": 0,
-        "max-len": 0
+        "max-len": 0,
+        "no-undef": 0,
+        "prefer-arrow-callback": 0,
+        "no-param-reassign": 0
     }
 }

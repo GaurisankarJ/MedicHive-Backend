@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: true,
-        default: false
+        default: true
     },
     userType: {
         type: String,
@@ -115,17 +115,24 @@ UserSchema.methods.generateConfirmationSecret = function () {
     const secret = jwt.sign(
         {
             _id: user._id.toHexString(),
-            access
+            access,
+            time: new Date().getTime()
         },
-        process.env.USER_SECRET
+        process.env.USER_SECRET,
+        {
+            expiresIn: 60 * 60 * 72
+        }
     );
 
     // Push secret
     user.confirmation.push({ secret });
+
+    // Return secret
+    return user.save().then(() => secret);
 };
 // ###################################################################
 // To generate authentication token
-UserSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAuthenticationToken = function () {
     const user = this;
     // Setting access according to userType
     const access = `${user.userType}-auth`;
@@ -134,11 +141,12 @@ UserSchema.methods.generateAuthToken = function () {
     const token = jwt.sign(
         {
             _id: user._id.toHexString(),
-            access
+            access,
+            time: new Date().getTime()
         },
         process.env.JWT_SECRET,
         {
-            expiresIn: 60 * 60
+            expiresIn: 60 * 60 * 60
         }
     );
 
@@ -177,7 +185,7 @@ UserSchema.statics.findBySecret = function (secret) {
         // Get object with _id property
         decoded = jwt.verify(secret, process.env.USER_SECRET);
     } catch (err) {
-        return null;
+        throw err;
     }
 
     // Return user
@@ -197,7 +205,7 @@ UserSchema.statics.findByToken = function (token) {
         // Get object with _id property
         decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
-        return Promise.reject(err);
+        throw err;
     }
 
     // Return user
@@ -255,8 +263,8 @@ UserSchema.pre("save", function (next) {
     }
 });
 // ###################################################################
-// findOneAndUpdate Hook
-UserSchema.pre("findOneAndUpdate", function (next) {
+// updateOne Hook
+UserSchema.pre("updateOne", function (next) {
     const User = this;
 
     const { email } = User.getUpdate().$set;

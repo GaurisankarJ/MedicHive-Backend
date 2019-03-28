@@ -1,10 +1,10 @@
 // Lodash
 const _ = require("lodash");
 
-// UserDetails Model
-const { UserDetail } = require("../../../models/userDetail.js");
+// UserData Model
+const { UserData } = require("../../../models/userData.js");
 
-const postUserDetail = async (req, res) => {
+const postUserData = async (req, res) => {
     try {
         // Get userType
         const { userType } = req.user;
@@ -19,6 +19,7 @@ const postUserDetail = async (req, res) => {
             // Create body object from request body
             const body = _.pick(req.body, ["name", "address", "seller"]);
             body._creator = req.user._id;
+            body.userType = req.user.userType;
 
             // Keys
             const keys = ["age", "weight", "sex", "occupation"];
@@ -27,10 +28,10 @@ const postUserDetail = async (req, res) => {
                 throw new Error();
             }
 
-            // Create instance of UserDetails model
-            const userDetails = new UserDetail(body);
-            // Save userDetails instance
-            await userDetails.save();
+            // Create instance of UserData model
+            const userData = new UserData(body);
+            // Save userData instance
+            await userData.save();
 
             // Send JSON body
             res.json({ message: "user created", email: req.user.email });
@@ -38,11 +39,12 @@ const postUserDetail = async (req, res) => {
             // Create body object from request body
             const body = _.pick(req.body, ["name", "address"]);
             body._creator = req.user._id;
+            body.userType = req.user.userType;
 
-            // Create instance of UserDetails model
-            const userDetails = new UserDetail(body);
-            // Save userDetails instance
-            await userDetails.save();
+            // Create instance of UserData model
+            const userData = new UserData(body);
+            // Save userData instance
+            await userData.save();
 
             // Send JSON body
             res.json({ message: "user created", email: req.user.email });
@@ -54,4 +56,4 @@ const postUserDetail = async (req, res) => {
     }
 };
 
-module.exports = { postUserDetail };
+module.exports = { postUserData };

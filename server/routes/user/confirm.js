@@ -1,10 +1,30 @@
+// Send confirmation mail
+const { sendConfirmationMail } = require("../../utils/mail.js");
+
 // User Model
 const { User } = require("../../models/user.js");
 
-const userConfirm = async (req, res) => {
+const userConfirmSend = async (req, res) => {
     try {
-        // Get secret from query body
-        const { secret } = req.query;
+        // Generate confirmation secret
+        const secret = await req.user.generateConfirmationSecret();
+
+        // Send confirmation mail synchronously
+        await sendConfirmationMail(req.user.email, secret);
+
+        // Send JSON body
+        res.json({ message: "confirmation mail sent successfully", email: req.user.email });
+    } catch (err) {
+        if (err && process.env.NODE_ENV !== "test") { console.log(err); }
+        // Error Bad Request
+        res.status(400).send();
+    }
+};
+
+const userConfirmMe = async (req, res) => {
+    try {
+        // Get secret from params body
+        const { secret } = req.params;
         // Check secret
         if (!secret) {
             throw new Error();
@@ -12,29 +32,20 @@ const userConfirm = async (req, res) => {
 
         // Get user
         const user = await User.findBySecret(secret);
-        // Check user
-        if (!user) {
-            throw new Error(404);
-        }
 
         // Patch userType
-        await User.findOneAndUpdate(
+        await User.updateOne(
             { _id: user._id },
-            { $set: { isActive: true } },
-            { new: true }
+            { $set: { isActive: true } }
         );
 
         // Redirect to home
-        res.redirect(process.env.HOME);
+        res.redirect(process.env.HOME_PAGE);
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }
-        // Not Found
-        if (err && err.message === "404") {
-            res.status(404).send();
-        }
         // Error Bad Request
         res.status(400).send();
     }
 };
 
-module.exports = { userConfirm };
+module.exports = { userConfirmSend, userConfirmMe };

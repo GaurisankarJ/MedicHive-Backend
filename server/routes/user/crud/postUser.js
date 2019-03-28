@@ -7,7 +7,7 @@ const { sendConfirmationMail } = require("../../../utils/mail.js");
 // User Model
 const { User } = require("../../../models/user.js");
 
-const postUserSignup = async (req, res) => {
+const postUserSignUp = async (req, res) => {
     try {
         // Create body object from request body
         const body = _.pick(req.body, ["email", "password", "userType"]);
@@ -22,12 +22,12 @@ const postUserSignup = async (req, res) => {
         await user.save();
 
         // Generate confirmation secret
-        await user.generateConfirmationSecret();
+        const secret = await user.generateConfirmationSecret();
         // Generate verification token
-        const token = await user.generateAuthToken();
+        const token = await user.generateAuthenticationToken();
 
         // Send confirmation mail asynchronously
-        sendConfirmationMail(user.email, user.confirmation[0].secret);
+        sendConfirmationMail(user.email, secret);
 
         // Send header and user body JSON
         res.header("x-auth", token).send(user);
@@ -38,4 +38,4 @@ const postUserSignup = async (req, res) => {
     }
 };
 
-module.exports = { postUserSignup };
+module.exports = { postUserSignUp };

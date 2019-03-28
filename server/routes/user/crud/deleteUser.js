@@ -4,7 +4,11 @@ const { User } = require("../../../models/user.js");
 const deleteUser = async (req, res) => {
     try {
         // Delete user
-        await User.deleteOne({ _id: req.user._id });
+        const user = await User.deleteOne({ _id: req.user._id });
+        // Check user
+        if (user.deletedCount !== 1) {
+            throw new Error(404);
+        }
 
         // Send the status
         res.status(200).send();

@@ -1,3 +1,6 @@
+// Lodash
+const _ = require("lodash");
+
 // User Model
 const { User } = require("../../../models/user.js");
 
@@ -5,12 +8,14 @@ const patchUser = async (req, res) => {
     try {
         // Get key, value from request body
         const { key, value } = req.body;
+        // Keys
+        const keys = ["email", "password"];
         // Check key and value
-        if (!key || !value) {
+        if (!key || _.indexOf(keys, key) < 0 || !value) {
             throw new Error();
         }
 
-        // Check email or password to patch
+        // Check key to patch
         if (key === "email") {
             // Check user email same as value
             if (req.user.email === value) {
@@ -18,14 +23,13 @@ const patchUser = async (req, res) => {
             }
 
             // Patch email
-            const user = await User.findOneAndUpdate(
+            await User.updateOne(
                 { _id: req.user._id },
-                { $set: { email: value } },
-                { new: true }
+                { $set: { email: value } }
             );
 
             // Send JSON body
-            res.json({ message: `${key} reset`, email: user.email });
+            res.json({ message: `${key} reset`, email: req.user.email });
         } else if (key === "password") {
             // Check user password same as value
             const check = await User.findByCredentials(req.user.email, value);
@@ -34,14 +38,13 @@ const patchUser = async (req, res) => {
             }
 
             // Patch password
-            const user = await User.findOneAndUpdate(
+            await User.updateOne(
                 { _id: req.user._id },
-                { $set: { password: value } },
-                { new: true }
+                { $set: { password: value } }
             );
 
             // Send JSON body
-            res.json({ message: `${key} reset`, email: user.email });
+            res.json({ message: `${key} reset`, email: req.user.email });
         } else {
             throw new Error();
         }

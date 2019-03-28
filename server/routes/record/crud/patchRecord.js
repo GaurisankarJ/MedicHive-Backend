@@ -5,13 +5,17 @@ const { ObjectID } = require("mongodb");
 
 // Record Model
 const { Record } = require("../../../models/record.js");
+// User Model
+const { User } = require("../../../models/user.js");
 
 const patchRecord = async (req, res) => {
     try {
         // Get key, value from request body
         const { key, value } = req.body;
-        // Check key and value
-        if (!key || !value) {
+        // Keys
+        const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
+        // Check userType, key, value
+        if (req.user.userType === "b" || !key || _.indexOf(keys, key) < 0 || !value) {
             throw new Error();
         }
 
@@ -22,19 +26,17 @@ const patchRecord = async (req, res) => {
             throw new Error(404);
         }
 
-        // Keys
-        const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
-        // Check key against keys
-        if (_.indexOf(keys, key) < 0) {
-            throw new Error();
-        } else if (_.indexOf(keys, key) >= 0) {
-            // Create owner
-            const owner = record.generateOwnerToken(req.user);
+        if (req.user.userType === "s") {
+            // Create ownerToken
+            const ownerToken = record.generateOwnerToken(req.user);
 
-            // Update the record body
-            record[key].push({
-                data: value,
-                owner
+            // Check value array
+            value.forEach((val) => {
+                // Update the record body
+                record[key].push({
+                    data: val,
+                    owner: ownerToken
+                });
             });
 
             // Update the record log
@@ -44,16 +46,60 @@ const patchRecord = async (req, res) => {
                 enteredAt: new Date().toUTCString()
             });
 
-            // Patch userDetails
+            // Patch record
             await Record.findOneAndUpdate(
                 { _creator: req.user._id },
                 { $set: record },
                 { new: true }
             );
+        } else if (req.user.userType === "v") {
+            // Get owner from request body
+            const { owner } = req.body;
+            // Check to
+            if (!owner) {
+                throw new Error();
+            }
 
-            // Send JSON body
-            res.json({ message: `${key} updated`, email: req.user.email });
+            // Get seller
+            const seller = await User.findOne({ email: owner });
+            // Check seller
+            if (!seller || seller.userType !== "s") {
+                throw new Error(404);
+            }
+
+            // Create ownerToken
+            const ownerToken = record.generateOwnerToken(seller);
+
+            // Create verifierToken
+            const verifierToken = record.generateOwnerToken(req.user);
+
+            // Check value array
+            value.forEach((val) => {
+                // Update the record body
+                record[key].push({
+                    data: val,
+                    owner: ownerToken,
+                    verifier: verifierToken
+                });
+            });
+
+            // Update the record log
+            record.log.push({
+                event: `POST:USER${seller._id}:VERIFIER${req.user._id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
+                data: `${key}:${value}`,
+                enteredAt: new Date().toUTCString()
+            });
+
+            // Patch record
+            await Record.findOneAndUpdate(
+                { _creator: req.user._id },
+                { $set: record },
+                { new: true }
+            );
         }
+
+        // Send JSON body
+        res.json({ message: `${key} updated`, email: req.user.email });
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found
@@ -67,17 +113,12 @@ const patchRecord = async (req, res) => {
 
 const patchRecordById = async (req, res) => {
     try {
-        // Get record id
+        // Get record id from params body
         const { id } = req.params;
-        // Check id
-        if (!ObjectID.isValid(id)) {
-            throw new Error();
-        }
-
         // Get value
         const { value } = req.body;
-        // Check value
-        if (!value) {
+        // Check userType, id, value
+        if (req.user.userType === "b" || !ObjectID.isValid(id) || !value) {
             throw new Error();
         }
 
@@ -95,7 +136,14 @@ const patchRecordById = async (req, res) => {
             throw new Error(404);
         }
 
-        // Update record
+        // Update the record log
+        record.log.push({
+            event: `PATCH:USER${user._id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
+            data: `${key}:${value}`,
+            enteredAt: new Date().toUTCString()
+        });
+
+        // Patch record
         await Record.findOneAndUpdate(
             { _creator: req.user._id },
             { $set: record },

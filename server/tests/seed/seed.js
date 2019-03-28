@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 
 // User Model
 const { User } = require("./../../models/user");
-// UserDetails Model
-const { UserDetail } = require("../../models/userDetail");
+// UserData Model
+const { UserData } = require("../../models/userData");
 // Record Model
 const { Record } = require("./../../models/record");
 
@@ -79,14 +79,14 @@ const populateUsers = (done) => {
 
 // *******************************************************************
 // ###################################################################
-// USER DETAILS
+// USER Data
 // ###################################################################
-const userDetailsIdOne = new ObjectID();
-const userDetailsIdTwo = new ObjectID();
-const userDetailsIdThree = new ObjectID();
-const userDetails = [
+const userDataIdOne = new ObjectID();
+const userDataIdTwo = new ObjectID();
+const userDataIdThree = new ObjectID();
+const userData = [
     {
-        _id: userDetailsIdOne,
+        _id: userDataIdOne,
         name: "SELLER",
         address: "Seller Address",
         seller: {
@@ -98,34 +98,34 @@ const userDetails = [
         _creator: userOneId
     },
     {
-        _id: userDetailsIdTwo,
+        _id: userDataIdTwo,
         name: "BUYER",
         address: "Buyer Address",
         _creator: userTwoId
     },
     {
-        _id: userDetailsIdThree,
+        _id: userDataIdThree,
         name: "VERIFIER",
         address: "Verifier Address",
         _creator: userThreeId
     }
 ];
 
-// To clear UserDetails
-const deleteUserDetails = (done) => {
-    UserDetail.deleteMany({}).then(() => {
+// To clear UserData
+const deleteUserData = (done) => {
+    UserData.deleteMany({}).then(() => {
         return Promise.resolve();
     }).then(() => done());
 };
 
-// To clear and repopulate UserDetails database
-const populateUserDetails = (done) => {
-    UserDetail.deleteMany({}).then(() => {
-        const userDetailsOne = new UserDetail(userDetails[0]).save();
-        const userDetailsTwo = new UserDetail(userDetails[1]).save();
-        const userDetailsThree = new UserDetail(userDetails[2]).save();
+// To clear and repopulate UserData database
+const populateUserData = (done) => {
+    UserData.deleteMany({}).then(() => {
+        const userDataOne = new UserData(userData[0]).save();
+        const userDataTwo = new UserData(userData[1]).save();
+        const userDataThree = new UserData(userData[2]).save();
 
-        return Promise.all([userDetailsOne, userDetailsTwo, userDetailsThree]);
+        return Promise.all([userDataOne, userDataTwo, userDataThree]);
     }).then(() => done());
 };
 // ###################################################################
@@ -255,9 +255,9 @@ const populateRecords = (done) => {
 module.exports = {
     users,
     populateUsers,
-    userDetails,
-    deleteUserDetails,
-    populateUserDetails,
+    userData,
+    deleteUserData,
+    populateUserData,
     records,
     deleteRecords,
     populateRecords

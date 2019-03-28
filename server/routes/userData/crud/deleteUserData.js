@@ -1,13 +1,12 @@
-// UserDetails Model
-const { UserDetail } = require("../../../models/userDetail.js");
+// UserData Model
+const { UserData } = require("../../../models/userData.js");
 
-const deleteUserDetail = async (req, res) => {
+const deleteUserData = async (req, res) => {
     try {
-        // Delete userDetails
-        const userDetails = await UserDetail.deleteOne({ _creator: req.user._id });
-
-        // Check userDetails
-        if (userDetails.deletedCount !== 1) {
+        // Delete userData
+        const userData = await UserData.deleteOne({ _creator: req.user._id });
+        // Check userData
+        if (userData.deletedCount !== 1) {
             throw new Error(404);
         }
 
@@ -24,4 +23,4 @@ const deleteUserDetail = async (req, res) => {
     }
 };
 
-module.exports = { deleteUserDetail };
+module.exports = { deleteUserData };

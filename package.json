@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "export NODE_ENV=test && mocha server/**/*.test.js -t 10000",
-    "test-run": "export NODE_ENV=test && mocha server/**/$TEST.test.js -t 10000",
-    "test-watch": "nodemon --exec 'npm test'",
+    "test-one": "export NODE_ENV=test && mocha server/**/$F.test.js --grep $T",
+    "test-one-watch": "nodemon --exec 'npm run test-one'",
+    "test-file": "export NODE_ENV=test && mocha server/**/$F.test.js -t 10000",
+    "test-file-watch": "nodemon --exec 'npm test'",
     "test-play": "nodemon --exec 'npm run test-run'",
     "start": "export NODE_ENV=development && nodemon server/server.js"
   },
@@ -33,7 +35,6 @@
     "supertest": "^3.3.0"
   },
   "dependencies": {
-    "@sendgrid/mail": "^6.3.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
@@ -53,6 +54,7 @@
     "multer-gridfs-storage": "^3.2.3",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
+    "socket.io": "^2.2.0",
     "validator": "^10.11.0"
   }
 }

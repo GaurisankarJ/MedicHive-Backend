@@ -6,8 +6,8 @@
 //         {
 //             data: "ALLERGY",
 //             isVerified: false,
-//             owner: "OWNER",
-//             verifier: "VERIFIER",
+//             owner: ["OWNER"],
+//             verifier: ["VERIFIER"],
 //             enteredAt: "TIME"
 //         }
 //     ],
@@ -15,8 +15,8 @@
 //         {
 //             data: "MEDICATION",
 //             isVerified: false,
-//             owner: "OWNER",
-//             verifier: "VERIFIER",
+//             owner: ["OWNER"],
+//             verifier: ["VERIFIER"],
 //             enteredAt: "TIME"
 //         }
 //     ],
@@ -24,8 +24,8 @@
 //         {
 //             data: "PROBLEM",
 //             isVerified: false,
-//             owner: "OWNER",
-//             verifier: "VERIFIER",
+//             owner: ["OWNER"],
+//             verifier: ["VERIFIER"],
 //             enteredAt: "TIME"
 //         }
 //     ],
@@ -33,8 +33,8 @@
 //         {
 //             data: "IMMUNIZATION",
 //             isVerified: false,
-//             owner: "OWNER",
-//             verifier: "VERIFIER",
+//             owner: ["OWNER"],
+//             verifier: ["VERIFIER"],
 //             enteredAt: "TIME"
 //         }
 //     ],
@@ -42,8 +42,8 @@
 //         {
 //             data: "VITAL SIGN",
 //             isVerified: false,
-//             owner: "OWNER",
-//             verifier: "VERIFIER",
+//             owner: ["OWNER"],
+//             verifier: ["VERIFIER"],
 //             enteredAt: "TIME"
 //         }
 //     ],
@@ -51,8 +51,8 @@
 //         {
 //             data: "PROCEDURE",
 //             isVerified: false,
-//             owner: "OWNER",
-//             verifier: "VERIFIER",
+//             owner: ["OWNER"],
+//             verifier: ["VERIFIER"],
 //             enteredAt: "TIME"
 //         }
 //     ],
@@ -88,12 +88,12 @@ const RecordSchema = new mongoose.Schema({
             default: false
         },
         owner: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
         verifier: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
@@ -114,12 +114,12 @@ const RecordSchema = new mongoose.Schema({
             default: false
         },
         owner: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
         verifier: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
@@ -140,12 +140,12 @@ const RecordSchema = new mongoose.Schema({
             default: false
         },
         owner: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
         verifier: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
@@ -166,12 +166,12 @@ const RecordSchema = new mongoose.Schema({
             default: false
         },
         owner: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
         verifier: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
@@ -218,12 +218,12 @@ const RecordSchema = new mongoose.Schema({
             default: false
         },
         owner: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
         verifier: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },

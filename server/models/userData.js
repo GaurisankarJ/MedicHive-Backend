@@ -1,13 +1,26 @@
 // *******************************************************************
 // ###################################################################
-// USER DETAIL BODY MODEL
+// USER DATA BODY MODEL
 // {
 //     name: "NAME",
 //     address: "ADDRESS",
 //     message: {
-//         sent: ["SENT"],
-//         received: ["RECEIVED"]
+//         sent: [{
+//             action: "ACTION",
+//             body: {
+//                 key: "KEY"
+//             },
+//             to: "TO"
+//         }],
+//         received: [{
+//             action: "ACTION",
+//             body: {
+//                 key: "KEY"
+//             },
+//             from: "FROM"
+//         }]
 //     },
+//     userType: "s",
 //     seller: {
 //         age: 55,
 //         weight: 99,
@@ -26,8 +39,8 @@ const mongoose = require("mongoose");
 // Validation Middleware
 const validator = require("validator");
 
-// Create UserDetails schema
-const UserDetailSchema = new mongoose.Schema({
+// Create UserData schema
+const UserDataSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -38,13 +51,46 @@ const UserDetailSchema = new mongoose.Schema({
         required: true
     },
     message: {
-        sent: {
-            type: [String],
-            trim: true
-        },
-        received: {
-            type: [String],
-            trim: true
+        sent: [{
+            action: {
+                type: String,
+                trim: true
+            },
+            body: {
+                type: mongoose.Schema.Types.Mixed
+            },
+            to: {
+                type: String,
+                trim: true
+            }
+        }],
+        received: [{
+            action: {
+                type: String,
+                trim: true
+            },
+            body: {
+                type: mongoose.Schema.Types.Mixed
+            },
+            from: {
+                type: String,
+                trim: true
+            }
+        }]
+    },
+    userType: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        validate: {
+            validator: (value) => {
+                if (validator.matches(value, /b/i) || validator.matches(value, /s/i) || validator.matches(value, /v/i)) {
+                    return true;
+                }
+                return false;
+            },
+            message: "{VALUE} should be b/s/v or B/S/V!"
         }
     },
     seller: {
@@ -92,14 +138,40 @@ const UserDetailSchema = new mongoose.Schema({
 // ###################################################################
 // OVERRIDE METHOD, for every call that returns a JSON object
 // ###################################################################
-UserDetailSchema.methods.toJSON = function () {
-    const userDetails = this;
+UserDataSchema.methods.toJSON = function () {
+    const userData = this;
     // Return an object
-    const userDetailsObject = userDetails.toObject();
+    const userDataObject = userData.toObject();
 
     // Return _id, email, userType from userObject
-    return _.pick(userDetailsObject, ["name", "address", "seller"]);
+    return _.pick(userDataObject, ["name", "address", "userType", "seller"]);
 };
+// ###################################################################
+// *******************************************************************
+
+// *******************************************************************
+// ###################################################################
+// MODEL METHOD
+// ###################################################################
+// To send message
+// UserSchema.statics.findBySecret = function (secret) {
+//     const User = this;
+//     let decoded;
+
+//     try {
+//         // Get object with _id property
+//         decoded = jwt.verify(secret, process.env.USER_SECRET);
+//     } catch (err) {
+//         throw err;
+//     }
+
+//     // Return user
+//     return User.findOne({
+//         _id: decoded._id,
+//         "confirmation.secret": secret,
+//         "tokens.access": decoded.access
+//     });
+// };
 // ###################################################################
 // *******************************************************************
 
@@ -107,8 +179,8 @@ UserDetailSchema.methods.toJSON = function () {
 // ###################################################################
 // HOOKS
 // ###################################################################
-// findOneAndUpdate Hook
-UserDetailSchema.pre("findOneAndUpdate", function (next) {
+// updateOne Hook
+UserDataSchema.pre("updateOne", function (next) {
     const User = this;
 
     const { seller } = User._update.$set;
@@ -136,6 +208,6 @@ UserDetailSchema.pre("findOneAndUpdate", function (next) {
 // ###################################################################
 // *******************************************************************
 
-const UserDetail = mongoose.model("UserDetail", UserDetailSchema);
+const UserData = mongoose.model("UserData", UserDataSchema);
 
-module.exports = { UserDetail };
+module.exports = { UserData };

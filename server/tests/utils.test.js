@@ -12,6 +12,7 @@ const { sendConfirmationMail, sendResetMail } = require("./../utils/mail.js");
 describe("SMTP Service", () => {
     it("should send a confirmation mail and return info", (done) => {
         const email = "example@example.com";
+        // const email = "sandheepsanju@gmail.com";
 
         sendConfirmationMail(email, "SECRET").then((info) => {
             expect(info.accepted[0]).toBe(email);
@@ -22,6 +23,7 @@ describe("SMTP Service", () => {
 
     it("should send a reset mail and return info", (done) => {
         const email = "example@example.com";
+        // const email = "louijose@gmail.com";
 
         sendResetMail(email, "SECRET").then((info) => {
             expect(info.accepted[0]).toBe(email);

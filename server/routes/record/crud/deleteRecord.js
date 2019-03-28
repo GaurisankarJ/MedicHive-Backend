@@ -27,7 +27,7 @@ const deleteRecord = async (req, res) => {
 
 const deleteRecordById = async (req, res) => {
     try {
-        // Get record id
+        // Get record id from params body
         const { id } = req.params;
         // Check id
         if (!ObjectID.isValid(id)) {

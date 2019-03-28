@@ -20,10 +20,10 @@ const userLogin = async (req, res) => {
             throw new Error(404);
         }
 
-        // Generate authentication tokens
-        const token = await user.generateAuthToken();
+        // Generate authentication token
+        const token = await user.generateAuthenticationToken();
 
-        // Send header and user body JSON
+        // Send header, user body JSON
         res.header("x-auth", token).send(user);
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }

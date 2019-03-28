@@ -144,7 +144,7 @@ describe("PATCH /record", () => {
         it(`should patch ${key} if authenticated`, (done) => {
             const body = {
                 key,
-                value: "New value"
+                value: ["New value", "Other new value"]
             };
 
             request(app)
@@ -162,9 +162,10 @@ describe("PATCH /record", () => {
                     }
 
                     Record.findOne({ _creator: user._id }).then((record) => {
-                        expect(record[key].length).toBe(2);
+                        expect(record[key].length).toBe(3);
                         expect(record.log.length).toBe(2);
-                        expect(record[key][1].data).toBe(body.value);
+                        expect(record[key][1].data).toBe(body.value[0]);
+                        expect(record[key][2].data).toBe(body.value[1]);
                         done();
                     }).catch(e => done(e));
                 });
@@ -186,7 +187,7 @@ describe("PATCH /record", () => {
     it("should not patch record if not authenticated", (done) => {
         const body = {
             key: "allergy",
-            value: "New allergy"
+            value: ["New allergy"]
         };
 
         request(app)
@@ -199,7 +200,7 @@ describe("PATCH /record", () => {
     it("should not patch record if request invalid (no key)", (done) => {
         const body = {
             one: "allergy",
-            value: "New allergy"
+            value: ["New allergy"]
         };
 
         request(app)
@@ -213,7 +214,7 @@ describe("PATCH /record", () => {
     it("should not patch record if request invalid (no value)", (done) => {
         const body = {
             key: "allergy",
-            two: "New allergy"
+            two: ["New allergy"]
         };
 
         request(app)
@@ -227,7 +228,7 @@ describe("PATCH /record", () => {
     it("should not patch record if record not in database", (done) => {
         const body = {
             key: "allergy",
-            value: "New allergy"
+            value: ["New allergy"]
         };
 
         request(app)
@@ -241,7 +242,7 @@ describe("PATCH /record", () => {
     it("should not patch record if request invalid (invalid key)", (done) => {
         const body = {
             key: "none",
-            value: "New allergy"
+            value: ["New allergy"]
         };
 
         request(app)

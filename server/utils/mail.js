@@ -18,24 +18,32 @@ const sendConfirmationMail = async (email, secret) => {
         to: email,
         from: "no-reply@myentity.co",
         subject: "USER CONFIRMATION",
-        html: `<strong><a href="${process.env.HOME}/confirm?secret=${secret}">CLICK TO CONFIRM</a></strong>`
+        html: `<strong><a href="${process.env.SERVER_PAGE}/users/confirm/${secret}">CLICK TO CONFIRM</a></strong>`
     };
 
     if (process.env.NODE_ENV === "development") {
-        // Send Email
-        const info = await transporter.sendMail(message);
+        try {
+            // Send Email
+            const info = await transporter.sendMail(message);
 
-        // Message Confirmation Log
-        console.log("Message sent: %s", JSON.stringify(info));
+            // Message Confirmation Log
+            console.log(`Message sent: ${JSON.stringify(info)}`);
 
-        // Return email info
-        return info;
+            // Return email info
+            return info;
+        } catch (err) {
+            throw err;
+        }
     } else {
-        // Send Email
-        const info = await transporter.sendMail(message);
+        try {
+            // Send Email
+            const info = await transporter.sendMail(message);
 
-        // Return email info
-        return info;
+            // Return email info
+            return info;
+        } catch (err) {
+            throw err;
+        }
     }
 };
 
@@ -45,24 +53,32 @@ const sendResetMail = async (email, secret) => {
         to: email,
         from: "no-reply@myentity.co",
         subject: "PASSWORD RESET",
-        html: `<form action="${process.env.HOME}/forgot?secret=${secret}" method="post">NEW PASSWORD<br/><input name="password" type="password"/><br/>CONFIRM PASSWORD<br/><input name="confirm" type="password"/><br/><button type="submit">RESET</button></form>`
+        html: `<strong><a href="${process.env.SERVER_PAGE}/users/confirm/${secret}">CLICK TO RESET</a></strong>`
     };
 
     if (process.env.NODE_ENV === "development") {
-        // Send Email
-        const info = await transporter.sendMail(message);
+        try {
+            // Send Email
+            const info = await transporter.sendMail(message);
 
-        // Message Confirmation Log
-        console.log("Message sent: %s", JSON.stringify(info));
+            // Message Confirmation Log
+            console.log(`Message sent: ${JSON.stringify(info)}`);
 
-        // Return email info
-        return info;
+            // Return email info
+            return info;
+        } catch (err) {
+            throw err;
+        }
     } else {
-        // Send Email
-        const info = await transporter.sendMail(message);
+        try {
+            // Send Email
+            const info = await transporter.sendMail(message);
 
-        // Return email info
-        return info;
+            // Return email info
+            return info;
+        } catch (err) {
+            throw err;
+        }
     }
 };
 
