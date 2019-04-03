@@ -11,7 +11,7 @@ const getRecord = async (req, res) => {
         }
 
         // Send JSON body
-        res.send({ email: req.user.email, record });
+        res.send({ record, email: req.user.email });
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found

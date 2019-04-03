@@ -35,7 +35,8 @@ const patchRecord = async (req, res) => {
                 // Update the record body
                 record[key].push({
                     data: val,
-                    owner: ownerToken
+                    owner: ownerToken,
+                    enteredAt: new Date().getTime().toString()
                 });
             });
 
@@ -47,10 +48,9 @@ const patchRecord = async (req, res) => {
             });
 
             // Patch record
-            await Record.findOneAndUpdate(
+            await Record.updateOne(
                 { _creator: req.user._id },
-                { $set: record },
-                { new: true }
+                { $set: record }
             );
         } else if (req.user.userType === "v") {
             // Get owner from request body
@@ -67,8 +67,15 @@ const patchRecord = async (req, res) => {
                 throw new Error(404);
             }
 
+            // Get sellerRecord
+            const sellerRecord = await Record.findOne({ _creator: seller._id });
+            // Check sellerRecord
+            if (!sellerRecord) {
+                throw new Error(404);
+            }
+
             // Create ownerToken
-            const ownerToken = record.generateOwnerToken(seller);
+            const ownerToken = sellerRecord.generateOwnerToken(seller);
 
             // Create verifierToken
             const verifierToken = record.generateOwnerToken(req.user);
@@ -78,8 +85,10 @@ const patchRecord = async (req, res) => {
                 // Update the record body
                 record[key].push({
                     data: val,
+                    isVerified: true,
                     owner: ownerToken,
-                    verifier: verifierToken
+                    verifier: verifierToken,
+                    enteredAt: new Date().getTime().toString()
                 });
             });
 
@@ -91,10 +100,9 @@ const patchRecord = async (req, res) => {
             });
 
             // Patch record
-            await Record.findOneAndUpdate(
+            await Record.updateOne(
                 { _creator: req.user._id },
-                { $set: record },
-                { new: true }
+                { $set: record }
             );
         }
 
@@ -129,25 +137,26 @@ const patchRecordById = async (req, res) => {
             throw new Error(404);
         }
 
-        // Update record body
-        record = await record.patchByRecordId(id, value);
-        // Check record
-        if (!record) {
-            throw new Error(404);
+        if (req.user.userType === "s") {
+            // Update record body
+            record = await record.patchByRecordId(id, value, false);
+            // Check record
+            if (!record) {
+                throw new Error(404);
+            }
+        } else if (req.user.userType === "v") {
+            // Update record body
+            record = await record.patchByRecordId(id, value, true);
+            // Check record
+            if (!record) {
+                throw new Error(404);
+            }
         }
 
-        // Update the record log
-        record.log.push({
-            event: `PATCH:USER${user._id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
-            data: `${key}:${value}`,
-            enteredAt: new Date().toUTCString()
-        });
-
         // Patch record
-        await Record.findOneAndUpdate(
+        await Record.updateOne(
             { _creator: req.user._id },
-            { $set: record },
-            { new: true }
+            { $set: record }
         );
 
         // Send JSON body

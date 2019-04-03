@@ -11,7 +11,7 @@ const { app } = require("../server.js");
 const { UserData } = require("../models/userData.js");
 
 // Seed Data
-const { users, populateUsers, userData, deleteUserData, populateUserData } = require("./seed/seed");
+const { users, populateUsers, userData, deleteUserData, populateUserData, populateActivatedUsers, populateDeactivatedUsers } = require("./seed/seed");
 
 // Testing life-cycle, beforeEach Hook
 // Populating Users
@@ -20,7 +20,7 @@ beforeEach(populateUsers);
 beforeEach(populateUserData);
 
 describe("POST /users/me", () => {
-    describe("TEST I", () => {
+    describe("EMPTY", () => {
         beforeEach(deleteUserData);
 
         describe("SELLER", () => {
@@ -185,7 +185,7 @@ describe("POST /users/me", () => {
         });
     });
 
-    describe("TEST II", () => {
+    describe("POPULATED", () => {
         describe("SELLER", () => {
             it("should not create userData if userData in database", (done) => {
                 const body = {
@@ -255,7 +255,7 @@ describe("POST /users/me", () => {
 });
 
 describe("GET /users/me", () => {
-    describe("TEST I", () => {
+    describe("POPULATED", () => {
         describe("SELLER", () => {
             it("should get userData if authenticated", (done) => {
                 request(app)
@@ -263,9 +263,10 @@ describe("GET /users/me", () => {
                     .set("x-auth", users[0].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
-                        expect(res.body.userType).toBe(users[0].userType);
+                        expect(res.body.email).toBe(users[0].email);
                         expect(res.body.userData.name).toBe(userData[0].name);
                         expect(res.body.userData.address).toBe(userData[0].address);
+                        expect(res.body.userData.userType).toBe(userData[0].userType);
                         expect(res.body.userData.seller.age).toBe(userData[0].seller.age);
                         expect(res.body.userData.seller.weight).toBe(userData[0].seller.weight);
                         expect(res.body.userData.seller.sex).toBe(userData[0].seller.sex);
@@ -282,9 +283,10 @@ describe("GET /users/me", () => {
                     .set("x-auth", users[1].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
-                        expect(res.body.userType).toBe(users[1].userType);
+                        expect(res.body.email).toBe(users[1].email);
                         expect(res.body.userData.name).toBe(userData[1].name);
                         expect(res.body.userData.address).toBe(userData[1].address);
+                        expect(res.body.userData.userType).toBe(userData[1].userType);
                     })
                     .end(done);
             });
@@ -297,9 +299,10 @@ describe("GET /users/me", () => {
                     .set("x-auth", users[2].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
-                        expect(res.body.userType).toBe(users[2].userType);
+                        expect(res.body.email).toBe(users[2].email);
                         expect(res.body.userData.name).toBe(userData[2].name);
                         expect(res.body.userData.address).toBe(userData[2].address);
+                        expect(res.body.userData.userType).toBe(userData[2].userType);
                     })
                     .end(done);
             });
@@ -315,7 +318,7 @@ describe("GET /users/me", () => {
         });
     });
 
-    describe("TEST II", () => {
+    describe("EMPTY", () => {
         beforeEach(deleteUserData);
 
         describe("SELLER", () => {
@@ -351,7 +354,7 @@ describe("GET /users/me", () => {
 });
 
 describe("DELETE /users/me", () => {
-    describe("TEST I", () => {
+    describe("POPULATED", () => {
         describe("SELLER", () => {
             it("should delete userData if authenticated", (done) => {
                 request(app)
@@ -392,7 +395,7 @@ describe("DELETE /users/me", () => {
         });
     });
 
-    describe("TEST II", () => {
+    describe("EMPTY", () => {
         beforeEach(deleteUserData);
 
         describe("SELLER", () => {
@@ -461,7 +464,7 @@ describe("PATCH /users/me", () => {
         });
     };
 
-    describe("TEST I", () => {
+    describe("POPULATED", () => {
         describe("SELLER", () => {
             patchUser(users[0], "name", "new name");
 
@@ -474,20 +477,6 @@ describe("PATCH /users/me", () => {
             patchUser(users[0], "sex", "male");
 
             patchUser(users[0], "occupation", "new job");
-
-            it("should not patch userData if request invalid (invalid key)", (done) => {
-                const body = {
-                    key: "none",
-                    value: "update"
-                };
-
-                request(app)
-                    .patch("/users/me")
-                    .set("x-auth", users[0].tokens[0].token)
-                    .send(body)
-                    .expect(400)
-                    .end(done);
-            });
 
             it("should not patch userData if request invalid (invalid age)", (done) => {
                 const body = {
@@ -536,40 +525,12 @@ describe("PATCH /users/me", () => {
             patchUser(users[1], "name", "new name");
 
             patchUser(users[1], "address", "new address");
-
-            it("should not patch userData if request invalid (invalid key)", (done) => {
-                const body = {
-                    key: "none",
-                    value: "update"
-                };
-
-                request(app)
-                    .patch("/users/me")
-                    .set("x-auth", users[1].tokens[0].token)
-                    .send(body)
-                    .expect(400)
-                    .end(done);
-            });
         });
 
         describe("VERIFIER", () => {
             patchUser(users[2], "name", "new name");
 
             patchUser(users[2], "address", "new address");
-
-            it("should not patch userData if request invalid (invalid key)", (done) => {
-                const body = {
-                    key: "none",
-                    value: "update"
-                };
-
-                request(app)
-                    .patch("/users/me")
-                    .set("x-auth", users[2].tokens[0].token)
-                    .send(body)
-                    .expect(400)
-                    .end(done);
-            });
         });
 
         describe("COMMON", () => {
@@ -600,10 +561,10 @@ describe("PATCH /users/me", () => {
                     .end(done);
             });
 
-            it("should not patch userData if request invalid (no value)", (done) => {
+            it("should not patch userData if request invalid (invalid key)", (done) => {
                 const body = {
-                    key: "new field",
-                    two: "update"
+                    key: "none",
+                    value: "update"
                 };
 
                 request(app)
@@ -613,10 +574,24 @@ describe("PATCH /users/me", () => {
                     .expect(400)
                     .end(done);
             });
+
+            it("should not patch userData if request invalid (no value)", (done) => {
+                const body = {
+                    key: "new field",
+                    two: "update"
+                };
+
+                request(app)
+                    .patch("/users/me")
+                    .set("x-auth", users[2].tokens[0].token)
+                    .send(body)
+                    .expect(400)
+                    .end(done);
+            });
         });
     });
 
-    describe("TEST II", () => {
+    describe("EMPTY", () => {
         beforeEach(deleteUserData);
 
         describe("SELLER", () => {
@@ -665,6 +640,53 @@ describe("PATCH /users/me", () => {
                     .expect(404)
                     .end(done);
             });
+        });
+    });
+});
+
+describe("GET /message/me", () => {
+    describe("POPULATED", () => {
+        it("should get message if authenticated", (done) => {
+            request(app)
+                .get("/message/me")
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.email).toBe(users[0].email);
+                    expect(Object.keys(res.body).length).toBe(3);
+                })
+                .end(done);
+        });
+
+        it("should not get message if not authenticated", (done) => {
+            request(app)
+                .get("/message/me")
+                .expect(401)
+                .end(done);
+        });
+    });
+
+    describe("NOT ACTIVATED", () => {
+        beforeEach(populateDeactivatedUsers);
+        afterEach(populateActivatedUsers);
+
+        it("should not get message if authenticated, not activated", (done) => {
+            request(app)
+                .get("/message/me")
+                .expect(401)
+                .end(done);
+        });
+    });
+
+    describe("EMPTY", () => {
+        beforeEach(deleteUserData);
+
+        it("should not get message if userData not in database", (done) => {
+            request(app)
+                .get("/message/me")
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(404)
+                .end(done);
         });
     });
 });

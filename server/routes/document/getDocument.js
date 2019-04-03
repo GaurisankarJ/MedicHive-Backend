@@ -6,6 +6,7 @@ const documentDownload = (req, res) => {
         if (err) {
             console.log("Unable to connect to MongoDB server!", err);
         }
+
         const regex = new RegExp("([^/]+)$", "gi");
         const dbName = process.env.MONGODB_URI.match(regex);
 

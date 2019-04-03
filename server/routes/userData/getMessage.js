@@ -1,7 +1,7 @@
 // UserData Model
-const { UserData } = require("../../../models/userData.js");
+const { UserData } = require("../../models/userData.js");
 
-const getUserData = async (req, res) => {
+const getMessage = async (req, res) => {
     try {
         // Get userData
         const userData = await UserData.findOne({ _creator: req.user._id });
@@ -11,7 +11,7 @@ const getUserData = async (req, res) => {
         }
 
         // Send JSON body
-        res.send({ userData, email: req.user.email });
+        res.send({ sent: userData.message.sent, received: userData.message.received, email: req.user.email });
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found
@@ -23,4 +23,4 @@ const getUserData = async (req, res) => {
     }
 };
 
-module.exports = { getUserData };
+module.exports = { getMessage };

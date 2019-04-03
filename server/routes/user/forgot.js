@@ -41,29 +41,8 @@ const userForgotSend = async (req, res) => {
 
 const userForgotMe = async (req, res) => {
     try {
-        // Get secret from query body
-        const { secret } = req.query;
-        // Check secret
-        if (!secret) {
-            throw new Error();
-        }
-
-        // Get user
-        await User.findBySecret(secret);
-
-        // Send header
-        res.header("x-secret", secret).send();
-    } catch (err) {
-        if (err && process.env.NODE_ENV !== "test") { console.log(err); }
-        // Error Bad Request
-        res.status(400).send();
-    }
-};
-
-const userForgotReset = async (req, res) => {
-    try {
-        // Get secret token
-        const secret = req.header("x-secret");
+        // Get secret from params body
+        const { secret } = req.params;
         // Get password from request body
         const { password } = req.body;
         // Check secret, password
@@ -95,4 +74,4 @@ const userForgotReset = async (req, res) => {
     }
 };
 
-module.exports = { userForgotSend, userForgotMe, userForgotReset };
+module.exports = { userForgotSend, userForgotMe };

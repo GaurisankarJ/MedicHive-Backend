@@ -45,9 +45,6 @@ const patchUserData = async (req, res) => {
                 { _creator: req.user._id },
                 { $set: userData }
             );
-
-            // Send JSON body
-            res.json({ message: `${key} updated`, email: req.user.email });
         } else if (userType === "b" || userType === "v") {
             // Check key to patch (against common keys)
             if (_.indexOf(keys, key) >= 0) {
@@ -62,10 +59,10 @@ const patchUserData = async (req, res) => {
                 { _creator: req.user._id },
                 { $set: userData }
             );
-
-            // Send JSON body
-            res.json({ message: `${key} updated`, email: req.user.email });
         }
+
+        // Send JSON body
+        res.json({ message: `${key} updated`, email: req.user.email });
     } catch (err) {
         if (process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found

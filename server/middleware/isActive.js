@@ -1,4 +1,4 @@
-const verify = async (req, res, next) => {
+const isActive = async (req, res, next) => {
     try {
         // Check isActive
         if (!req.user.isActive) {
@@ -14,4 +14,4 @@ const verify = async (req, res, next) => {
     }
 };
 
-module.exports = { verify };
+module.exports = { isActive };

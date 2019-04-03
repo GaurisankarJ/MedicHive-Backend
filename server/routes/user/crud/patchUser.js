@@ -29,7 +29,7 @@ const patchUser = async (req, res) => {
             );
 
             // Send JSON body
-            res.json({ message: `${key} reset`, email: req.user.email });
+            res.json({ message: `${key} reset`, email: value });
         } else if (key === "password") {
             // Check user password same as value
             const check = await User.findByCredentials(req.user.email, value);
@@ -45,8 +45,6 @@ const patchUser = async (req, res) => {
 
             // Send JSON body
             res.json({ message: `${key} reset`, email: req.user.email });
-        } else {
-            throw new Error();
         }
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }

@@ -292,7 +292,7 @@ UserSchema.pre("updateOne", function (next) {
             User.getUpdate().$set.password = hash;
             next();
         } catch (e) {
-            throw new Error();
+            throw e;
         }
     }
 

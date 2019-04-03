@@ -4,23 +4,25 @@
 // {
 //     name: "NAME",
 //     address: "ADDRESS",
+//     userType: "s",
 //     message: {
 //         sent: [{
 //             action: "ACTION",
 //             body: {
-//                 key: "KEY"
+//                 OBJECT
 //             },
-//             to: "TO"
+//             to: "TO",
+//             time: "TIME"
 //         }],
 //         received: [{
 //             action: "ACTION",
 //             body: {
-//                 key: "KEY"
+//                 OBJECT
 //             },
-//             from: "FROM"
+//             from: "FROM",
+//             time: "TIME"
 //         }]
 //     },
-//     userType: "s",
 //     seller: {
 //         age: 55,
 //         weight: 99,
@@ -50,34 +52,6 @@ const UserDataSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    message: {
-        sent: [{
-            action: {
-                type: String,
-                trim: true
-            },
-            body: {
-                type: mongoose.Schema.Types.Mixed
-            },
-            to: {
-                type: String,
-                trim: true
-            }
-        }],
-        received: [{
-            action: {
-                type: String,
-                trim: true
-            },
-            body: {
-                type: mongoose.Schema.Types.Mixed
-            },
-            from: {
-                type: String,
-                trim: true
-            }
-        }]
-    },
     userType: {
         type: String,
         required: true,
@@ -92,6 +66,44 @@ const UserDataSchema = new mongoose.Schema({
             },
             message: "{VALUE} should be b/s/v or B/S/V!"
         }
+    },
+    message: {
+        sent: [{
+            action: {
+                type: String,
+                trim: true
+            },
+            body: {
+                type: mongoose.Schema.Types.Mixed
+            },
+            to: {
+                type: String,
+                trim: true
+            },
+            time: {
+                type: String,
+                minlength: 1,
+                trim: true
+            }
+        }],
+        received: [{
+            action: {
+                type: String,
+                trim: true
+            },
+            body: {
+                type: mongoose.Schema.Types.Mixed
+            },
+            from: {
+                type: String,
+                trim: true
+            },
+            time: {
+                type: String,
+                minlength: 1,
+                trim: true
+            }
+        }]
     },
     seller: {
         age: {
@@ -151,39 +163,13 @@ UserDataSchema.methods.toJSON = function () {
 
 // *******************************************************************
 // ###################################################################
-// MODEL METHOD
-// ###################################################################
-// To send message
-// UserSchema.statics.findBySecret = function (secret) {
-//     const User = this;
-//     let decoded;
-
-//     try {
-//         // Get object with _id property
-//         decoded = jwt.verify(secret, process.env.USER_SECRET);
-//     } catch (err) {
-//         throw err;
-//     }
-
-//     // Return user
-//     return User.findOne({
-//         _id: decoded._id,
-//         "confirmation.secret": secret,
-//         "tokens.access": decoded.access
-//     });
-// };
-// ###################################################################
-// *******************************************************************
-
-// *******************************************************************
-// ###################################################################
 // HOOKS
 // ###################################################################
 // updateOne Hook
 UserDataSchema.pre("updateOne", function (next) {
     const User = this;
 
-    const { seller } = User._update.$set;
+    const { seller } = User.getUpdate().$set;
 
     // Check seller
     if (seller) {

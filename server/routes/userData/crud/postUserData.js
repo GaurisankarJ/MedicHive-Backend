@@ -8,7 +8,6 @@ const postUserData = async (req, res) => {
     try {
         // Get userType
         const { userType } = req.user;
-
         // Check name and address
         if (!req.body.name || !req.body.address) {
             throw new Error();
@@ -18,8 +17,8 @@ const postUserData = async (req, res) => {
         if (userType === "s") {
             // Create body object from request body
             const body = _.pick(req.body, ["name", "address", "seller"]);
+            body.userType = userType;
             body._creator = req.user._id;
-            body.userType = req.user.userType;
 
             // Keys
             const keys = ["age", "weight", "sex", "occupation"];
@@ -38,8 +37,8 @@ const postUserData = async (req, res) => {
         } else if (userType === "b" || userType === "v") {
             // Create body object from request body
             const body = _.pick(req.body, ["name", "address"]);
+            body.userType = userType;
             body._creator = req.user._id;
-            body.userType = req.user.userType;
 
             // Create instance of UserData model
             const userData = new UserData(body);

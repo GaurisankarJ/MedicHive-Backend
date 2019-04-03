@@ -21,7 +21,7 @@ const getUser = async (req, res) => {
         }
 
         // Send JSON body
-        res.send({ users });
+        res.send({ userType, users });
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }
         // Not Found

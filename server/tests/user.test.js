@@ -11,10 +11,10 @@ const { app } = require("./../server.js");
 const { User } = require("./../models/user.js");
 
 // Seed Data
-const { users, populateUsers } = require("./seed/seed");
+const { users, deleteUsers, populateUsers } = require("./seed/seed");
 
 // Testing life-cycle, beforeEach Hook
-// Populating Users
+// Populate Users
 beforeEach(populateUsers);
 
 describe("POST /users", () => {
@@ -148,6 +148,66 @@ describe("POST /users", () => {
     });
 });
 
+describe("GET /users", () => {
+    describe("POPULATED", () => {
+        it("should get users if authenticated", (done) => {
+            const userType = "v";
+
+            request(app)
+                .get(`/users?userType=${userType}`)
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.userType).toBe(users[2].userType);
+                    expect(res.body.users).toBeTruthy();
+                    expect(res.body.users[0].email).toBe(users[2].email);
+                    expect(res.body.users[0].userType).toBe(users[2].userType);
+                })
+                .end(done);
+        });
+
+        it("should not get users if not authenticated", (done) => {
+            const userType = "v";
+
+            request(app)
+                .get(`/users?userType=${userType}`)
+                .expect(401)
+                .end(done);
+        });
+
+        it("should not get users if request invalid (no userType)", (done) => {
+            request(app)
+                .get("/users")
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(400)
+                .end(done);
+        });
+
+        it("should not get users if request invalid (invalid userType)", (done) => {
+            const userType = "x";
+
+            request(app)
+                .get(`/users?userType=${userType}`)
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(400)
+                .end(done);
+        });
+    });
+    describe("EMPTY", () => {
+        beforeEach(deleteUsers);
+
+        it("should not get users if users not in database", (done) => {
+            const userType = "v";
+
+            request(app)
+                .get(`/users?userType=${userType}`)
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(404)
+                .end(done);
+        });
+    });
+});
+
 describe("DELETE /users", () => {
     it("should delete user if authenticated", (done) => {
         request(app)
@@ -224,6 +284,7 @@ describe("PATCH /users", () => {
 
                 User.findByCredentials(users[0].email, body.value).then((user) => {
                     expect(user).toBeTruthy();
+                    expect(user.password).not.toBe(body.value);
                     done();
                 }).catch(e => done(e));
             });
@@ -245,6 +306,20 @@ describe("PATCH /users", () => {
     it("should not patch user if request invalid (no key)", (done) => {
         const body = {
             one: "email",
+            value: "seller@example.com"
+        };
+
+        request(app)
+            .patch("/users")
+            .set("x-auth", users[0].tokens[0].token)
+            .send(body)
+            .expect(400)
+            .end(done);
+    });
+
+    it("should not patch user if request invalid (invalid key)", (done) => {
+        const body = {
+            key: "name",
             value: "seller@example.com"
         };
 
@@ -470,7 +545,8 @@ describe("DELETE /users/logout", () => {
             .set("x-auth", users[0].tokens[0].token)
             .expect(200)
             .expect((res) => {
-                expect(res.body.logout).toBe("successful");
+                expect(res.body.message).toBe("logout successful");
+                expect(res.body.email).toBe(users[0].email);
             })
             .end((err) => {
                 if (err) {
@@ -478,9 +554,6 @@ describe("DELETE /users/logout", () => {
                 }
 
                 User.findById(users[0]._id).then((user) => {
-                    if (!user) {
-                        done();
-                    }
                     expect(user.tokens.length).toBe(0);
                     done();
                 }).catch(e => done(e));
@@ -496,11 +569,32 @@ describe("DELETE /users/logout", () => {
 });
 
 describe("GET /users/confirm", () => {
-    it("should activate user", (done) => {
+    it("should send confirmation mail if authenticated", (done) => {
+        request(app)
+            .get("/users/confirm")
+            .set("x-auth", users[0].tokens[0].token)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.message).toBe("confirmation mail sent successfully");
+                expect(res.body.email).toBe(users[0].email);
+            })
+            .end(done);
+    });
+
+    it("should not send confirmation mail if not authenticated", (done) => {
+        request(app)
+            .get("/users/confirm")
+            .expect(401)
+            .end(done);
+    });
+});
+
+describe("POST /users/confirm/:secret", () => {
+    it("should confirm user", (done) => {
         const { secret } = users[0].confirmation[0];
 
         request(app)
-            .get(`/users/confirm?secret=${secret}`)
+            .post(`/users/confirm/${secret}`)
             .expect(302)
             .end((err) => {
                 if (err) {
@@ -514,19 +608,12 @@ describe("GET /users/confirm", () => {
             });
     });
 
-    it("should not activate user if request invalid (no secret)", (done) => {
-        request(app)
-            .get("/users/confirm?email=something-invalid")
-            .expect(400)
-            .end(done);
-    });
-
-    it("should not activate user if request invalid (invalid secret)", (done) => {
+    it("should not confirm user if request invalid (invalid secret)", (done) => {
         const secret = "some secret";
 
         request(app)
-            .get(`/users/confirm?secret=${secret}`)
-            .expect(404)
+            .post(`/users/confirm/${secret}`)
+            .expect(400)
             .end(done);
     });
 });
@@ -558,16 +645,15 @@ describe("GET /users/forgot", () => {
     });
 });
 
-describe("POST /users/forgot", () => {
+describe("POST /users/forgot/:secret", () => {
     it("should reset password", (done) => {
         const { secret } = users[0].confirmation[0];
         const body = {
-            password: "password",
-            confirm: "password"
+            password: "password"
         };
 
         request(app)
-            .post(`/users/forgot?secret=${secret}`)
+            .post(`/users/forgot/${secret}`)
             .send(body)
             .expect(302)
             .end((err) => {
@@ -582,56 +668,14 @@ describe("POST /users/forgot", () => {
             });
     });
 
-    it("should not reset password if request invalid (no secret)", (done) => {
-        const body = {
-            password: "password",
-            confirm: "notpassword"
-        };
-
-        request(app)
-            .post("/users/forgot?")
-            .send(body)
-            .expect(400)
-            .end(done);
-    });
-
     it("should not reset password if request invalid (no password)", (done) => {
-        const { secret } = "invalid";
-        const body = {
-            one: "password",
-            confirm: "notpassword"
-        };
-
-        request(app)
-            .post(`/users/forgot?secret=${secret}`)
-            .send(body)
-            .expect(400)
-            .end(done);
-    });
-
-    it("should not reset password if request invalid (no confirm)", (done) => {
-        const { secret } = "invalid";
-        const body = {
-            password: "password",
-            two: "notpassword"
-        };
-
-        request(app)
-            .post(`/users/forgot?secret=${secret}`)
-            .send(body)
-            .expect(400)
-            .end(done);
-    });
-
-    it("should not reset password if request invalid (password and confirm do not match)", (done) => {
         const { secret } = users[0].confirmation[0];
         const body = {
-            password: "password",
-            confirm: "notpassword"
+            one: "password"
         };
 
         request(app)
-            .post(`/users/forgot?secret=${secret}`)
+            .post(`/users/forgot/${secret}`)
             .send(body)
             .expect(400)
             .end(done);
@@ -640,14 +684,26 @@ describe("POST /users/forgot", () => {
     it("should not reset password if request invalid (invalid secret)", (done) => {
         const { secret } = "secret";
         const body = {
-            password: "password",
-            confirm: "password"
+            password: "passwordNew"
         };
 
         request(app)
-            .post(`/users/forgot?secret=${secret}`)
+            .post(`/users/forgot/${secret}`)
             .send(body)
-            .expect(404)
+            .expect(400)
+            .end(done);
+    });
+
+    it("should not reset password if password same as saved", (done) => {
+        const { secret } = users[0].confirmation[0];
+        const body = {
+            password: "userOnePass"
+        };
+
+        request(app)
+            .post(`/users/forgot/${secret}`)
+            .send(body)
+            .expect(400)
             .end(done);
     });
 });

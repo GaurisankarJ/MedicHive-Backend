@@ -53,7 +53,7 @@ const sendResetMail = async (email, secret) => {
         to: email,
         from: "no-reply@myentity.co",
         subject: "PASSWORD RESET",
-        html: `<strong><a href="${process.env.SERVER_PAGE}/users/confirm/${secret}">CLICK TO RESET</a></strong>`
+        html: `<strong><h4>KEY :</h4></strong><h3>${secret}</h3>`
     };
 
     if (process.env.NODE_ENV === "development") {

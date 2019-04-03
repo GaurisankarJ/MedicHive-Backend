@@ -4,12 +4,11 @@
   "description": "Prototype Application",
   "main": "app.js",
   "scripts": {
-    "test": "export NODE_ENV=test && mocha server/**/*.test.js -t 10000",
-    "test-one": "export NODE_ENV=test && mocha server/**/$F.test.js --grep $T",
+    "test": "export NODE_ENV=test && mocha server/**/*.test.js -t 18000",
+    "test-one": "export NODE_ENV=test && mocha server/**/$F*.test.js --grep $T -t 15000",
     "test-one-watch": "nodemon --exec 'npm run test-one'",
-    "test-file": "export NODE_ENV=test && mocha server/**/$F.test.js -t 10000",
-    "test-file-watch": "nodemon --exec 'npm test'",
-    "test-play": "nodemon --exec 'npm run test-run'",
+    "test-file": "export NODE_ENV=test && mocha server/**/$F*.test.js -t 10000",
+    "test-file-watch": "nodemon --exec 'npm run test-file'",
     "start": "export NODE_ENV=development && nodemon server/server.js"
   },
   "engines": {
@@ -55,6 +54,7 @@
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
     "socket.io": "^2.2.0",
+    "spdy": "^4.0.0",
     "validator": "^10.11.0"
   }
 }

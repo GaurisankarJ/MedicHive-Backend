@@ -192,12 +192,12 @@ const RecordSchema = new mongoose.Schema({
             default: false
         },
         owner: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
         verifier: {
-            type: String,
+            type: [String],
             minlength: 1,
             trim: true
         },
@@ -281,7 +281,7 @@ RecordSchema.methods.toJSON = function () {
     // Populate function
     const populateRecord = (key) => {
         recordObject[key].forEach((rec) => {
-            returnObject[key].push({ _id: rec._id, data: rec.data });
+            returnObject[key].push({ _id: rec._id, data: rec.data, isVerified: rec.isVerified });
         });
     };
 
@@ -358,7 +358,7 @@ RecordSchema.methods.deleteByRecordId = function (id) {
 };
 // ###################################################################
 // To find and patch by record _id
-RecordSchema.methods.patchByRecordId = function (id, value) {
+RecordSchema.methods.patchByRecordId = function (id, value, verified) {
     const record = this;
 
     // Flag
@@ -373,6 +373,12 @@ RecordSchema.methods.patchByRecordId = function (id, value) {
         if (!_.isEmpty(rec)) {
             // Update the rec body
             rec[0].data = value;
+            rec[0].enteredAt = new Date().getTime().toString();
+            if (verified) {
+                rec[0].isVerified = true;
+            } else {
+                rec[0].isVerified = false;
+            }
 
             // Push the rec body
             record[key].push(rec[0]);
@@ -399,30 +405,34 @@ RecordSchema.methods.patchByRecordId = function (id, value) {
     }
 };
 // ###################################################################
-// *******************************************************************
+// To find ownerRecords by owner _id
+RecordSchema.methods.findByOwnerRecords = function (id, key) {
+    const record = this;
 
-// *******************************************************************
-// ###################################################################
-// MODEL METHOD
-// ###################################################################
-// To find by owner token
-RecordSchema.statics.findByOwnerToken = function (token) {
-    const User = this;
-    let decoded;
+    // Create ownerRecords
+    const ownerRecords = [];
 
-    try {
-        // Get object with owner and record property
-        decoded = jwt.verify(token, process.env.USER_SECRET);
-    } catch (err) {
-        return null;
-    }
+    // Check record[key]
+    record[key].forEach((rec) => {
+        // Check isVerified
+        if (rec.isVerified) {
+            let decoded;
 
-    console.log(decoded);
+            try {
+                // Get object with owner and record property
+                decoded = jwt.verify(rec.owner[0], process.env.USER_SECRET);
+            } catch (err) {
+                throw err;
+            }
 
-    // Return user
-    return User.findOne({
-        _id: decoded.owner
+            if (decoded.owner === id.toHexString()) {
+                // Update the sellerRecord body
+                ownerRecords.push(rec);
+            }
+        }
     });
+
+    return ownerRecords;
 };
 // ###################################################################
 // *******************************************************************

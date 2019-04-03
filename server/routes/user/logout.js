@@ -4,7 +4,7 @@ const userLogout = async (req, res) => {
         await req.user.removeAuthToken(req.token);
 
         // Send JSON body
-        res.json({ logout: "successful" });
+        res.json({ message: "logout successful", email: req.user.email });
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }
         // Error Bad Request

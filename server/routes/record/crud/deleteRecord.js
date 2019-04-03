@@ -49,7 +49,7 @@ const deleteRecordById = async (req, res) => {
         }
 
         // Update record
-        await Record.findOneAndUpdate(
+        await Record.updateOne(
             { _creator: req.user._id },
             { $set: record },
             { new: true }
