@@ -8,7 +8,7 @@ const { UserData } = require("../../models/userData.js");
 // Record Model
 const { Record } = require("../../models/record.js");
 
-const shareRecordSeller = async (req, res) => {
+const sellerShareRecord = async (req, res) => {
     try {
         // Get key, buyerEmail
         const { key, buyerEmail } = req.body;
@@ -151,7 +151,7 @@ const shareRecordSeller = async (req, res) => {
     }
 };
 
-const shareRecordVerifier = async (req, res) => {
+const verifierShareRecord = async (req, res) => {
     try {
         // Get key, sellerEmail
         const { key, sellerEmail } = req.body;
@@ -291,4 +291,4 @@ const shareRecordVerifier = async (req, res) => {
 };
 
 
-module.exports = { shareRecordSeller, shareRecordVerifier };
+module.exports = { sellerShareRecord, verifierShareRecord };

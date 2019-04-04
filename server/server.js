@@ -52,15 +52,16 @@ const { getRecord } = require("./routes/record/crud/getRecord.js");
 const { deleteRecord, deleteRecordById } = require("./routes/record/crud/deleteRecord.js");
 const { patchRecord, patchRecordById } = require("./routes/record/crud/patchRecord.js");
 // ###################################################################
-// DOCUMENT +ADD FEATURE
-const { documentUpload } = require("./routes/document/postDocument.js");
-const { getDocuments } = require("./routes/document/getDocuments.js");
-const { documentDownload } = require("./routes/document/getDocument.js");
-// ###################################################################
 // COMMUNICATION
-const { requestRecordBuyer, requestRecordSeller } = require("./routes/communication/request.js");
-const { shareRecordSeller, shareRecordVerifier } = require("./routes/communication/share.js");
-const { verifyRecordSeller, getRecordVerifier, verifyRecordVerifier } = require("./routes/communication/verify.js");
+const { buyerRequestRecord, sellerRequestRecord } = require("./routes/communication/request.js");
+const { sellerShareRecord, verifierShareRecord } = require("./routes/communication/share.js");
+const { sellerVerifyRecord, verifierGetRecord, verifierVerifyRecord } = require("./routes/communication/verify.js");
+// ###################################################################
+// + ADD FEATURE
+// DOCUMENT
+const { uploadDocument } = require("./routes/document_TODO/uploadDocument.js");
+const { downloadDocument } = require("./routes/document_TODO/downloadDocument.js");
+const { getDocuments } = require("./routes/document_TODO/getDocuments.js");
 // ###################################################################
 
 // Create Express app
@@ -142,31 +143,33 @@ app.delete("/record/:id", authenticate, (req, res) => deleteRecordById(req, res)
 
 app.patch("/record/:id", authenticate, (req, res) => patchRecordById(req, res));
 // ###################################################################
+// Communication Routes
+// Buyer
+app.post("/request/b", authenticate, isActive, (req, res) => buyerRequestRecord(req, res));
+
+// Seller
+app.post("/share/s", authenticate, isActive, (req, res) => sellerShareRecord(req, res));
+
+app.post("/request/s", authenticate, isActive, (req, res) => sellerRequestRecord(req, res));
+
+app.post("/verify/s", authenticate, isActive, (req, res) => sellerVerifyRecord(req, res));
+
+// Verifier
+app.post("/share/v", authenticate, isActive, (req, res) => verifierShareRecord(req, res));
+
+app.get("/verify/v", authenticate, isActive, (req, res) => verifierGetRecord(req, res));
+
+app.post("/verify/v", authenticate, isActive, (req, res) => verifierVerifyRecord(req, res));
+// ###################################################################
+// + ADD FEATURE
 // Document Routes
-app.post("/upload", authenticate, (req, res) => documentUpload(req, res));
+app.post("/upload", authenticate, (req, res) => uploadDocument(req, res));
 
 app.get("/downloads", authenticate, (req, res) => getDocuments(req, res));
 
-app.get("/download/:id", authenticate, (req, res) => documentDownload(req, res));
+app.get("/download/:id", authenticate, (req, res) => downloadDocument(req, res));
 // ###################################################################
-// Communication Routes
-// Buyer
-app.post("/request/b", authenticate, isActive, (req, res) => requestRecordBuyer(req, res));
 
-// Seller
-app.post("/share/s", authenticate, isActive, (req, res) => shareRecordSeller(req, res));
-
-app.post("/request/s", authenticate, isActive, (req, res) => requestRecordSeller(req, res));
-
-app.post("/verify/s", authenticate, isActive, (req, res) => verifyRecordSeller(req, res));
-
-// Verifier
-app.post("/share/v", authenticate, isActive, (req, res) => shareRecordVerifier(req, res));
-
-app.get("/verify/v", authenticate, isActive, (req, res) => getRecordVerifier(req, res));
-
-app.post("/verify/v", authenticate, isActive, (req, res) => verifyRecordVerifier(req, res));
-// ###################################################################
 
 // Create HTTP2 server
 let server;

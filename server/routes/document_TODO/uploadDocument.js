@@ -15,7 +15,7 @@ const storage = GridFSStorage({
 });
 const upload = multer({ storage }).single("file");
 
-const documentUpload = (req, res) => { // [authenticate, upload.single("file")]
+const uploadDocument = (req, res) => { // [authenticate, upload.single("file")]
     upload(req, res, (err) => {
         if (err) {
             return res.status(400).send(err);
@@ -26,4 +26,4 @@ const documentUpload = (req, res) => { // [authenticate, upload.single("file")]
     });
 };
 
-module.exports = { documentUpload };
+module.exports = { uploadDocument };

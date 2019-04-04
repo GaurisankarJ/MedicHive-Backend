@@ -62,14 +62,14 @@ const users = [
     }
 ];
 
-// To clear User database
+// TO CLEAR "users"
 const deleteUsers = (done) => {
     User.deleteMany({}).then(() => {
         return Promise.resolve();
     }).then(() => done());
 };
 
-// To clear and repopulate User database
+// TO CLEAR AND REPOPULATE "users"
 const populateUsers = (done) => {
     User.deleteMany({}).then(() => {
         // insertMany won't run the middleware
@@ -82,7 +82,7 @@ const populateUsers = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate Seller database
+// TO CLEAR AND REPOPULATE "users" with just "seller"
 const populateSeller = (done) => {
     User.deleteMany({}).then(() => {
         const userOne = new User(users[0]).save();
@@ -91,7 +91,7 @@ const populateSeller = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate Buyer database
+// TO CLEAR AND REPOPULATE "users" with just "buyer"
 const populateBuyer = (done) => {
     User.deleteMany({}).then(() => {
         const userTwo = new User(users[1]).save();
@@ -100,7 +100,7 @@ const populateBuyer = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate Verifier database
+// TO CLEAR AND REPOPULATE "users" with just "verifier"
 const populateVerifier = (done) => {
     User.deleteMany({}).then(() => {
         const userThree = new User(users[2]).save();
@@ -109,87 +109,77 @@ const populateVerifier = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate activated User database
+// TO CLEAR AND REPOPULATE "users" with activated "users"
 const populateActivatedUsers = (done) => {
     User.deleteMany({}).then(() => {
         users.forEach((user) => {
             user.isActive = true;
         });
 
-        // insertMany won't run the middleware
         const userOne = new User(users[0]).save();
         const userTwo = new User(users[1]).save();
         const userThree = new User(users[2]).save();
 
-        // Wait for all promises mentioned in array to be resolved
         return Promise.all([userOne, userTwo, userThree]);
     }).then(() => done());
 };
 
-// To clear and repopulate activated seller database
-const populateActivatedSeller = (done) => {
-    User.deleteMany({}).then(() => {
-        users[0].isActive = true;
-        users[1].isActive = false;
-        users[2].isActive = false;
-
-        // insertMany won't run the middleware
-        const userOne = new User(users[0]).save();
-        const userTwo = new User(users[1]).save();
-        const userThree = new User(users[2]).save();
-
-        // Wait for all promises mentioned in array to be resolved
-        return Promise.all([userOne, userTwo, userThree]);
-    }).then(() => done());
-};
-
-// To clear and repopulate activated buyer database
-const populateActivatedBuyer = (done) => {
-    User.deleteMany({}).then(() => {
-        users[0].isActive = false;
-        users[1].isActive = true;
-        users[2].isActive = false;
-
-        // insertMany won't run the middleware
-        const userOne = new User(users[0]).save();
-        const userTwo = new User(users[1]).save();
-        const userThree = new User(users[2]).save();
-
-        // Wait for all promises mentioned in array to be resolved
-        return Promise.all([userOne, userTwo, userThree]);
-    }).then(() => done());
-};
-
-// To clear and repopulate activated verifier database
-const populateActivatedVerifier = (done) => {
-    User.deleteMany({}).then(() => {
-        users[0].isActive = false;
-        users[1].isActive = false;
-        users[2].isActive = true;
-
-        // insertMany won't run the middleware
-        const userOne = new User(users[0]).save();
-        const userTwo = new User(users[1]).save();
-        const userThree = new User(users[2]).save();
-
-        // Wait for all promises mentioned in array to be resolved
-        return Promise.all([userOne, userTwo, userThree]);
-    }).then(() => done());
-};
-
-// To clear and repopulate deactivated User database
+// TO CLEAR AND REPOPULATE "users" with deactivated "users"
 const populateDeactivatedUsers = (done) => {
     User.deleteMany({}).then(() => {
         users.forEach((user) => {
             user.isActive = false;
         });
 
-        // insertMany won't run the middleware
         const userOne = new User(users[0]).save();
         const userTwo = new User(users[1]).save();
         const userThree = new User(users[2]).save();
 
-        // Wait for all promises mentioned in array to be resolved
+        return Promise.all([userOne, userTwo, userThree]);
+    }).then(() => done());
+};
+
+// TO CLEAR AND REPOPULATE "users" with activated "seller"
+const populateActivatedSeller = (done) => {
+    User.deleteMany({}).then(() => {
+        users[0].isActive = true;
+        users[1].isActive = false;
+        users[2].isActive = false;
+
+        const userOne = new User(users[0]).save();
+        const userTwo = new User(users[1]).save();
+        const userThree = new User(users[2]).save();
+
+        return Promise.all([userOne, userTwo, userThree]);
+    }).then(() => done());
+};
+
+// TO CLEAR AND REPOPULATE "users" with activated "buyer"
+const populateActivatedBuyer = (done) => {
+    User.deleteMany({}).then(() => {
+        users[0].isActive = false;
+        users[1].isActive = true;
+        users[2].isActive = false;
+
+        const userOne = new User(users[0]).save();
+        const userTwo = new User(users[1]).save();
+        const userThree = new User(users[2]).save();
+
+        return Promise.all([userOne, userTwo, userThree]);
+    }).then(() => done());
+};
+
+// TO CLEAR AND REPOPULATE "users" with activated "verifier"
+const populateActivatedVerifier = (done) => {
+    User.deleteMany({}).then(() => {
+        users[0].isActive = false;
+        users[1].isActive = false;
+        users[2].isActive = true;
+
+        const userOne = new User(users[0]).save();
+        const userTwo = new User(users[1]).save();
+        const userThree = new User(users[2]).save();
+
         return Promise.all([userOne, userTwo, userThree]);
     }).then(() => done());
 };
@@ -256,14 +246,14 @@ const userData = [
     }
 ];
 
-// To clear UserData database
+// TO CLEAR "userdatas"
 const deleteUserData = (done) => {
     UserData.deleteMany({}).then(() => {
         return Promise.resolve();
     }).then(() => done());
 };
 
-// To clear and repopulate UserData database
+// TO CLEAR AND REPOPULATE "userdatas"
 const populateUserData = (done) => {
     UserData.deleteMany({}).then(() => {
         const userDataOne = new UserData(userData[0]).save();
@@ -274,7 +264,7 @@ const populateUserData = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate sellerData database
+// TO CLEAR AND REPOPULATE "userdatas" with just "seller"
 const populateSellerData = (done) => {
     UserData.deleteMany({}).then(() => {
         const userDataOne = new UserData(userData[0]).save();
@@ -283,7 +273,7 @@ const populateSellerData = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate buyerData database
+// TO CLEAR AND REPOPULATE "userdatas" with just "buyer"
 const populateBuyerData = (done) => {
     UserData.deleteMany({}).then(() => {
         const userDataTwo = new UserData(userData[1]).save();
@@ -292,7 +282,7 @@ const populateBuyerData = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate verifierData database
+// TO CLEAR AND REPOPULATE "userdatas" with just "verifier"
 const populateVerifierData = (done) => {
     UserData.deleteMany({}).then(() => {
         const userDataThree = new UserData(userData[2]).save();
@@ -516,28 +506,28 @@ const records = [
     }
 ];
 
-// To clear Record database
+// TO CLEAR "records"
 const deleteRecords = (done) => {
     Record.deleteMany({}).then(() => {
         return Promise.resolve();
     }).then(() => done());
 };
 
-// To clear and repopulate Record database
+// TO CLEAR AND REPOPULATE "records"
 const populateRecords = (done) => {
     Record.deleteMany({}).then(() => {
         return Record.insertMany(records);
     }).then(() => done());
 };
 
-// To clear and repopulate verified Record database
+// TO CLEAR AND REPOPULATE "records" with verified "records"
 const populateVerifiedRecords = (done) => {
     Record.deleteMany({}).then(() => {
         records.forEach((record) => {
             // Keys
             const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
 
-            // Invert record
+            // Verify record
             keys.forEach((key) => {
                 record[key][0].isVerified = true;
             });
@@ -547,34 +537,7 @@ const populateVerifiedRecords = (done) => {
     }).then(() => done());
 };
 
-// To clear and repopulate sellerRecord database
-const populateSellerRecord = (done) => {
-    Record.deleteMany({}).then(() => {
-        const userRecordOne = new Record(records[0]).save();
-
-        return Promise.all([userRecordOne]);
-    }).then(() => done());
-};
-
-// To clear and repopulate buyerRecord database
-const populateBuyerRecord = (done) => {
-    Record.deleteMany({}).then(() => {
-        const userRecordTwo = new Record(records[1]).save();
-
-        return Promise.all([userRecordTwo]);
-    }).then(() => done());
-};
-
-// To clear and repopulate verifierRecord database
-const populateVerifierRecord = (done) => {
-    Record.deleteMany({}).then(() => {
-        const userRecordThree = new Record(records[2]).save();
-
-        return Promise.all([userRecordThree]);
-    }).then(() => done());
-};
-
-// To clear and repopulate unverified Record database
+// TO CLEAR AND REPOPULATE "records" with unverified "records"
 const populateUnverifiedRecords = (done) => {
     Record.deleteMany({}).then(() => {
         records.forEach((record) => {
@@ -591,8 +554,35 @@ const populateUnverifiedRecords = (done) => {
     }).then(() => done());
 };
 
+// TO CLEAR AND REPOPULATE "records" with just "seller"
+const populateSellerRecord = (done) => {
+    Record.deleteMany({}).then(() => {
+        const userRecordOne = new Record(records[0]).save();
+
+        return Promise.all([userRecordOne]);
+    }).then(() => done());
+};
+
+// TO CLEAR AND REPOPULATE "records" with just "buyer"
+const populateBuyerRecord = (done) => {
+    Record.deleteMany({}).then(() => {
+        const userRecordTwo = new Record(records[1]).save();
+
+        return Promise.all([userRecordTwo]);
+    }).then(() => done());
+};
+
+// TO CLEAR AND REPOPULATE "records" with just "verifier"
+const populateVerifierRecord = (done) => {
+    Record.deleteMany({}).then(() => {
+        const userRecordThree = new Record(records[2]).save();
+
+        return Promise.all([userRecordThree]);
+    }).then(() => done());
+};
 // ###################################################################
 // *******************************************************************
+
 
 module.exports = {
     users,
@@ -602,10 +592,10 @@ module.exports = {
     populateBuyer,
     populateVerifier,
     populateActivatedUsers,
+    populateDeactivatedUsers,
     populateActivatedSeller,
     populateActivatedBuyer,
     populateActivatedVerifier,
-    populateDeactivatedUsers,
     userData,
     deleteUserData,
     populateUserData,
@@ -616,8 +606,8 @@ module.exports = {
     deleteRecords,
     populateRecords,
     populateVerifiedRecords,
+    populateUnverifiedRecords,
     populateSellerRecord,
     populateBuyerRecord,
-    populateVerifierRecord,
-    populateUnverifiedRecords
+    populateVerifierRecord
 };

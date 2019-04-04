@@ -10,7 +10,7 @@ const { UserData } = require("../../models/userData.js");
 // Record Model
 const { Record } = require("../../models/record.js");
 
-const verifyRecordSeller = async (req, res) => {
+const sellerVerifyRecord = async (req, res) => {
     try {
         // Get key, verifierEmail
         const { key, verifierEmail } = req.body;
@@ -88,7 +88,7 @@ const verifyRecordSeller = async (req, res) => {
     }
 };
 
-const getRecordVerifier = async (req, res) => {
+const verifierGetRecord = async (req, res) => {
     try {
         // Get emailId from query body
         const { id } = req.query;
@@ -154,7 +154,7 @@ const getRecordVerifier = async (req, res) => {
     }
 };
 
-const verifyRecordVerifier = async (req, res) => {
+const verifierVerifyRecord = async (req, res) => {
     try {
         // Get key, sellerEmail
         const { key, sellerEmail } = req.body;
@@ -299,4 +299,4 @@ const verifyRecordVerifier = async (req, res) => {
     }
 };
 
-module.exports = { verifyRecordSeller, getRecordVerifier, verifyRecordVerifier };
+module.exports = { sellerVerifyRecord, verifierGetRecord, verifierVerifyRecord };

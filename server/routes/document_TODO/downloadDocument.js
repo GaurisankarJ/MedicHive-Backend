@@ -1,7 +1,7 @@
 const mongo = require("mongodb");
 const GridFS = require("gridfs-stream");
 
-const documentDownload = (req, res) => {
+const downloadDocument = (req, res) => {
     mongo.MongoClient.connect(process.env.MONGODB_URI, (err, client) => {
         if (err) {
             console.log("Unable to connect to MongoDB server!", err);
@@ -44,4 +44,4 @@ const documentDownload = (req, res) => {
     });
 };
 
-module.exports = { documentDownload };
+module.exports = { downloadDocument };

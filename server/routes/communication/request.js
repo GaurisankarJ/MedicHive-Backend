@@ -6,7 +6,7 @@ const { User } = require("../../models/user.js");
 // UserData Model
 const { UserData } = require("../../models/userData.js");
 
-const requestRecordBuyer = async (req, res) => {
+const buyerRequestRecord = async (req, res) => {
     try {
         // Get key
         const { key } = req.body;
@@ -62,7 +62,7 @@ const requestRecordBuyer = async (req, res) => {
     }
 };
 
-const requestRecordSeller = async (req, res) => {
+const sellerRequestRecord = async (req, res) => {
     try {
         // Get key, verifierEmail
         const { key, verifierEmail } = req.body;
@@ -133,4 +133,4 @@ const requestRecordSeller = async (req, res) => {
     }
 };
 
-module.exports = { requestRecordBuyer, requestRecordSeller };
+module.exports = { buyerRequestRecord, sellerRequestRecord };

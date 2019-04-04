@@ -4,8 +4,6 @@
 const expect = require("expect");
 // Testing HTTP via superagent
 const request = require("supertest");
-// Lodash
-const _ = require("lodash");
 // ObjectID
 const { ObjectID } = require("mongodb");
 // JSON Web Token Middleware
@@ -19,7 +17,7 @@ const { UserData } = require("../models/userData.js");
 const { Record } = require("../models/record.js");
 
 // Seed Data
-const { users, deleteUsers, populateUsers, populateBuyer, populateSeller, populateVerifier, populateActivatedUsers, populateActivatedSeller, populateActivatedBuyer, populateActivatedVerifier, populateDeactivatedUsers, userData, deleteUserData, populateUserData, populateSellerData, populateBuyerData, populateVerifierData, records, deleteRecords, populateRecords, populateVerifiedRecords, populateSellerRecord, populateBuyerRecord, populateVerifierRecord, populateUnverifiedRecords } = require("./seed/seed");
+const { users, populateUsers, populateVerifier, populateActivatedUsers, populateActivatedSeller, populateActivatedVerifier, populateDeactivatedUsers, userData, deleteUserData, populateUserData, populateSellerData, populateBuyerData, populateVerifierData, records, deleteRecords, populateRecords, populateVerifiedRecords, populateSellerRecord, populateBuyerRecord, populateVerifierRecord, populateUnverifiedRecords } = require("./seed/seed");
 
 // Testing life-cycle, beforeEach Hook
 // Populating Users
@@ -178,17 +176,17 @@ describe("POST /request/s", () => {
                     }
 
                     UserData.findOne({ _creator: users[0]._id.toHexString() }).then((sellerData) => {
-                        expect(sellerData.message.sent.length).toBe(1);
-                        expect(sellerData.message.sent[0].action).toBe("REQUEST");
-                        expect(sellerData.message.sent[0].body.key).toBe(body.key);
-                        expect(sellerData.message.sent[0].to).toBe(body.verifierEmail);
+                        expect(sellerData.message.sent.length).toBe(2);
+                        expect(sellerData.message.sent[1].action).toBe("REQUEST");
+                        expect(sellerData.message.sent[1].body.key).toBe(body.key);
+                        expect(sellerData.message.sent[1].to).toBe(body.verifierEmail);
                     }).catch(e => done(e));
 
                     UserData.findOne({ _creator: users[2]._id.toHexString() }).then((verifierData) => {
-                        expect(verifierData.message.received.length).toBe(1);
-                        expect(verifierData.message.received[0].action).toBe("REQUESTED");
-                        expect(verifierData.message.received[0].body.key).toBe(body.key);
-                        expect(verifierData.message.received[0].from).toBe(users[0].email);
+                        expect(verifierData.message.received.length).toBe(2);
+                        expect(verifierData.message.received[1].action).toBe("REQUESTED");
+                        expect(verifierData.message.received[1].body.key).toBe(body.key);
+                        expect(verifierData.message.received[1].from).toBe(users[0].email);
                     }).catch(e => done(e));
 
                     done();
@@ -409,10 +407,10 @@ describe("POST /share/s", () => {
                         }).catch(e => done(e));
 
                         UserData.findOne({ _creator: users[0]._id.toHexString() }).then((sellerData) => {
-                            expect(sellerData.message.sent.length).toBe(1);
-                            expect(sellerData.message.sent[0].action).toBe("SENT");
-                            expect(sellerData.message.sent[0].body.key).toBe(body.key);
-                            expect(sellerData.message.sent[0].body.count).toBe(1);
+                            expect(sellerData.message.sent.length).toBe(2);
+                            expect(sellerData.message.sent[1].action).toBe("SENT");
+                            expect(sellerData.message.sent[1].body.key).toBe(body.key);
+                            expect(sellerData.message.sent[1].body.count).toBe(1);
                         }).catch(e => done(e));
 
                         UserData.findOne({ _creator: users[1]._id.toHexString() }).then((buyerData) => {
@@ -1024,14 +1022,14 @@ describe("POST /verify/s", () => {
                     }
 
                     UserData.findOne({ _creator: users[0]._id.toHexString() }).then((sellerData) => {
-                        expect(sellerData.message.sent.length).toBe(1);
+                        expect(sellerData.message.sent.length).toBe(2);
                         expect(sellerData.message.sent[0].action).toBe("VERIFY");
                         expect(sellerData.message.sent[0].body.key).toBe(body.key);
                         expect(sellerData.message.sent[0].to).toBe(body.verifierEmail);
                     }).catch(e => done(e));
 
                     UserData.findOne({ _creator: users[2]._id.toHexString() }).then((verifierData) => {
-                        expect(verifierData.message.received.length).toBe(1);
+                        expect(verifierData.message.received.length).toBe(2);
                         expect(verifierData.message.received[0].action).toBe("VERIFY");
                         expect(verifierData.message.received[0].body.key).toBe(body.key);
                         expect(verifierData.message.received[0].from).toBe(users[0].email);
@@ -1231,6 +1229,154 @@ describe("POST /verify/s", () => {
                         .post("/verify/s")
                         .set("x-auth", users[0].tokens[0].token)
                         .send(body)
+                        .expect(404)
+                        .end(done);
+                });
+            });
+        });
+    });
+});
+
+describe("GET /verify/v", () => {
+    describe("POPULATED", () => {
+        beforeEach(populateUnverifiedRecords);
+
+        it("should get record for verification if authenticated", (done) => {
+            const { _id } = userData[2].message.received[0];
+
+            request(app)
+                .get(`/verify/v?id=${_id.toHexString()}`)
+                .set("x-auth", users[2].tokens[0].token)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.record).toBeTruthy();
+                    expect(res.body.seller).toBe(users[0].email);
+                    expect(res.body.email).toBe(users[2].email);
+                })
+                .end(done);
+        });
+
+        it("should not get record for verification if not authenticated", (done) => {
+            const { _id } = userData[2].message.received[0];
+
+            request(app)
+                .get(`/verify/v?id=${_id.toHexString()}`)
+                .expect(401)
+                .end(done);
+        });
+
+        it("should not get record for verification if request invalid (invalid userType)", (done) => {
+            const { _id } = userData[2].message.received[0];
+
+            request(app)
+                .get(`/verify/v?id=${_id.toHexString()}`)
+                .set("x-auth", users[1].tokens[0].token)
+                .expect(400)
+                .end(done);
+        });
+
+        it("should not get record for verification if request invalid (no id)", (done) => {
+            request(app)
+                .get("/verify/v")
+                .set("x-auth", users[2].tokens[0].token)
+                .expect(400)
+                .end(done);
+        });
+
+        it("should not get record for verification if request invalid (invalid id)", (done) => {
+            request(app)
+                .get("/verify/v?id=1234")
+                .set("x-auth", users[2].tokens[0].token)
+                .expect(400)
+                .end(done);
+        });
+    });
+
+    describe("NOT ACTIVATED", () => {
+        describe("VERIFIER", () => {
+            beforeEach(populateDeactivatedUsers);
+
+            it("should not get record for verification if authenticated, not activated", (done) => {
+                const { _id } = userData[2].message.received[0];
+
+                request(app)
+                    .get(`/verify/v?id=${_id.toHexString()}`)
+                    .expect(401)
+                    .end(done);
+            });
+        });
+
+        describe("SELLER", () => {
+            beforeEach(populateActivatedVerifier);
+            afterEach(populateActivatedUsers);
+
+            it("should not get record for verification if authenticated, not activated", (done) => {
+                const { _id } = userData[2].message.received[0];
+
+                request(app)
+                    .get(`/verify/v?id=${_id.toHexString()}`)
+                    .set("x-auth", users[2].tokens[0].token)
+                    .expect(404)
+                    .end(done);
+            });
+        });
+    });
+
+    describe("ALL VERIFIED", () => {
+        beforeEach(populateVerifiedRecords);
+
+        it("should not get record for verification if all verified", (done) => {
+            const { _id } = new ObjectID();
+
+            request(app)
+                .get(`/verify/v?id=${_id.toHexString()}`)
+                .set("x-auth", users[2].tokens[0].token)
+                .expect(400)
+                .end(done);
+        });
+    });
+
+    describe("EMPTY", () => {
+        describe("VERIFIER", () => {
+            describe("DATA", () => {
+                beforeEach(deleteUserData);
+
+                it("should not get record for verification if userData not in database", (done) => {
+                    const { _id } = userData[2].message.received[0];
+
+                    request(app)
+                        .get(`/verify/v?id=${_id.toHexString()}`)
+                        .set("x-auth", users[2].tokens[0].token)
+                        .expect(404)
+                        .end(done);
+                });
+            });
+        });
+
+        describe("SELLER", () => {
+            describe("USER", () => {
+                beforeEach(populateVerifier);
+
+                it("should not get record for verification if user not in database", (done) => {
+                    const { _id } = userData[2].message.received[0];
+
+                    request(app)
+                        .get(`/verify/v?id=${_id.toHexString()}`)
+                        .set("x-auth", users[2].tokens[0].token)
+                        .expect(404)
+                        .end(done);
+                });
+            });
+
+            describe("RECORD", () => {
+                beforeEach(populateVerifierRecord);
+
+                it("should not get record for verification if record not in database", (done) => {
+                    const { _id } = userData[2].message.received[0];
+
+                    request(app)
+                        .get(`/verify/v?id=${_id.toHexString()}`)
+                        .set("x-auth", users[2].tokens[0].token)
                         .expect(404)
                         .end(done);
                 });
@@ -1567,153 +1713,5 @@ describe("POST /verify/v", () => {
         doNotVerifyRecord("vital_sign");
 
         doNotVerifyRecord("procedure");
-    });
-});
-
-describe("GET /verify/v", () => {
-    describe("POPULATED", () => {
-        beforeEach(populateUnverifiedRecords);
-
-        it("should get record for verification if authenticated", (done) => {
-            const { _id } = userData[2].message.received[0];
-
-            request(app)
-                .get(`/verify/v?id=${_id.toHexString()}`)
-                .set("x-auth", users[2].tokens[0].token)
-                .expect(200)
-                .expect((res) => {
-                    expect(res.body.record).toBeTruthy();
-                    expect(res.body.seller).toBe(users[0].email);
-                    expect(res.body.email).toBe(users[2].email);
-                })
-                .end(done);
-        });
-
-        it("should not get record for verification if not authenticated", (done) => {
-            const { _id } = userData[2].message.received[0];
-
-            request(app)
-                .get(`/verify/v?id=${_id.toHexString()}`)
-                .expect(401)
-                .end(done);
-        });
-
-        it("should not get record for verification if request invalid (invalid userType)", (done) => {
-            const { _id } = userData[2].message.received[0];
-
-            request(app)
-                .get(`/verify/v?id=${_id.toHexString()}`)
-                .set("x-auth", users[1].tokens[0].token)
-                .expect(400)
-                .end(done);
-        });
-
-        it("should not get record for verification if request invalid (no id)", (done) => {
-            request(app)
-                .get("/verify/v")
-                .set("x-auth", users[2].tokens[0].token)
-                .expect(400)
-                .end(done);
-        });
-
-        it("should not get record for verification if request invalid (invalid id)", (done) => {
-            request(app)
-                .get("/verify/v?id=1234")
-                .set("x-auth", users[2].tokens[0].token)
-                .expect(400)
-                .end(done);
-        });
-    });
-
-    describe("NOT ACTIVATED", () => {
-        describe("VERIFIER", () => {
-            beforeEach(populateDeactivatedUsers);
-
-            it("should not get record for verification if authenticated, not activated", (done) => {
-                const { _id } = userData[2].message.received[0];
-
-                request(app)
-                    .get(`/verify/v?id=${_id.toHexString()}`)
-                    .expect(401)
-                    .end(done);
-            });
-        });
-
-        describe("SELLER", () => {
-            beforeEach(populateActivatedVerifier);
-            afterEach(populateActivatedUsers);
-
-            it("should not get record for verification if authenticated, not activated", (done) => {
-                const { _id } = userData[2].message.received[0];
-
-                request(app)
-                    .get(`/verify/v?id=${_id.toHexString()}`)
-                    .set("x-auth", users[2].tokens[0].token)
-                    .expect(404)
-                    .end(done);
-            });
-        });
-    });
-
-    describe("ALL VERIFIED", () => {
-        beforeEach(populateVerifiedRecords);
-
-        it("should not get record for verification if all verified", (done) => {
-            const { _id } = new ObjectID();
-
-            request(app)
-                .get(`/verify/v?id=${_id.toHexString()}`)
-                .set("x-auth", users[2].tokens[0].token)
-                .expect(400)
-                .end(done);
-        });
-    });
-
-    describe("EMPTY", () => {
-        describe("VERIFIER", () => {
-            describe("DATA", () => {
-                beforeEach(deleteUserData);
-
-                it("should not get record for verification if userData not in database", (done) => {
-                    const { _id } = userData[2].message.received[0];
-
-                    request(app)
-                        .get(`/verify/v?id=${_id.toHexString()}`)
-                        .set("x-auth", users[2].tokens[0].token)
-                        .expect(404)
-                        .end(done);
-                });
-            });
-        });
-
-        describe("SELLER", () => {
-            describe("USER", () => {
-                beforeEach(populateVerifier);
-
-                it("should not get record for verification if user not in database", (done) => {
-                    const { _id } = userData[2].message.received[0];
-
-                    request(app)
-                        .get(`/verify/v?id=${_id.toHexString()}`)
-                        .set("x-auth", users[2].tokens[0].token)
-                        .expect(404)
-                        .end(done);
-                });
-            });
-
-            describe("RECORD", () => {
-                beforeEach(populateVerifierRecord);
-
-                it("should not get record for verification if record not in database", (done) => {
-                    const { _id } = userData[2].message.received[0];
-
-                    request(app)
-                        .get(`/verify/v?id=${_id.toHexString()}`)
-                        .set("x-auth", users[2].tokens[0].token)
-                        .expect(404)
-                        .end(done);
-                });
-            });
-        });
     });
 });
