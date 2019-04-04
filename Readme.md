@@ -41,7 +41,7 @@
 	\"email\": \"example@example.com\",
 	\"password\": \"password\",
 	\"userType\": \"b\"
-  }"
+  	}"
   ```
 * **Sample Response:**
   ```
@@ -67,13 +67,13 @@
   x-auth
   ```
 * **URL Params**
+* **Query Params** <br />
   ***Required:*** 
   ```
   userType = USER TYPE
   ```
   ***Constraints:*** 
   * User type must be b/s/v or B/S/V.
-* **Query Params**
 * **Data Params**
 * **Success Response:**
   * ***Code:*** 
@@ -98,7 +98,7 @@
   ```
   curl --location --request GET "{{url}}/users?userType=s" \
   --header "x-auth: {{x-auth}}" \
-  --header "Content-Type: application/json" \
+  --header "Content-Type: application/json"
   ```
 * **Sample Response:**
   ```
@@ -141,8 +141,9 @@
   ```
   curl --location --request DELETE "{{url}}/users" \
   --header "x-auth: {{x-auth}}" \
-  --header "Content-Type: {{x-auth}}" \
+  --header "Content-Type: {{x-auth}}"
   ```
+* **Sample Response:**
 * **Notes:**
 ***
 
@@ -193,7 +194,7 @@
   --data "{
 	\"key\": \"email\",
 	\"value\": \"example@example.com\"
-  }"
+  	}"
   ```
 * **Sample Response:**
   ```
@@ -251,7 +252,7 @@
   --data "{
 	\"email\": \"seller@example.com\",
 	\"password\": \"password\"
-  }"
+  	}"
   ```
 * **Sample Response:**
   ```
@@ -281,25 +282,32 @@
 * **Data Params**
 * **Success Response:**
   * ***Code:*** 200
+  * ***Content:***
+    ```
+    { 
+      message : "logout successful",
+      email: VALID EMAIL ID 
+    }
+    ```
 * **Error Response:**
   * ***Code:*** 401 NOT AUTHORIZED
   * ***Code:*** 400 BAD REQUEST
 * **Sample Call:**
   ```
   curl --location --request DELETE "{{url}}/users/logout" \
-  --header "x-auth: {{x-auth}}" \
+  --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
   {
-    "email": "seller@example.com",
-    "userType": "s"
+    "message": "logout successful",
+    "email": "seller@example.com"
   }
   ```
 * **Notes:**
 ***
 
-### SEND CONFIRMATION MAIL TO USER
+### SEND ACTIVATION MAIL TO USER
 >  Handle sending activation mail.
 * **URL**
   /users/activate
@@ -330,20 +338,20 @@
 * **Sample Call:**
   ```
   curl --location --request GET "{{url}}/users/activate" \
-  --header "x-auth: {{x-auth}}" \
+  --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
   {
     message: "activation mail sent successfully",
-    email: seller@example.com }
+    email: seller@example.com
   }
   ```
 * **Notes:**
 ***
 
-### SEND ACTIVATION MAIL TO USER
->  Handle sending activation mail.
+### ACTIVATE USER
+>  Handle activating an user account.
 * **URL**
   /users/activate/:secret
 * **Method:**
@@ -368,15 +376,93 @@
   * ***Code:*** 400 BAD REQUEST
 * **Sample Call:**
   ```
-  curl --location --request POST "{{url}}/users/activate/{{secret}}" \
-  --data ""
+  curl --location --request POST "{{url}}/users/activate/{{secret}}"
+  ```
+* **Sample Response:**
+* **Notes:**
+***
+
+### SEND FORGOT PASSWORD MAIL TO USER
+>  Handle sending forgot password mail.
+* **URL**
+  /users/forgot
+* **Method:**
+  ```
+  GET
+  ```
+* **Headers**
+* **URL Params** 
+* **Query Params** <br />
+  ***Required:*** 
+  ```
+  email = VALID EMAIL ID
+  ```
+* **Data Params**
+* **Success Response:**
+  * ***Code:*** 200
+  * ***Content:***
+    ```
+    {
+      "message": "password reset mail sent successfully",
+      "email": VALID EMAIL ID
+    }
+    ```
+* **Error Response:**
+  * ***Code:*** 400 BAD REQUEST
+  * ***Code:*** 404 NOT FOUND
+* **Sample Call:**
+  ```
+  curl --location --request GET "{{url}}/users/forgot?email={{email}}" \
+  --header "Content-Type: application/json"
   ```
 * **Sample Response:**
   ```
   {
-    message: "activation mail sent successfully",
-    email: seller@example.com }
+    "message": "password reset mail sent successfully",
+    "email": "seller@example.com"
   }
   ```
+* **Notes:**
+***
+
+### RESET PASSWORD FOR FORGOT PASSWORD
+>  Handle changing password of an user account for forgot password.
+* **URL**
+  /users/forgot/:secret
+* **Method:**
+  ```
+  POST
+  ```
+* **Headers**
+* **URL Params** <br />
+  ***Required:*** 
+  ```
+  secret = VALID SECRET
+  ```
+* **Query Params**
+* **Data Params** <br />
+  ***Required:*** 
+  ```
+  {
+    password: VALID NEW PASSWORD
+  }
+  ```
+* **Success Response:**
+  * ***Code:*** 302 REDIRECT
+  * ***Link:***
+    ```
+    HOME PAGE
+    ```
+* **Error Response:**
+  * ***Code:*** 400 BAD REQUEST
+* **Sample Call:**
+  ```
+  curl --location --request POST "{{url}}/users/forgot/{{secret}}" \
+  --header "Content-Type: application/json" \
+  --data "{
+	\"password\": \"new password\"
+  	}"
+  ```
+* **Sample Response:**
 * **Notes:**
 ***
