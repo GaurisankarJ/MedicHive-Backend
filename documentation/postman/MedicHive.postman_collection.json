@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e142754e-f7bf-4446-86fe-f0be7aba9613",
+		"_postman_id": "d7b153b5-1d7c-4afb-a998-bc68a6e8b767",
 		"name": "MedicHive",
 		"description": "# Introduction\n\nData sharing platform APIs.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -88,7 +88,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/users?userType=",
+							"raw": "{{url}}/users?userType=s",
 							"host": [
 								"{{url}}"
 							],
@@ -98,7 +98,7 @@
 							"query": [
 								{
 									"key": "userType",
-									"value": ""
+									"value": "s"
 								}
 							]
 						},
@@ -312,13 +312,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/users/confirm/{{secret}}",
+							"raw": "{{url}}/users/activate/{{secret}}",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"users",
-								"confirm",
+								"activate",
 								"{{secret}}"
 							]
 						},
@@ -812,7 +812,7 @@
 								"{{id}}"
 							]
 						},
-						"description": "Handle deleting record elements of an user."
+						"description": "Handle deleting record element of an user."
 					},
 					"response": []
 				},
@@ -847,7 +847,7 @@
 								"{{id}}"
 							]
 						},
-						"description": "Handle updating record elements of an user."
+						"description": "Handle updating record element of an user."
 					},
 					"response": []
 				}
@@ -1063,7 +1063,7 @@
 								"s"
 							]
 						},
-						"description": "Handle reqesting verification of a record element of a seller, from a verifier, by a seller."
+						"description": "Handle requesting verification of a record element of a seller, from a verifier, by a seller."
 					},
 					"response": []
 				},

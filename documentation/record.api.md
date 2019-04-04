@@ -1,7 +1,7 @@
 # RECORDS
 
 ### CREATE USER RECORD
->  Handle creating record of an user.
+>  Handle creating record of a user.
 * **URL**
   /record
 * **Method:**
@@ -44,7 +44,7 @@
 ***
 
 ### GET USER RECORD
->  Handle fetching record of an user.
+>  Handle fetching record of a user.
 * **URL**
   /record
 * **Method:**
@@ -103,7 +103,7 @@
 ***
 
 ### DELETE USER RECORD
->  Handle deleting record of an user.
+>  Handle deleting record of a user.
 * **URL**
   /record
 * **Method:**
@@ -134,7 +134,7 @@
 ***
 
 ### UPDATE USER RECORD
->  Handle updating record of an user.
+>  Handle updating record of a user.
 * **URL**
   /record
 * **Method:**
@@ -193,7 +193,7 @@
 ***
 
 ### DELETE USER RECORD ELEMENT
->  Handle deleting record element of an user.
+>  Handle deleting record element of a user.
 * **URL**
   /record/:id
 * **Method:**
@@ -241,7 +241,7 @@
 ***
 
 ### UPDATE USER RECORD ELEMENT
->  Handle updating record element of an user.
+>  Handle updating record element of a user.
 * **URL**
   /record/:id
 * **Method:**

@@ -1,7 +1,7 @@
 # USERS
 
 ### SIGN UP USER
->  Handle creating an user account.
+>  Handle creating a user account.
 * **URL**
   /users
 * **Method:**
@@ -40,9 +40,9 @@
   curl --location --request POST "{{url}}/users" \
   --header "Content-Type: application/json" \
   --data "{
-	\"email\": \"example@example.com\",
+	\"email\": \"seller@example.com\",
 	\"password\": \"password\",
-	\"userType\": \"b\"
+	\"userType\": \"s\"
   	}"
   ```
 * **Sample Response:**
@@ -118,7 +118,7 @@
 ***
 
 ### DELETE USER
->  Handle deleting an user account.
+>  Handle deleting a user account.
 * **URL**
   /users
 * **Method:**
@@ -150,7 +150,7 @@
 ***
 
 ### UPDATE USER
->  Handle updating an user account.
+>  Handle updating a user account.
 * **URL**
   /users
 * **Method:**
@@ -209,7 +209,7 @@
 ***
 
 ### LOG IN USER
->  Handle logging into an user account.
+>  Handle logging into a user account.
 * **URL**
   /users/login
 * **Method:**
@@ -267,7 +267,7 @@
 ***
 
 ### LOG OUT USER
->  Handle logging out of an user account.
+>  Handle logging out of a user account.
 * **URL**
   /users/logout
 * **Method:**
@@ -353,7 +353,7 @@
 ***
 
 ### ACTIVATE USER
->  Handle activating an user account.
+>  Handle activating a user account.
 * **URL**
   /users/activate/:secret
 * **Method:**
@@ -428,7 +428,7 @@
 ***
 
 ### RESET PASSWORD FOR FORGOT PASSWORD
->  Handle changing password of an user account for forgot password.
+>  Handle changing password of a user account for forgot password.
 * **URL**
   /users/forgot/:secret
 * **Method:**
@@ -462,8 +462,8 @@
   curl --location --request POST "{{url}}/users/forgot/{{secret}}" \
   --header "Content-Type: application/json" \
   --data "{
-	\"password\": \"new password\"
-  	}"
+	  \"password\": \"new password\"
+  }"
   ```
 * **Sample Response:**
 * **Notes:**

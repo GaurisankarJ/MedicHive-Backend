@@ -1,7 +1,7 @@
 # USERS DATA
 
 ### CREATE USER DATA
->  Handle creating user data of an user.
+>  Handle creating user data of a user.
 * **URL**
   /users/me
 * **Method:**
@@ -72,7 +72,7 @@
 ***
 
 ### GET USER DATA
->  Handle fetching user data of an user.
+>  Handle fetching user data of a user.
 * **URL**
   /users/me
 * **Method:**
@@ -137,7 +137,7 @@
 ***
 
 ### DELETE USER DATA
->  Handle deleting user data of an user.
+>  Handle deleting user data of a user.
 * **URL**
   /users/me
 * **Method:**
@@ -168,7 +168,7 @@
 ***
 
 ### UPDATE USER DATA
->  Handle updating user data of an user.
+>  Handle updating user data of a user.
 * **URL**
   /users/me
 * **Method:**
@@ -227,7 +227,7 @@
 ***
 
 ### GET MESSAGE'S OF USERS
->  Handle fetching messages of an user.
+>  Handle fetching messages of a user.
 * **URL**
   /message/me
 * **Method:**
