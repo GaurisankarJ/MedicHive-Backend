@@ -1,7 +1,7 @@
 # USERS
 
 ### SIGN UP USER
->  Handle creating a user account.
+>  Handle creating an user account.
 * **URL**
   /users
 * **Method:**
@@ -41,7 +41,7 @@
 	\"email\": \"example@example.com\",
 	\"password\": \"password\",
 	\"userType\": \"b\"
-  	}"
+  }"
   ```
 * **Sample Response:**
   ```
@@ -91,6 +91,7 @@
     }
     ```
 * **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
   * ***Code:*** 400 BAD REQUEST
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
@@ -115,7 +116,7 @@
 ***
 
 ### DELETE USER
->  Handle deleting a user account.
+>  Handle deleting an user account.
 * **URL**
   /users
 * **Method:**
@@ -133,6 +134,7 @@
 * **Success Response:**
   * ***Code:*** 200
 * **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
   * ***Code:*** 400 BAD REQUEST
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
@@ -145,7 +147,7 @@
 ***
 
 ### UPDATE USER
->  Handle updating a user account.
+>  Handle updating an user account.
 * **URL**
   /users
 * **Method:**
@@ -181,6 +183,7 @@
     }
     ```
 * **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
   * ***Code:*** 400 BAD REQUEST
 * **Sample Call:**
   ```
@@ -190,7 +193,7 @@
   --data "{
 	\"key\": \"email\",
 	\"value\": \"example@example.com\"
-  	}"
+  }"
   ```
 * **Sample Response:**
   ```
@@ -203,7 +206,7 @@
 ***
 
 ### LOG IN USER
->  Handle logging into a user account.
+>  Handle logging into an user account.
 * **URL**
   /users/login
 * **Method:**
@@ -248,13 +251,131 @@
   --data "{
 	\"email\": \"seller@example.com\",
 	\"password\": \"password\"
-	}"
+  }"
   ```
 * **Sample Response:**
   ```
   {
     "email": "seller@example.com",
     "userType": "s"
+  }
+  ```
+* **Notes:**
+***
+
+### LOG OUT USER
+>  Handle logging out of an user account.
+* **URL**
+  /users/logout
+* **Method:**
+  ```
+  DELETE
+  ```
+* **Headers** <br />
+  ***Required:*** 
+  ```
+  x-auth
+  ```
+* **URL Params**
+* **Query Params**
+* **Data Params**
+* **Success Response:**
+  * ***Code:*** 200
+* **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
+  * ***Code:*** 400 BAD REQUEST
+* **Sample Call:**
+  ```
+  curl --location --request DELETE "{{url}}/users/logout" \
+  --header "x-auth: {{x-auth}}" \
+  ```
+* **Sample Response:**
+  ```
+  {
+    "email": "seller@example.com",
+    "userType": "s"
+  }
+  ```
+* **Notes:**
+***
+
+### SEND CONFIRMATION MAIL TO USER
+>  Handle sending activation mail.
+* **URL**
+  /users/activate
+* **Method:**
+  ```
+  GET
+  ```
+* **Headers** <br />
+  ***Required:*** 
+  ```
+  x-auth
+  ```
+* **URL Params**
+* **Query Params**
+* **Data Params**
+* **Success Response:**
+  * ***Code:*** 200
+  * ***Content:***
+    ```
+    { 
+      message: "activation mail sent successfully",
+      email: VALID EMAIL ID
+    }
+    ```
+* **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
+  * ***Code:*** 400 BAD REQUEST
+* **Sample Call:**
+  ```
+  curl --location --request GET "{{url}}/users/activate" \
+  --header "x-auth: {{x-auth}}" \
+  ```
+* **Sample Response:**
+  ```
+  {
+    message: "activation mail sent successfully",
+    email: seller@example.com }
+  }
+  ```
+* **Notes:**
+***
+
+### SEND ACTIVATION MAIL TO USER
+>  Handle sending activation mail.
+* **URL**
+  /users/activate/:secret
+* **Method:**
+  ```
+  POST
+  ```
+* **Headers**
+* **URL Params** <br />
+  ***Required:*** 
+  ```
+  secret = VALID SECRET
+  ```
+* **Query Params**
+* **Data Params**
+* **Success Response:**
+  * ***Code:*** 302 REDIRECT
+  * ***Link:***
+    ```
+    HOME PAGE
+    ```
+* **Error Response:**
+  * ***Code:*** 400 BAD REQUEST
+* **Sample Call:**
+  ```
+  curl --location --request POST "{{url}}/users/activate/{{secret}}" \
+  --data ""
+  ```
+* **Sample Response:**
+  ```
+  {
+    message: "activation mail sent successfully",
+    email: seller@example.com }
   }
   ```
 * **Notes:**
