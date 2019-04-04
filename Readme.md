@@ -1,40 +1,27 @@
-# USERS DATA
+# RECORDS
 
-### CREATE USER DATA
->  Handle creating user data of an user.
+### CREATE USER RECORD
+>  Handle creating record of an user.
 * **URL**
-  /users/me
+  /record
 * **Method:**
   ```
   POST
   ```
-* **Headers**
+* **Headers** <br />
+  ***Required:*** 
+  ```
+  x-auth
+  ```
 * **URL Params**
 * **Query Params**
-* **Data Params** <br />
-  ***Payload:***
-  ```
-  {
-	"name": NAME,
-	"address": ADDRESS,
-	"seller": {
-		"age": VALID AGE,
-		"weight": VALID WEIGHT,
-		"sex": VALID SEX,
-		"occupation": OCCUPATION
-	}
-  }
-  ```
-  ***Constraints:***
-  * Age must be valid, greater than 0.
-  * Weight must be valid, greater than 0.
-  * Sex must be male or female.
+* **Data Params**
 * **Success Response:**
   * ***Code:*** 200
   * ***Content:***
     ```
     { 
-      message : "user created",
+      message : "record created",
       email: VALID EMAIL ID
     }
     ```
@@ -43,34 +30,23 @@
   * ***Code:*** 400 BAD REQUEST
 * **Sample Call:**
   ```
-  curl --location --request POST "{{url}}/users/me" \
-  --header "Content-Type: application/json" \
-  --header "x-auth: {{x-auth}}" \
-  --data "{
-	\"name\": \"name\",
-	\"address\": \"my address\",
-	\"seller\": {
-		\"age\": 22,
-		\"weight\": 100,
-		\"sex\": \"male\",
-		\"occupation\": \"job\"
-	}
-  }"
+  curl --location --request POST "{{url}}/record" \
+  --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
   { 
-    message : "user created",
+    message : "record created",
     email: "seller@example.com"
   }
   ```
 * **Notes:**
 ***
 
-### GET USER DATA
->  Handle fetching user data of an user.
+### GET USER RECORD
+>  Handle fetching record of an user.
 * **URL**
-  /users/me
+  /record
 * **Method:**
   ```
   GET
@@ -89,16 +65,13 @@
   * ***Content:***
     ```
     {
-    "userData": {
-        "name": NAME,
-        "address": ADDRESS,
-        "userType": VALID USER TYPE,
-        "seller": {
-            "age": VALID AGE,
-            "weight": VALID WEIGHT,
-            "sex": VALID SEX,
-            "occupation": OCCUPATION
-        }
+    "record": {
+        "allergy": ALLERGY ARRAY,
+        "medication": MEDICATION ARRAY,
+        "problem": PROBLEM ARRAY,
+        "immunization": IMMUNIZATION ARRAY,
+        "vital_sign": VITAL SIGN ARRAY,
+        "procedure": PROCEDURE ARRAY
     },
     "email": VALID EMAIL ID
     }
@@ -109,22 +82,19 @@
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request GET "{{url}}/users/me" \
+  curl --location --request GET "{{url}}/record" \
   --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
   {
-    "userData": {
-        "name": "Seller Name",
-        "address": "Seller Address",
-        "userType": "s",
-        "seller": {
-            "age": 22,
-            "weight": 100,
-            "sex": "male",
-            "occupation": "Seller Occupation"
-        }
+    "record": {
+        "allergy": [],
+        "medication": [],
+        "problem": [],
+        "immunization": [],
+        "vital_sign": [],
+        "procedure": []
     },
     "email": "seller@example.com"
   }
@@ -132,10 +102,10 @@
 * **Notes:**
 ***
 
-### DELETE USER DATA
->  Handle deleting user data of an user.
+### DELETE USER RECORD
+>  Handle deleting record of an user.
 * **URL**
-  /users/me
+  /record
 * **Method:**
   ```
   DELETE
@@ -156,17 +126,17 @@
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request DELETE "{{url}}/users/me" \
+  curl --location --request DELETE "{{url}}/record" \
   --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
 * **Notes:**
 ***
 
-### UPDATE USER DATA
->  Handle updating user data of an user.
+### UPDATE USER RECORD
+>  Handle updating record of an user.
 * **URL**
-  /users/me
+  /record
 * **Method:**
   ```
   PATCH
@@ -183,7 +153,7 @@
   ```
   {
     key: VALID KEY,
-    value: VALID VALUE
+    value: VALID VALUES ARRAY
   }
   ```
   ***Constraints:***
@@ -204,12 +174,12 @@
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request PATCH "{{url}}/users/me" \
+  curl --location --request PATCH "{{url}}/record" \
   --header "Content-Type: application/json" \
   --header "x-auth: {{x-auth}}" \
   --data "{
-	\"key\": \"name\",
-	\"value\": \"new name\"
+	\"key\": \"allergy\",
+	\"value\": [\"allergy1\", \"allergy2\"]
   }"
   ```
 * **Sample Response:**
@@ -222,31 +192,33 @@
 * **Notes:**
 ***
 
-### GET MESSAGE'S OF USERS
->  Handle fetching messages of an user.
+### DELETE USER RECORD ELEMENT
+>  Handle deleting record elements of an user.
 * **URL**
-  /message/me
+  /record/:id
 * **Method:**
   ```
-  GET
+  DELETE
   ```
 * **Headers** <br />
   ***Required:*** 
   ```
   x-auth
   ```
-* **URL Params**
+* **URL Params** <br />
+  ***Required:*** 
+  ```
+  id = VALID RECORD ELEMENT ID
+  ```
 * **Query Params**
 * **Data Params**
 * **Success Response:**
-  * ***Code:*** 
-      200
+  * ***Code:*** 200
   * ***Content:***
     ```
-    { 
-      "sent": SENT MESSAGES ARRAY, 
-      "received": RECEIVED MESSAGES ARRAY, 
-      "email": VALID EMAIL ID
+    {
+    	"message": "record deleted",
+    	"email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -255,14 +227,72 @@
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request GET "{{url}}/message/me" \
+  curl --location --request DELETE "{{url}}/record/{{id}}" \
   --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
-  { 
-    "sent": [], 
-    "received": [], 
+  {
+    "message": "record deleted",
+    "email": "seller@example.com"
+  }
+  ```
+* **Notes:**
+***
+
+### UPDATE USER RECORD ELEMENT
+>  Handle updating record elements of an user.
+* **URL**
+  /record/:id
+* **Method:**
+  ```
+  PATCH
+  ```
+* **Headers** <br />
+  ***Required:*** 
+  ```
+  x-auth
+  ```
+* **URL Params** <br />
+  ***Required:*** 
+  ```
+  id = VALID RECORD ELEMENT ID
+  ```
+* **Query Params**
+* **Data Params** <br />
+  ***Payload:***
+  ```
+  {
+    value: VALID VALUE
+  }
+  ```
+* **Success Response:** 
+  * ***Code:*** 
+      200
+  * ***Content:***
+    ```
+    {
+    	"message": "record updated",
+    	"email": VALID EMAIL ID
+    }
+    ```
+* **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
+  * ***Code:*** 400 BAD REQUEST
+  * ***Code:*** 404 NOT FOUND
+* **Sample Call:**
+  ```
+  curl --location --request PATCH "{{url}}/record/{{id}}" \
+  --header "Content-Type: application/json" \
+  --header "x-auth: {{x-auth}}" \
+  --data "{
+	\"value\": \"new allegry\"
+  }"
+  ```
+* **Sample Response:**
+  ```
+  {
+    "message": "record updated",
     "email": "seller@example.com"
   }
   ```
