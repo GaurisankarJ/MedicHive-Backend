@@ -1,11 +1,13 @@
-# USERS
+# USERS DATA
 
-### SIGN UP USER
->  Handle creating an user account.
+### CREATE USER DATA
+>  Handle creating user data of an user.
 * **URL**
-  /users
+  /users/me
 * **Method:**
-  `POST`
+  ```
+  POST
+  ```
 * **Headers**
 * **URL Params**
 * **Query Params**
@@ -13,50 +15,62 @@
   ***Payload:***
   ```
   {
-    email: VALID EMAIL ID,
-    password: VALID PASSWORD,
-    userType: VALID USER TYPE
+	"name": NAME,
+	"address": ADDRESS,
+	"seller": {
+		"age": VALID AGE,
+		"weight": VALID WEIGHT,
+		"sex": VALID SEX,
+		"occupation": OCCUPATION
+	}
   }
   ```
   ***Constraints:***
-  * Email must be valid.
-  * Password must be longer than 5 words.
-  * User type must be b/s/v or B/S/V.
+  * Age must be valid, greater than 0.
+  * Weight must be valid, greater than 0.
+  * Sex must be male or female.
 * **Success Response:**
   * ***Code:*** 200
   * ***Content:***
     ```
     { 
-      email : VALID EMAIL ID,
-      userType: VALID USER TYPE 
+      message : "user created",
+      email: VALID EMAIL ID
     }
     ```
 * **Error Response:**
-  * ***Code:*** 400 BAD REQUEST <br />
+  * ***Code:*** 401 NOT AUTHORIZED
+  * ***Code:*** 400 BAD REQUEST
 * **Sample Call:**
   ```
-  curl --location --request POST "{{url}}/users" \
+  curl --location --request POST "{{url}}/users/me" \
   --header "Content-Type: application/json" \
+  --header "x-auth: {{x-auth}}" \
   --data "{
-	\"email\": \"example@example.com\",
-	\"password\": \"password\",
-	\"userType\": \"b\"
-  	}"
+	\"name\": \"name\",
+	\"address\": \"my address\",
+	\"seller\": {
+		\"age\": 22,
+		\"weight\": 100,
+		\"sex\": \"male\",
+		\"occupation\": \"job\"
+	}
+  }"
   ```
 * **Sample Response:**
   ```
-  {
-    "email": "seller@example.com",
-    "userType": "s"
+  { 
+    message : "user created",
+    email: "seller@example.com"
   }
   ```
 * **Notes:**
 ***
 
-### GET USERS
->  Handle fetching users of a specific user type.
+### GET USER DATA
+>  Handle fetching user data of an user.
 * **URL**
-  /users
+  /users/me
 * **Method:**
   ```
   GET
@@ -67,13 +81,7 @@
   x-auth
   ```
 * **URL Params**
-* **Query Params** <br />
-  ***Required:*** 
-  ```
-  userType = USER TYPE
-  ```
-  ***Constraints:*** 
-  * User type must be b/s/v or B/S/V.
+* **Query Params** 
 * **Data Params**
 * **Success Response:**
   * ***Code:*** 
@@ -81,13 +89,18 @@
   * ***Content:***
     ```
     {
-      "userType": VALID USER TYPE,
-      "users": [
-        {
-          "email": VALID EMAIL ID,
-          "userType": VALID USER TYPE
+    "userData": {
+        "name": NAME,
+        "address": ADDRESS,
+        "userType": VALID USER TYPE,
+        "seller": {
+            "age": VALID AGE,
+            "weight": VALID WEIGHT,
+            "sex": VALID SEX,
+            "occupation": OCCUPATION
         }
-      ]
+    },
+    "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -96,29 +109,33 @@
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request GET "{{url}}/users?userType=s" \
-  --header "x-auth: {{x-auth}}" \
-  --header "Content-Type: application/json"
+  curl --location --request GET "{{url}}/users/me" \
+  --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
   {
-    "userType": "s",
-    "users": [
-        {
-            "email": "seller@example.com",
-            "userType": "s"
+    "userData": {
+        "name": "Seller Name",
+        "address": "Seller Address",
+        "userType": "s",
+        "seller": {
+            "age": 22,
+            "weight": 100,
+            "sex": "male",
+            "occupation": "Seller Occupation"
         }
-    ]
+    },
+    "email": "seller@example.com"
   }
   ```
 * **Notes:**
 ***
 
-### DELETE USER
->  Handle deleting an user account.
+### DELETE USER DATA
+>  Handle deleting user data of an user.
 * **URL**
-  /users
+  /users/me
 * **Method:**
   ```
   DELETE
@@ -139,18 +156,17 @@
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request DELETE "{{url}}/users" \
-  --header "x-auth: {{x-auth}}" \
-  --header "Content-Type: {{x-auth}}"
+  curl --location --request DELETE "{{url}}/users/me" \
+  --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
 * **Notes:**
 ***
 
-### UPDATE USER
->  Handle updating an user account.
+### UPDATE USER DATA
+>  Handle updating user data of an user.
 * **URL**
-  /users
+  /users/me
 * **Method:**
   ```
   PATCH
@@ -172,297 +188,83 @@
   ```
   ***Constraints:***
   * Key must be valid.
-  * Value must be valid.
 * **Success Response:** 
   * ***Code:*** 
       200
   * ***Content:***
     ```
     {
-    	"message": "KEY reset",
+    	"message": "KEY updated",
     	"email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
   * ***Code:*** 401 NOT AUTHORIZED
   * ***Code:*** 400 BAD REQUEST
+  * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request PATCH "{{url}}/users" \
-  --header "x-auth: {{x-auth}}" \
+  curl --location --request PATCH "{{url}}/users/me" \
   --header "Content-Type: application/json" \
+  --header "x-auth: {{x-auth}}" \
   --data "{
-	\"key\": \"email\",
-	\"value\": \"example@example.com\"
-  	}"
+	\"key\": \"name\",
+	\"value\": \"new name\"
+  }"
   ```
 * **Sample Response:**
   ```
   {
-    "message": "email reset",
-    "email": "example@example.com"
+    "message": "allergy updated",
+    "email": "seller@example.com"
   }
   ```
 * **Notes:**
 ***
 
-### LOG IN USER
->  Handle logging into an user account.
+### GET MESSAGE'S OF USERS
+>  Handle fetching messages of an user.
 * **URL**
-  /users/login
+  /message/me
 * **Method:**
   ```
-  POST
+  GET
   ```
-* **Headers**
+* **Headers** <br />
+  ***Required:*** 
+  ```
+  x-auth
+  ```
 * **URL Params**
 * **Query Params**
-* **Data Params** <br />
-  ***Payload:***
-  ```
-  {
-    email: VALID EMAIL ID,
-    password: VALID PASSWORD
-  }
-  ```
-  ***Constraints:***
-  * Email must be valid.
-  * Password must be valid.
+* **Data Params**
 * **Success Response:**
   * ***Code:*** 
       200
   * ***Content:***
     ```
     { 
-      email : VALID EMAIL ID,
-      userType: VALID USER TYPE 
-    }
-    ```
-  * ***Header:***
-    ```
-    x-auth
-    ```
-* **Error Response:**
-  * ***Code:*** 400 BAD REQUEST
-  * ***Code:*** 404 NOT FOUND
-* **Sample Call:**
-  ```
-  curl --location --request POST "{{url}}/users/login" \
-  --header "Content-Type: application/json" \
-  --data "{
-	\"email\": \"seller@example.com\",
-	\"password\": \"password\"
-  	}"
-  ```
-* **Sample Response:**
-  ```
-  {
-    "email": "seller@example.com",
-    "userType": "s"
-  }
-  ```
-* **Notes:**
-***
-
-### LOG OUT USER
->  Handle logging out of an user account.
-* **URL**
-  /users/logout
-* **Method:**
-  ```
-  DELETE
-  ```
-* **Headers** <br />
-  ***Required:*** 
-  ```
-  x-auth
-  ```
-* **URL Params**
-* **Query Params**
-* **Data Params**
-* **Success Response:**
-  * ***Code:*** 200
-  * ***Content:***
-    ```
-    { 
-      message : "logout successful",
-      email: VALID EMAIL ID 
-    }
-    ```
-* **Error Response:**
-  * ***Code:*** 401 NOT AUTHORIZED
-  * ***Code:*** 400 BAD REQUEST
-* **Sample Call:**
-  ```
-  curl --location --request DELETE "{{url}}/users/logout" \
-  --header "x-auth: {{x-auth}}"
-  ```
-* **Sample Response:**
-  ```
-  {
-    "message": "logout successful",
-    "email": "seller@example.com"
-  }
-  ```
-* **Notes:**
-***
-
-### SEND ACTIVATION MAIL TO USER
->  Handle sending activation mail.
-* **URL**
-  /users/activate
-* **Method:**
-  ```
-  GET
-  ```
-* **Headers** <br />
-  ***Required:*** 
-  ```
-  x-auth
-  ```
-* **URL Params**
-* **Query Params**
-* **Data Params**
-* **Success Response:**
-  * ***Code:*** 200
-  * ***Content:***
-    ```
-    { 
-      message: "activation mail sent successfully",
-      email: VALID EMAIL ID
-    }
-    ```
-* **Error Response:**
-  * ***Code:*** 401 NOT AUTHORIZED
-  * ***Code:*** 400 BAD REQUEST
-* **Sample Call:**
-  ```
-  curl --location --request GET "{{url}}/users/activate" \
-  --header "x-auth: {{x-auth}}"
-  ```
-* **Sample Response:**
-  ```
-  {
-    message: "activation mail sent successfully",
-    email: seller@example.com
-  }
-  ```
-* **Notes:**
-***
-
-### ACTIVATE USER
->  Handle activating an user account.
-* **URL**
-  /users/activate/:secret
-* **Method:**
-  ```
-  POST
-  ```
-* **Headers**
-* **URL Params** <br />
-  ***Required:*** 
-  ```
-  secret = VALID SECRET
-  ```
-* **Query Params**
-* **Data Params**
-* **Success Response:**
-  * ***Code:*** 302 REDIRECT
-  * ***Link:***
-    ```
-    HOME PAGE
-    ```
-* **Error Response:**
-  * ***Code:*** 400 BAD REQUEST
-* **Sample Call:**
-  ```
-  curl --location --request POST "{{url}}/users/activate/{{secret}}"
-  ```
-* **Sample Response:**
-* **Notes:**
-***
-
-### SEND FORGOT PASSWORD MAIL TO USER
->  Handle sending forgot password mail.
-* **URL**
-  /users/forgot
-* **Method:**
-  ```
-  GET
-  ```
-* **Headers**
-* **URL Params** 
-* **Query Params** <br />
-  ***Required:*** 
-  ```
-  email = VALID EMAIL ID
-  ```
-* **Data Params**
-* **Success Response:**
-  * ***Code:*** 200
-  * ***Content:***
-    ```
-    {
-      "message": "password reset mail sent successfully",
+      "sent": SENT MESSAGES ARRAY, 
+      "received": RECEIVED MESSAGES ARRAY, 
       "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
+  * ***Code:*** 401 NOT AUTHORIZED
   * ***Code:*** 400 BAD REQUEST
   * ***Code:*** 404 NOT FOUND
 * **Sample Call:**
   ```
-  curl --location --request GET "{{url}}/users/forgot?email={{email}}" \
-  --header "Content-Type: application/json"
+  curl --location --request GET "{{url}}/message/me" \
+  --header "x-auth: {{x-auth}}"
   ```
 * **Sample Response:**
   ```
-  {
-    "message": "password reset mail sent successfully",
+  { 
+    "sent": [], 
+    "received": [], 
     "email": "seller@example.com"
   }
   ```
-* **Notes:**
-***
-
-### RESET PASSWORD FOR FORGOT PASSWORD
->  Handle changing password of an user account for forgot password.
-* **URL**
-  /users/forgot/:secret
-* **Method:**
-  ```
-  POST
-  ```
-* **Headers**
-* **URL Params** <br />
-  ***Required:*** 
-  ```
-  secret = VALID SECRET
-  ```
-* **Query Params**
-* **Data Params** <br />
-  ***Required:*** 
-  ```
-  {
-    password: VALID NEW PASSWORD
-  }
-  ```
-* **Success Response:**
-  * ***Code:*** 302 REDIRECT
-  * ***Link:***
-    ```
-    HOME PAGE
-    ```
-* **Error Response:**
-  * ***Code:*** 400 BAD REQUEST
-* **Sample Call:**
-  ```
-  curl --location --request POST "{{url}}/users/forgot/{{secret}}" \
-  --header "Content-Type: application/json" \
-  --data "{
-	\"password\": \"new password\"
-  	}"
-  ```
-* **Sample Response:**
 * **Notes:**
 ***
