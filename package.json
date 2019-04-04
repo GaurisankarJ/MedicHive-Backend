@@ -9,7 +9,8 @@
     "test-one-watch": "nodemon --exec 'npm run test-one'",
     "test-file": "export NODE_ENV=test && mocha server/**/$F*.test.js -t 10000",
     "test-file-watch": "nodemon --exec 'npm run test-file'",
-    "start": "export NODE_ENV=development && nodemon server/server.js"
+    "start-dev": "export NODE_ENV=development && nodemon server/server.js",
+    "start": "nodemon server/server.js"
   },
   "engines": {
     "node": "8.11.4"
