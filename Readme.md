@@ -19,12 +19,12 @@
   }
   ```
   ***Constraints:***
-   * Email must be valid.
-   * Password must be longer than 5 words.
-   * User type must be b/s/v or B/S/V.
+  * Email must be valid.
+  * Password must be longer than 5 words.
+  * User type must be b/s/v or B/S/V.
 * **Success Response:**
   * ***Code:*** 200 <br />
-    ***Content:*** <br /> 
+  * ***Content:*** <br /> 
     ```
     { email : VALID EMAIL ID, userType: VALID USER TYPE }
     ```
@@ -59,34 +59,34 @@
   GET
   ```
 * **Headers**
-   ***Required:*** 
+  ***Required:*** 
    ```
    x-auth
    ```
 * **URL Params** <br />
-   ***Required:*** 
-   ```
-   userType = USER TYPE
-   ```
-   ***Constraints:*** 
-   * User type must be b/s/v or B/S/V.
+  ***Required:*** 
+  ```
+  userType = USER TYPE
+  ```
+  ***Constraints:*** 
+  * User type must be b/s/v or B/S/V.
 * **Query Params**
 * **Data Params**
 * **Success Response:**
   * ***Code:*** 
       200 <br />
-    ***Content:*** <br />
+  * ***Content:*** <br />
     ```
-      {
-        "userType": VALID USER TYPE,
-        "users": [
-          {
-            "email": VALID EMAIL ID,
-            "userType": VALID USER TYPE
-          }
-         ]
-      }
-      ```
+    {
+      "userType": VALID USER TYPE,
+      "users": [
+        {
+          "email": VALID EMAIL ID,
+          "userType": VALID USER TYPE
+        }
+      ]
+    }
+    ```
 * **Error Response:**
   * ***Code:*** 400 BAD REQUEST <br />
   * ***Code:*** 404 NOT FOUND <br />
@@ -120,8 +120,8 @@
   DELETE
   ```
 * **Headers**
-   ***Required:*** 
-   ```
+  ***Required:*** 
+  ```
    x-auth
    ```
 * **URL Params**
@@ -141,3 +141,60 @@
 * **Notes:**
 ***
 
+### UPDATE USER
+>  Handle updating a user account.
+* **URL**
+  /users
+* **Method:**
+  ```
+  PATCH
+  ```
+* **Headers**
+  ***Required:*** 
+  ```
+   x-auth
+   ```
+* **URL Params**
+* **Query Params**
+* **Data Params**
+  ***Payload:***
+  ```
+  {
+    key: VALID KEY,
+    value: VALID VALUE
+  }
+  ```
+  ***Constraints:***
+  * Key must be valid.
+  * Value must be valid.
+* **Success Response:**
+  * ***Code:*** 
+      200 <br />
+  * ***Content:*** <br />
+    ```
+    {
+    	"message": "KEY reset",
+    	"email": VALID EMAIL ID
+    }
+    ```
+* **Error Response:**
+  * ***Code:*** 400 BAD REQUEST <br />
+* **Sample Call:**
+  ```
+  curl --location --request PATCH "{{url}}/users" \
+  --header "x-auth: {{x-auth}}" \
+  --header "Content-Type: application/json" \
+  --data "{
+	\"key\": \"email\",
+	\"value\": \"user@example.com\"
+  	}"
+  ```
+* **Sample Response:**
+  ```
+  {
+    "message": "email reset",
+    "email": "example@example.com"
+  }
+  ```
+* **Notes:**
+***
