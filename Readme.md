@@ -19,4 +19,3 @@ heroku open
 heroku config:set <key>=<value>
 heroku config:unset <key>
 heroku config:get <key>
-```
