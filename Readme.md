@@ -9,7 +9,7 @@
 * **Headers**
 * **URL Params**
 * **Query Params**
-* **Data Params**
+* **Data Params** <br />
   ***Payload:***
   ```
   {
