@@ -1,11 +1,13 @@
-## Node
+# Link: https://medic-hive-server.herokuapp.com/
+
+# Node
 
 ```
 npm start, to run server
 npm test, to run all tests
 ```
 
-## Heroku 
+# Heroku 
 
 ```
 heroku create
@@ -18,6 +20,3 @@ heroku config:set <key>=<value>
 heroku config:unset <key>
 heroku config:get <key>
 ```
-
-# Link: https://medic-hive-server.herokuapp.com/
-

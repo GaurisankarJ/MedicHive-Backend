@@ -247,7 +247,7 @@ describe("PATCH /users", () => {
             .send(body)
             .expect(200)
             .expect((res) => {
-                expect(res.body.message).toBe("email reset");
+                expect(res.body.message).toBe("email updated");
                 expect(res.body.email).toBe(body.value);
             })
             .end((err) => {
@@ -274,7 +274,7 @@ describe("PATCH /users", () => {
             .send(body)
             .expect(200)
             .expect((res) => {
-                expect(res.body.message).toBe("password reset");
+                expect(res.body.message).toBe("password updated");
                 expect(res.body.email).toBe(users[0].email);
             })
             .end((err) => {
@@ -568,33 +568,33 @@ describe("DELETE /users/logout", () => {
     });
 });
 
-describe("GET /users/confirm", () => {
-    it("should send confirmation mail if authenticated", (done) => {
+describe("GET /users/activate", () => {
+    it("should send activation mail if authenticated", (done) => {
         request(app)
-            .get("/users/confirm")
+            .get("/users/activate")
             .set("x-auth", users[0].tokens[0].token)
             .expect(200)
             .expect((res) => {
-                expect(res.body.message).toBe("confirmation mail sent successfully");
+                expect(res.body.message).toBe("activation mail sent successfully");
                 expect(res.body.email).toBe(users[0].email);
             })
             .end(done);
     });
 
-    it("should not send confirmation mail if not authenticated", (done) => {
+    it("should not send activation mail if not authenticated", (done) => {
         request(app)
-            .get("/users/confirm")
+            .get("/users/activate")
             .expect(401)
             .end(done);
     });
 });
 
-describe("POST /users/confirm/:secret", () => {
-    it("should confirm user", (done) => {
+describe("POST /users/activation/:secret", () => {
+    it("should activation user", (done) => {
         const { secret } = users[0].confirmation[0];
 
         request(app)
-            .post(`/users/confirm/${secret}`)
+            .post(`/users/activate/${secret}`)
             .expect(302)
             .end((err) => {
                 if (err) {
@@ -608,18 +608,18 @@ describe("POST /users/confirm/:secret", () => {
             });
     });
 
-    it("should not confirm user if request invalid (invalid secret)", (done) => {
+    it("should not activate user if request invalid (invalid secret)", (done) => {
         const secret = "some secret";
 
         request(app)
-            .post(`/users/confirm/${secret}`)
+            .post(`/users/activate/${secret}`)
             .expect(400)
             .end(done);
     });
 });
 
 describe("GET /users/forgot", () => {
-    it("should send confirmation mail", (done) => {
+    it("should send password forgot mail", (done) => {
         const { email } = users[0];
 
         request(app)
@@ -628,14 +628,14 @@ describe("GET /users/forgot", () => {
             .end(done);
     });
 
-    it("should not send confirmation mail if request invalid (no email)", (done) => {
+    it("should not send password forgot mail if request invalid (no email)", (done) => {
         request(app)
             .get("/users/forgot")
             .expect(400)
             .end(done);
     });
 
-    it("should not send confirmation mail if request invalid (invalid email)", (done) => {
+    it("should not send password forgot mail if request invalid (invalid email)", (done) => {
         const { email } = "example@xyz.com";
 
         request(app)

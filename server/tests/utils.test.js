@@ -7,14 +7,14 @@ const expect = require("expect");
 require("dotenv").config();
 
 // The functions for testing
-const { sendConfirmationMail, sendResetMail } = require("./../utils/mail.js");
+const { sendActivationMail, sendResetMail } = require("./../utils/mail.js");
 
 describe("SMTP Service", () => {
     it("should send a confirmation mail and return info", (done) => {
         const email = "example@example.com";
         // const email = "sandheepsanju@gmail.com";
 
-        sendConfirmationMail(email, "SECRET").then((info) => {
+        sendActivationMail(email, "SECRET").then((info) => {
             expect(info.accepted[0]).toBe(email);
             expect(info.response).toContain("250");
             done();

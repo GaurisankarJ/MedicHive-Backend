@@ -1,0 +1,1335 @@
+{
+	"info": {
+		"_postman_id": "e142754e-f7bf-4446-86fe-f0be7aba9613",
+		"name": "MedicHive",
+		"description": "# Introduction\n\nData sharing platform APIs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "POST /users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "16a0687b-6a38-4981-9bf1-a64cd9653440",
+								"exec": [
+									"var token = postman.getResponseHeader(\"x-auth\");",
+									"var res = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"email\", res.email);",
+									"postman.setEnvironmentVariable(\"x-auth\", token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"email\": \"example@example.com\", \"password\": \"password\", \"userType\": \"s\" }"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Handle creating an user account."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "16a0687b-6a38-4981-9bf1-a64cd9653440",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users?userType=",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "userType",
+									"value": ""
+								}
+							]
+						},
+						"description": "Handle fetching users of a specific user type."
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth",
+								"name": "Content-Type",
+								"value": "{{x-auth}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "{{x-auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Handle deleting an user account."
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-auth",
+								"name": "Content-Type",
+								"value": "{{x-auth}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"email\",\n\t\"value\": \"user@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Handle updating an user account."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /users/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									"var token = postman.getResponseHeader(\"x-auth\");",
+									"postman.setEnvironmentVariable(\"x-auth\", token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"example2@example.com\",\n\t\"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						},
+						"description": "Handle logging into a user account."
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /users/logout",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						},
+						"description": "Handle logging out of an user account."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users/activate",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/activate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"activate"
+							]
+						},
+						"description": "Handle sending activation mail."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /users/activate/:secret",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/confirm/{{secret}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"confirm",
+								"{{secret}}"
+							]
+						},
+						"description": "Handle activating an user account."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users/forgot",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/forgot?email={{email}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"forgot"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email}}"
+								}
+							]
+						},
+						"description": "Handle sending forgot password mail."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /users/forgot/:secret",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"password\": \"new password\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/forgot/{{secret}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"forgot",
+								"{{secret}}"
+							]
+						},
+						"description": "Handle changing password of an user account for forgot password."
+					},
+					"response": []
+				}
+			],
+			"description": "User APIs.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3ff30326-2249-449a-a389-2bdbe8262627",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "85d087e5-6a5c-4281-a0d5-87275d84d614",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Users Data",
+			"item": [
+				{
+					"name": "POST /users/me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fed16f63-9300-4f47-b16c-fbbec6870834",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"name\",\n\t\"address\": \"my address\",\n\t\"seller\": {\n\t\t\"age\": 22,\n\t\t\"weight\": 100,\n\t\t\"sex\": \"male\",\n\t\t\"occupation\": \"job\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "Handle creating user data of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users/me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "Handle fetching user data of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /users/me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fed16f63-9300-4f47-b16c-fbbec6870834",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "Handle deleting user data of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /users/me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fed16f63-9300-4f47-b16c-fbbec6870834",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"name\",\n\t\"value\": \"new name\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "Handle updating user data of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /message/me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/message/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"message",
+								"me"
+							]
+						},
+						"description": "Handle fetching messages of an user."
+					},
+					"response": []
+				}
+			],
+			"description": "UserData APIs.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0439d5c9-98e2-4903-9ec7-75067e09fdb8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "86de8efa-431d-48c0-a409-7b77d5953a6b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Records",
+			"item": [
+				{
+					"name": "POST /record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fed16f63-9300-4f47-b16c-fbbec6870834",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/record",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"record"
+							]
+						},
+						"description": "Handle creating record of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fed16f63-9300-4f47-b16c-fbbec6870834",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/record",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"record"
+							]
+						},
+						"description": "Handle fetching record of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /record",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/record",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"record"
+							]
+						},
+						"description": "Handle deleting record of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /record",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"allergy\",\n\t\"value\": [\"allergy1\", \"allergy2\"]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/record",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"record"
+							]
+						},
+						"description": "Handle updating record of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /record/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/record/{{id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"record",
+								"{{id}}"
+							]
+						},
+						"description": "Handle deleting record elements of an user."
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /record/:id",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"value\": \"allu\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/record/{{id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"record",
+								"{{id}}"
+							]
+						},
+						"description": "Handle updating record elements of an user."
+					},
+					"response": []
+				}
+			],
+			"description": "Record APIs.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c67aeea7-d22e-4b77-a627-27f10b647910",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d71eb30c-151f-4647-b66c-b961e52c3d89",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Communication",
+			"item": [
+				{
+					"name": "POST /request/b",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"allergy\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/request/b",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"request",
+								"b"
+							]
+						},
+						"description": "Handle requesting record element of sellers, by a buyer."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /share/s",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"allergy\",\n\t\"buyerEmail\": \"example1@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/share/s",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"share",
+								"s"
+							]
+						},
+						"description": "Handle sharing a record element of a seller, to a buyer, by a seller."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /request/s",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"allergy\",\n\t\"verifierEmail\": \"example3@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/request/s",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"request",
+								"s"
+							]
+						},
+						"description": "Handle requesting a record element of a seller, from a verifier, by a seller."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /verify/s",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"type": "text",
+								"value": "{{x-auth}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"allergy\",\n\t\"verifierEmail\": \"example3@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/verify/s",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"verify",
+								"s"
+							]
+						},
+						"description": "Handle reqesting verification of a record element of a seller, from a verifier, by a seller."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /share/v",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"allergy\",\n\t\"sellerEmail\": \"example2@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/share/v",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"share",
+								"v"
+							]
+						},
+						"description": "Handle sharing a record element of a seller held by the verifier, to a seller, by a verifier."
+					},
+					"response": []
+				},
+				{
+					"name": "GET /verify/v",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/verify/v?id={{messageID}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"verify",
+								"v"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{messageID}}"
+								}
+							]
+						},
+						"description": "Handle fetching for verification a record element of a seller, from a seller, by a verifier."
+					},
+					"response": []
+				},
+				{
+					"name": "POST /verify/v",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "924d8bb2-4438-41ae-be14-f8d50e8e8faf",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"key\": \"procedure\",\n\t\"sellerEmail\": \"example2@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/verify/v",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"verify",
+								"v"
+							]
+						},
+						"description": "Handle verification of a record element of a seller, by a verifier."
+					},
+					"response": []
+				}
+			],
+			"description": "Communication APIs.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "51a9fb41-0d1a-4948-9c20-40dad000a0b2",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3e5ed7f-1565-4184-9d36-e67c2b2ce6eb",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "GET /downloads",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/downloads",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"downloads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth",
+								"value": "{{x-auth}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Document APIs.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "122656d2-8ea1-4a6b-bb02-d104bbb6ce04",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5ed1a085-dfd7-4161-b9cb-f36e669a3c01",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c9262a19-cee2-43bd-b207-c386e21e93ff",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "fe4674f8-8450-4ff1-95f7-5d9f968a792b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

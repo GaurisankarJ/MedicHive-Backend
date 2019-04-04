@@ -21,143 +21,143 @@ beforeEach(populateUsers);
 // Populating Records
 beforeEach(populateRecords);
 
-// describe("POST /record", () => {
-//     describe("EMPTY", () => {
-//         beforeEach(deleteRecords);
+describe("POST /record", () => {
+    describe("EMPTY", () => {
+        beforeEach(deleteRecords);
 
-//         it("should create record if authenticated", (done) => {
-//             request(app)
-//                 .post("/record")
-//                 .set("x-auth", users[1].tokens[0].token)
-//                 .expect(200)
-//                 .expect((res) => {
-//                     expect(res.body.message).toBe("record created");
-//                     expect(res.body.email).toBe(users[1].email);
-//                 })
-//                 .end((err) => {
-//                     if (err) {
-//                         done(err);
-//                     }
+        it("should create record if authenticated", (done) => {
+            request(app)
+                .post("/record")
+                .set("x-auth", users[1].tokens[0].token)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.message).toBe("record created");
+                    expect(res.body.email).toBe(users[1].email);
+                })
+                .end((err) => {
+                    if (err) {
+                        done(err);
+                    }
 
-//                     Record.findOne({ _creator: users[1]._id.toHexString() }).then((record) => {
-//                         expect(record.log[0].event).toBe("GENESIS");
-//                         expect(record.log[0].data).toBe("GENESIS");
-//                         expect(record._creator.toHexString()).toBe(users[1]._id.toString());
-//                         done();
-//                     }).catch(e => done(e));
-//                 });
-//         });
+                    Record.findOne({ _creator: users[1]._id.toHexString() }).then((record) => {
+                        expect(record.log[0].event).toBe("GENESIS");
+                        expect(record.log[0].data).toBe("GENESIS");
+                        expect(record._creator.toHexString()).toBe(users[1]._id.toString());
+                        done();
+                    }).catch(e => done(e));
+                });
+        });
 
-//         it("should not create record if not authenticated", (done) => {
-//             request(app)
-//                 .post("/record")
-//                 .expect(401)
-//                 .end(done);
-//         });
-//     });
+        it("should not create record if not authenticated", (done) => {
+            request(app)
+                .post("/record")
+                .expect(401)
+                .end(done);
+        });
+    });
 
-//     describe("POPULATED", () => {
-//         it("should not create record if record in database", (done) => {
-//             request(app)
-//                 .post("/record")
-//                 .set("x-auth", users[0].tokens[0].token)
-//                 .expect(400)
-//                 .end((err) => {
-//                     if (err) {
-//                         done(err);
-//                     }
+    describe("POPULATED", () => {
+        it("should not create record if record in database", (done) => {
+            request(app)
+                .post("/record")
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(400)
+                .end((err) => {
+                    if (err) {
+                        done(err);
+                    }
 
-//                     Record.findOne({ _creator: users[0]._id.toHexString() }).then((record) => {
-//                         expect(record.log.length).toBe(1);
-//                         expect(record.log[0].event).toBe("GENESIS");
-//                         expect(record.log[0].data).toBe("GENESIS");
-//                         expect(record._creator.toHexString()).toBe(users[0]._id.toString());
-//                         done();
-//                     }).catch(e => done(e));
-//                 });
-//         });
-//     });
-// });
+                    Record.findOne({ _creator: users[0]._id.toHexString() }).then((record) => {
+                        expect(record.log.length).toBe(1);
+                        expect(record.log[0].event).toBe("GENESIS");
+                        expect(record.log[0].data).toBe("GENESIS");
+                        expect(record._creator.toHexString()).toBe(users[0]._id.toString());
+                        done();
+                    }).catch(e => done(e));
+                });
+        });
+    });
+});
 
-// describe("GET /record", () => {
-//     describe("POPULATED", () => {
-//         it("should get record if authenticated", (done) => {
-//             request(app)
-//                 .get("/record")
-//                 .set("x-auth", users[0].tokens[0].token)
-//                 .expect(200)
-//                 .expect((res) => {
-//                     expect(res.body.email).toBe(users[0].email);
-//                     expect(res.body.record.allergy[0].data).toBe(records[0].allergy[0].data);
-//                     expect(res.body.record.medication[0].data).toBe(records[0].medication[0].data);
-//                     expect(res.body.record.problem[0].data).toBe(records[0].problem[0].data);
-//                     expect(res.body.record.immunization[0].data).toBe(records[0].immunization[0].data);
-//                     expect(res.body.record.vital_sign[0].data).toBe(records[0].vital_sign[0].data);
-//                     expect(res.body.record.procedure[0].data).toBe(records[0].procedure[0].data);
-//                 })
-//                 .end(done);
-//         });
+describe("GET /record", () => {
+    describe("POPULATED", () => {
+        it("should get record if authenticated", (done) => {
+            request(app)
+                .get("/record")
+                .set("x-auth", users[0].tokens[0].token)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.email).toBe(users[0].email);
+                    expect(res.body.record.allergy[0].data).toBe(records[0].allergy[0].data);
+                    expect(res.body.record.medication[0].data).toBe(records[0].medication[0].data);
+                    expect(res.body.record.problem[0].data).toBe(records[0].problem[0].data);
+                    expect(res.body.record.immunization[0].data).toBe(records[0].immunization[0].data);
+                    expect(res.body.record.vital_sign[0].data).toBe(records[0].vital_sign[0].data);
+                    expect(res.body.record.procedure[0].data).toBe(records[0].procedure[0].data);
+                })
+                .end(done);
+        });
 
-//         it("should not get record if not authenticated", (done) => {
-//             request(app)
-//                 .get("/record")
-//                 .expect(401)
-//                 .end(done);
-//         });
-//     });
+        it("should not get record if not authenticated", (done) => {
+            request(app)
+                .get("/record")
+                .expect(401)
+                .end(done);
+        });
+    });
 
-//     describe("EMPTY", () => {
-//         beforeEach(deleteRecords);
+    describe("EMPTY", () => {
+        beforeEach(deleteRecords);
 
-//         it("should not get record if record not in database", (done) => {
-//             request(app)
-//                 .get("/record")
-//                 .set("x-auth", users[1].tokens[0].token)
-//                 .expect(404)
-//                 .end(done);
-//         });
-//     });
-// });
+        it("should not get record if record not in database", (done) => {
+            request(app)
+                .get("/record")
+                .set("x-auth", users[1].tokens[0].token)
+                .expect(404)
+                .end(done);
+        });
+    });
+});
 
-// describe("DELETE /record", () => {
-//     describe("POPULATED", () => {
-//         it("should delete record if authenticated", (done) => {
-//             request(app)
-//                 .delete("/record")
-//                 .set("x-auth", users[2].tokens[0].token)
-//                 .expect(200)
-//                 .end((err) => {
-//                     if (err) {
-//                         done(err);
-//                     }
+describe("DELETE /record", () => {
+    describe("POPULATED", () => {
+        it("should delete record if authenticated", (done) => {
+            request(app)
+                .delete("/record")
+                .set("x-auth", users[2].tokens[0].token)
+                .expect(200)
+                .end((err) => {
+                    if (err) {
+                        done(err);
+                    }
 
-//                     Record.findOne({ _creator: users[2]._id }).then((record) => {
-//                         expect(record).toBeFalsy();
-//                         done();
-//                     }).catch(e => done(e));
-//                 });
-//         });
+                    Record.findOne({ _creator: users[2]._id }).then((record) => {
+                        expect(record).toBeFalsy();
+                        done();
+                    }).catch(e => done(e));
+                });
+        });
 
-//         it("should not delete record if not authenticated", (done) => {
-//             request(app)
-//                 .delete("/record")
-//                 .expect(401)
-//                 .end(done);
-//         });
-//     });
+        it("should not delete record if not authenticated", (done) => {
+            request(app)
+                .delete("/record")
+                .expect(401)
+                .end(done);
+        });
+    });
 
-//     describe("EMPTY", () => {
-//         beforeEach(deleteRecords);
+    describe("EMPTY", () => {
+        beforeEach(deleteRecords);
 
-//         it("should not delete record if record not in database", (done) => {
-//             request(app)
-//                 .delete("/record")
-//                 .set("x-auth", users[1].tokens[0].token)
-//                 .expect(404)
-//                 .end(done);
-//         });
-//     });
-// });
+        it("should not delete record if record not in database", (done) => {
+            request(app)
+                .delete("/record")
+                .set("x-auth", users[1].tokens[0].token)
+                .expect(404)
+                .end(done);
+        });
+    });
+});
 
 describe("PATCH /record", () => {
     describe("POPULATED", () => {

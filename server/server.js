@@ -36,7 +36,7 @@ const { deleteUser } = require("./routes/user/crud/deleteUser.js");
 const { patchUser } = require("./routes/user/crud/patchUser.js");
 const { userLogin } = require("./routes/user/login.js");
 const { userLogout } = require("./routes/user/logout.js");
-const { userConfirmSend, userConfirmMe } = require("./routes/user/confirm.js");
+const { userActivateSend, userActivateMe } = require("./routes/user/activate.js");
 const { userForgotSend, userForgotMe } = require("./routes/user/forgot.js");
 // ###################################################################
 // USER TYPE
@@ -111,9 +111,9 @@ app.post("/users/login", (req, res) => userLogin(req, res));
 
 app.delete("/users/logout", authenticate, (req, res) => userLogout(req, res));
 
-app.get("/users/confirm", authenticate, (req, res) => userConfirmSend(req, res));
+app.get("/users/activate", authenticate, (req, res) => userActivateSend(req, res));
 
-app.post("/users/confirm/:secret", (req, res) => userConfirmMe(req, res));
+app.post("/users/activate/:secret", (req, res) => userActivateMe(req, res));
 
 app.get("/users/forgot", (req, res) => userForgotSend(req, res));
 

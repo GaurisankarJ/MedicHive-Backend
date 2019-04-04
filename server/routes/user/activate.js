@@ -1,19 +1,19 @@
-// Send confirmation mail
-const { sendConfirmationMail } = require("../../utils/mail.js");
+// Send activation mail
+const { sendActivationMail } = require("../../utils/mail.js");
 
 // User Model
 const { User } = require("../../models/user.js");
 
-const userConfirmSend = async (req, res) => {
+const userActivateSend = async (req, res) => {
     try {
         // Generate confirmation secret
         const secret = await req.user.generateConfirmationSecret();
 
-        // Send confirmation mail synchronously
-        await sendConfirmationMail(req.user.email, secret);
+        // Send activation mail synchronously
+        await sendActivationMail(req.user.email, secret);
 
         // Send JSON body
-        res.json({ message: "confirmation mail sent successfully", email: req.user.email });
+        res.json({ message: "activation mail sent successfully", email: req.user.email });
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }
         // Error Bad Request
@@ -21,7 +21,7 @@ const userConfirmSend = async (req, res) => {
     }
 };
 
-const userConfirmMe = async (req, res) => {
+const userActivateMe = async (req, res) => {
     try {
         // Get secret from params body
         const { secret } = req.params;
@@ -48,4 +48,4 @@ const userConfirmMe = async (req, res) => {
     }
 };
 
-module.exports = { userConfirmSend, userConfirmMe };
+module.exports = { userActivateSend, userActivateMe };

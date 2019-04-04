@@ -14,7 +14,7 @@ const getUser = async (req, res) => {
         }
 
         // Get users
-        const users = await User.find({ userType });
+        const users = await User.find({ userType: userType.toLowerCase() });
         // Check users
         if (_.isEmpty(users)) {
             throw new Error(404);

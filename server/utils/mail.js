@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendConfirmationMail = async (email, secret) => {
+const sendActivationMail = async (email, secret) => {
     // Set Email
     const message = {
         to: email,
@@ -82,4 +82,4 @@ const sendResetMail = async (email, secret) => {
     }
 };
 
-module.exports = { sendConfirmationMail, sendResetMail };
+module.exports = { sendActivationMail, sendResetMail };

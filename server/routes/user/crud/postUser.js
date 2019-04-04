@@ -1,8 +1,8 @@
 // Lodash
 const _ = require("lodash");
 
-// Send confirmation mail
-const { sendConfirmationMail } = require("../../../utils/mail.js");
+// Send activation mail
+const { sendActivationMail } = require("../../../utils/mail.js");
 
 // User Model
 const { User } = require("../../../models/user.js");
@@ -26,8 +26,8 @@ const postUserSignUp = async (req, res) => {
         // Generate verification token
         const token = await user.generateAuthenticationToken();
 
-        // Send confirmation mail asynchronously
-        sendConfirmationMail(user.email, secret);
+        // Send activation mail asynchronously
+        sendActivationMail(user.email, secret);
 
         // Send header and user body JSON
         res.header("x-auth", token).send(user);
