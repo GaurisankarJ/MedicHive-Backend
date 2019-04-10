@@ -4,66 +4,130 @@
 // {
 //     allergy: [
 //         {
-//             data: "ALLERGY",
-//             isVerified: false,
-//             owner: ["OWNER"],
-//             verifier: ["VERIFIER"],
-//             enteredAt: "TIME"
+//             data: [string],
+//             owner: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             verifier: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             createdAt: [string],
+//             updatedAt: [string]
 //         }
 //     ],
 //     medication: [
 //         {
-//             data: "MEDICATION",
-//             isVerified: false,
-//             owner: ["OWNER"],
-//             verifier: ["VERIFIER"],
-//             enteredAt: "TIME"
+//             data: [string],
+//             owner: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             verifier: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             createdAt: [string],
+//             updatedAt: [string]
 //         }
 //     ],
 //     problem: [
 //         {
-//             data: "PROBLEM",
-//             isVerified: false,
-//             owner: ["OWNER"],
-//             verifier: ["VERIFIER"],
-//             enteredAt: "TIME"
+//             data: [string],
+//             owner: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             verifier: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             createdAt: [string],
+//             updatedAt: [string]
 //         }
 //     ],
 //     immunization: [
 //         {
-//             data: "IMMUNIZATION",
-//             isVerified: false,
-//             owner: ["OWNER"],
-//             verifier: ["VERIFIER"],
-//             enteredAt: "TIME"
+//             data: [string],
+//             owner: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             verifier: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             createdAt: [string],
+//             updatedAt: [string]
 //         }
 //     ],
 //     vital_sign: [
 //         {
-//             data: "VITAL SIGN",
-//             isVerified: false,
-//             owner: ["OWNER"],
-//             verifier: ["VERIFIER"],
-//             enteredAt: "TIME"
+//             data: [string],
+//             owner: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             verifier: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             createdAt: [string],
+//             updatedAt: [string]
 //         }
 //     ],
 //     procedure: [
 //         {
-//             data: "PROCEDURE",
-//             isVerified: false,
-//             owner: ["OWNER"],
-//             verifier: ["VERIFIER"],
-//             enteredAt: "TIME"
+//             data: [string],
+//             owner: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             verifier: [
+//                 {
+//                     email: [string], // VALID EMAIL ID
+//                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
+//                 }
+//             ],
+//             createdAt: [string],
+//             updatedAt: [string]
 //         }
 //     ],
 //     log: [
 //         {
-//             event: "EVENT",
-//             data: "DATA",
-//             enteredAt: "TIME"
+//             // ACTION
+//             // BUYER -> REQUEST, DELETE
+//             // SELLER -> ADD, DELETE, UPDATE, VERIFY, SHARE
+//             // VERIFIER -> VERIFY, ADD, DELETE, UPDATE, SHARE
+//             action: [string],
+//             data: [object],
+//             createdAt: [string]
 //         }
 //     ],
-//     _creator: "CREATOR _id"
+//     _creator: [string] // UNIQUE USER IDENTIFIER
 // }
 // *******************************************************************
 // ###################################################################
@@ -357,8 +421,8 @@ RecordSchema.methods.deleteByRecordId = function (id) {
     }
 };
 // ###################################################################
-// To find and patch by record _id
-RecordSchema.methods.patchByRecordId = function (id, value, verified) {
+// To find and update by record _id
+RecordSchema.methods.updateByRecordId = function (id, value, verified) {
     const record = this;
 
     // Flag
@@ -367,7 +431,7 @@ RecordSchema.methods.patchByRecordId = function (id, value, verified) {
     const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
 
     // Update record body
-    const findAndPatch = (key) => {
+    const findAndUpdate = (key) => {
         // Get rec
         const rec = _.remove(record[key], (res => res._id.toHexString() === id));
         if (!_.isEmpty(rec)) {
@@ -394,7 +458,7 @@ RecordSchema.methods.patchByRecordId = function (id, value, verified) {
             flag = true;
         }
     };
-    keys.forEach(key => findAndPatch(key));
+    keys.forEach(key => findAndUpdate(key));
 
     if (flag) {
         // Return record

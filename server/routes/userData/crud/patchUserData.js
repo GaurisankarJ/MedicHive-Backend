@@ -4,21 +4,22 @@ const _ = require("lodash");
 // UserData Model
 const { UserData } = require("../../../models/userData.js");
 
-const patchUserData = async (req, res) => {
+const updateUserData = async (req, res) => {
     try {
         // Get key, value from request body
         const { key, value } = req.body;
         // Common keys
         const keys = ["name", "address"];
+        // Buyer keys
+        const buyerKeys = ["bio"];
         // Seller keys
         const sellerKeys = ["age", "weight", "sex", "occupation"];
+        // Verifier keys
+        const verifierKeys = ["bio"];
         // Check key and value
-        if (!key || (_.indexOf(keys, key) < 0 && _.indexOf(sellerKeys, key) < 0) || !value) {
+        if (!key || (_.indexOf(keys, key) < 0 && _.indexOf(sellerKeys, key) < 0 && _.indexOf(buyerKeys, key) < 0 && _.indexOf(verifierKeys, key) < 0) || !value) {
             throw new Error();
         }
-
-        // Get userType
-        const { userType } = req.user;
 
         // Get userData
         const userData = await UserData.findOne({ _creator: req.user._id });
@@ -27,9 +28,20 @@ const patchUserData = async (req, res) => {
             throw new Error(404);
         }
 
-        // Check userType to patch
-        if (userType === "s") {
-            // Check key to patch (against common, seller keys)
+        // Check userType
+        if (req.user.userType === "b") {
+            // Check key to update (against keys, buyerKeys)
+            if (_.indexOf(keys, key) >= 0) {
+                // Update the userData body
+                userData[key] = value;
+            } else if (_.indexOf(buyerKeys, key) >= 0) {
+                // Update the userData.buyer body
+                userData.buyer[key] = value;
+            } else {
+                throw new Error();
+            }
+        } else if (req.user.userType === "s") {
+            // Check key to update (against keys, sellerKeys)
             if (_.indexOf(keys, key) >= 0) {
                 // Update the userData body
                 userData[key] = value;
@@ -39,27 +51,24 @@ const patchUserData = async (req, res) => {
             } else {
                 throw new Error();
             }
-
-            // Patch userData
-            await UserData.updateOne(
-                { _creator: req.user._id },
-                { $set: userData }
-            );
-        } else if (userType === "b" || userType === "v") {
-            // Check key to patch (against common keys)
+        } else if (req.user.userType === "v") {
+            // Check key to update (against keys, verifierKeys)
             if (_.indexOf(keys, key) >= 0) {
                 // Update the userData body
                 userData[key] = value;
+            } else if (_.indexOf(verifierKeys, key) >= 0) {
+                // Update the userData.verifier body
+                userData.verifier[key] = value;
             } else {
                 throw new Error();
             }
-
-            // Patch userData
-            await UserData.updateOne(
-                { _creator: req.user._id },
-                { $set: userData }
-            );
         }
+
+        // Update userData
+        await UserData.updateOne(
+            { _creator: req.user._id },
+            { $set: userData }
+        );
 
         // Send JSON body
         res.json({ message: `${key} updated`, email: req.user.email });
@@ -74,4 +83,4 @@ const patchUserData = async (req, res) => {
     }
 };
 
-module.exports = { patchUserData };
+module.exports = { updateUserData };

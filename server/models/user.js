@@ -2,17 +2,21 @@
 // ###################################################################
 // USER BODY MODEL
 // {
-//     email: "EMAIL",
-//     password: "PASSWORD",
-//     isActive: "TRUE/FALSE",
-//     userType: "TYPE",
-//     confirmation: [{
-//         secret: "SECRET"
-//     }],
-//     tokens: [{
-//         access: "AUTH",
-//         token: "TOKEN"
-//     }]
+//     email: [string], // VALID EMAIL ID
+//     password: [string], // VALID PASSWORD (more then 6 characters)
+//     isActive: [boolean], // DEFAULT FALSE
+//     userType: [string], // VALID USER TYPE (b, s, v)
+//     confirmation: [
+//         {
+//         secret: [string] // VALID JWT TOKEN (unique user id, access, time)
+//         }
+//     ],
+//     tokens: [
+//         {
+//         access: [string], // VALID ACCESS (b-auth, s-auth, v-auth)
+//         token: [string], // VALID JWT TOKEN (unique user id, access, time)
+//         }
+//     ]
 // }
 // *******************************************************************
 // ###################################################################

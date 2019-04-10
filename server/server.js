@@ -33,7 +33,7 @@ const { isActive } = require("./middleware/isActive.js");
 const { postUserSignUp } = require("./routes/user/crud/postUser.js");
 const { getUser } = require("./routes/user/crud/getUser.js");
 const { deleteUser } = require("./routes/user/crud/deleteUser.js");
-const { patchUser } = require("./routes/user/crud/patchUser.js");
+const { updateUser } = require("./routes/user/crud/patchUser.js");
 const { userLogin } = require("./routes/user/login.js");
 const { userLogout } = require("./routes/user/logout.js");
 const { userActivateSend, userActivateMe } = require("./routes/user/activate.js");
@@ -43,14 +43,14 @@ const { userForgotSend, userForgotMe } = require("./routes/user/forgot.js");
 const { postUserData } = require("./routes/userData/crud/postUserData.js");
 const { getUserData } = require("./routes/userData/crud/getUserData.js");
 const { deleteUserData } = require("./routes/userData/crud/deleteUserData.js");
-const { patchUserData } = require("./routes/userData/crud/patchUserData.js");
+const { updateUserData } = require("./routes/userData/crud/patchUserData.js");
 const { getMessage } = require("./routes/userData/getMessage.js");
 // ###################################################################
 // RECORD
 const { postRecord } = require("./routes/record/crud/postRecord.js");
 const { getRecord } = require("./routes/record/crud/getRecord.js");
 const { deleteRecord, deleteRecordById } = require("./routes/record/crud/deleteRecord.js");
-const { patchRecord, patchRecordById } = require("./routes/record/crud/patchRecord.js");
+const { updateRecord, updateRecordById } = require("./routes/record/crud/patchRecord.js");
 // ###################################################################
 // COMMUNICATION
 const { buyerRequestRecord, sellerRequestRecord } = require("./routes/communication/request.js");
@@ -105,7 +105,7 @@ app.get("/users", authenticate, (req, res) => getUser(req, res));
 
 app.delete("/users", authenticate, (req, res) => deleteUser(req, res));
 
-app.patch("/users", authenticate, (req, res) => patchUser(req, res));
+app.patch("/users", authenticate, (req, res) => updateUser(req, res));
 
 app.post("/users/login", (req, res) => userLogin(req, res));
 
@@ -126,7 +126,7 @@ app.get("/users/me", authenticate, (req, res) => getUserData(req, res));
 
 app.delete("/users/me", authenticate, (req, res) => deleteUserData(req, res));
 
-app.patch("/users/me", authenticate, (req, res) => patchUserData(req, res));
+app.patch("/users/me", authenticate, (req, res) => updateUserData(req, res));
 
 app.get("/message/me", authenticate, isActive, (req, res) => getMessage(req, res));
 // ###################################################################
@@ -137,11 +137,11 @@ app.get("/record", authenticate, (req, res) => getRecord(req, res));
 
 app.delete("/record", authenticate, (req, res) => deleteRecord(req, res));
 
-app.patch("/record", authenticate, (req, res) => patchRecord(req, res));
+app.patch("/record", authenticate, (req, res) => updateRecord(req, res));
 
 app.delete("/record/:id", authenticate, (req, res) => deleteRecordById(req, res));
 
-app.patch("/record/:id", authenticate, (req, res) => patchRecordById(req, res));
+app.patch("/record/:id", authenticate, (req, res) => updateRecordById(req, res));
 // ###################################################################
 // Communication Routes
 // Buyer

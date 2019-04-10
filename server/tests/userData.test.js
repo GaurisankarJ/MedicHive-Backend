@@ -454,9 +454,25 @@ describe("PATCH /users/me", () => {
                             expect(details[key]).toBe(value);
                             done();
                         }).catch(e => done(e));
-                    } else {
+                    } else if (user.userType === "b") {
+                        UserData.findOne({ _creator: user._id }).then((details) => {
+                            expect(details.buyer[key]).toBe(value);
+                            expect(details.seller[key]).toBeFalsy();
+                            expect(details.verifier[key]).toBeFalsy();
+                            done();
+                        }).catch(e => done(e));
+                    } else if (user.userType === "s") {
                         UserData.findOne({ _creator: user._id }).then((details) => {
                             expect(details.seller[key]).toBe(value);
+                            expect(details.buyer[key]).toBeFalsy();
+                            expect(details.verifier[key]).toBeFalsy();
+                            done();
+                        }).catch(e => done(e));
+                    } else if (user.userType === "v") {
+                        UserData.findOne({ _creator: user._id }).then((details) => {
+                            expect(details.verifier[key]).toBe(value);
+                            expect(details.buyer[key]).toBeFalsy();
+                            expect(details.seller[key]).toBeFalsy();
                             done();
                         }).catch(e => done(e));
                     }
@@ -525,12 +541,16 @@ describe("PATCH /users/me", () => {
             patchUser(users[1], "name", "new name");
 
             patchUser(users[1], "address", "new address");
+
+            patchUser(users[1], "bio", "new bio");
         });
 
         describe("VERIFIER", () => {
             patchUser(users[2], "name", "new name");
 
             patchUser(users[2], "address", "new address");
+
+            patchUser(users[2], "bio", "new bio");
         });
 
         describe("COMMON", () => {

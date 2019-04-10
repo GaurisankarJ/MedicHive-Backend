@@ -2,34 +2,64 @@
 // ###################################################################
 // USER DATA BODY MODEL
 // {
-//     name: "NAME",
-//     address: "ADDRESS",
-//     userType: "s",
+//     name: [string],
+//     address: [string],
+//     userType: [string], // VALID USER TYPE (b, s, v)
 //     message: {
-//         sent: [{
-//             action: "ACTION",
-//             body: {
-//                 OBJECT
-//             },
-//             to: "TO",
-//             time: "TIME"
-//         }],
-//         received: [{
-//             action: "ACTION",
-//             body: {
-//                 OBJECT
-//             },
-//             from: "FROM",
-//             time: "TIME"
-//         }]
+//         sent: [
+//             {
+//             // ACTION
+//             // [BUYER -> REQUEST]
+//             // [SELLER -> REQUEST, SHARE]
+//             // [VERIFIER -> VERIFY, SHARE]
+//             action: [string], // VALID ACTION
+//             // BODY
+//             // [BUYER -> SELLER ({ key: [string] })]
+//             // [SELLER -> VERIFIER ({ key: [string] }), BUYER ({ key: [string], count: [number] })]
+//             // [VERIFIER -> SELLER ({ key: [string], count: [number] })]
+//             body: [object] // VALID OBJECT
+//             // TO
+//             // [BUYER -> SELLERS]
+//             // [SELLER -> BUYER, VERIFIER]
+//             // [VERIFIER -> SELLER]
+//             to: [string], // VALID EMAIL ID
+//             time: [string]
+//             }
+//         ],
+//         received: [
+//             {
+//             // ACTION
+//             // [BUYER <- SHARE]
+//             // [SELLER <- REQUEST, VERIFY]
+//             // [VERIFIER <- REQUEST]
+//             action: [string], // VALID ACTION
+//             // BODY
+//             // [BUYER <- SELLERS ({ key: [string], count: [number] })]
+//             // [SELLER <- BUYER ({ key: [string] }), VERIFIER ({ key: [string], count: [number] })]
+//             // [VERIFIER <- SELLER ({ key: [string] })]
+//             body: [object] // VALID OBJECT
+//             // FROM
+//             // [BUYER <- SELLERS]
+//             // [SELLER <- BUYER, VERIFIER]
+//             // [VERIFIER <- SELLERS]
+//             from: [string], // VALID EMAIL ID
+//             time: [string]
+//             }
+//         ]
+//     },
+//     buyer: {
+//         bio: [string]
 //     },
 //     seller: {
-//         age: 55,
-//         weight: 99,
-//         sex: "MALE/FEMALE",
-//         occupation: "OCCUPATION"
+//         age: [string], // VALID AGE (greater than 0)
+//         weight: [string], // VALID WEIGHT (greater than 0)
+//         sex: [string], // VALID SEX (male, female)
+//         occupation: [string]
 //     },
-//     _creator: "CREATOR _id"
+//     verifier: {
+//         bio: [string]
+//     },
+//     _creator: [string] // UNIQUE USER IDENTIFIER
 // }
 // *******************************************************************
 // ###################################################################
@@ -105,6 +135,12 @@ const UserDataSchema = new mongoose.Schema({
             }
         }]
     },
+    buyer: {
+        bio: {
+            type: String,
+            trim: true
+        }
+    },
     seller: {
         age: {
             type: Number,
@@ -137,6 +173,12 @@ const UserDataSchema = new mongoose.Schema({
             trim: true
         }
     },
+    verifier: {
+        bio: {
+            type: String,
+            trim: true
+        }
+    },
     _creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -156,7 +198,7 @@ UserDataSchema.methods.toJSON = function () {
     const userDataObject = userData.toObject();
 
     // Return _id, email, userType from userObject
-    return _.pick(userDataObject, ["name", "address", "userType", "seller"]);
+    return _.pick(userDataObject, ["name", "address", "userType", "seller", "buyer", "verifier"]);
 };
 // ###################################################################
 // *******************************************************************

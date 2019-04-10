@@ -8,7 +8,7 @@ const { Record } = require("../../../models/record.js");
 // User Model
 const { User } = require("../../../models/user.js");
 
-const patchRecord = async (req, res) => {
+const updateRecord = async (req, res) => {
     try {
         // Get key, value from request body
         const { key, value } = req.body;
@@ -47,7 +47,7 @@ const patchRecord = async (req, res) => {
                 enteredAt: new Date().toUTCString()
             });
 
-            // Patch record
+            // Update record
             await Record.updateOne(
                 { _creator: req.user._id },
                 { $set: record }
@@ -99,7 +99,7 @@ const patchRecord = async (req, res) => {
                 enteredAt: new Date().toUTCString()
             });
 
-            // Patch record
+            // Update record
             await Record.updateOne(
                 { _creator: req.user._id },
                 { $set: record }
@@ -119,7 +119,7 @@ const patchRecord = async (req, res) => {
     }
 };
 
-const patchRecordById = async (req, res) => {
+const updateRecordById = async (req, res) => {
     try {
         // Get record id from params body
         const { id } = req.params;
@@ -139,21 +139,21 @@ const patchRecordById = async (req, res) => {
 
         if (req.user.userType === "s") {
             // Update record body
-            record = await record.patchByRecordId(id, value, false);
+            record = await record.updateByRecordId(id, value, false);
             // Check record
             if (!record) {
                 throw new Error(404);
             }
         } else if (req.user.userType === "v") {
             // Update record body
-            record = await record.patchByRecordId(id, value, true);
+            record = await record.updateByRecordId(id, value, true);
             // Check record
             if (!record) {
                 throw new Error(404);
             }
         }
 
-        // Patch record
+        // Update record
         await Record.updateOne(
             { _creator: req.user._id },
             { $set: record }
@@ -172,4 +172,4 @@ const patchRecordById = async (req, res) => {
     }
 };
 
-module.exports = { patchRecord, patchRecordById };
+module.exports = { updateRecord, updateRecordById };

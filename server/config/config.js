@@ -1,14 +1,18 @@
 // Load .env
 require("dotenv").config();
 
-const env = process.env.NODE_ENV;
+// Get nodeEnv from environment variable
+const nodeEnv = process.env.NODE_ENV;
 
-if (env === "test" || env === "development") {
+if (nodeEnv === "test" || nodeEnv === "development") {
+    // Get configuration
     const config = require("./config.json");
 
-    const envConfig = config[env];
+    // Set envConfiguration variable
+    const envConfiguration = config[nodeEnv];
 
-    Object.keys(envConfig).forEach((key) => {
-        process.env[key] = envConfig[key];
+    // Set environment variables
+    Object.keys(envConfiguration).forEach((key) => {
+        process.env[key] = envConfiguration[key];
     });
 }

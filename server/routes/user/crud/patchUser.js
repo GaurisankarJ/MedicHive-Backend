@@ -4,7 +4,7 @@ const _ = require("lodash");
 // User Model
 const { User } = require("../../../models/user.js");
 
-const patchUser = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         // Get key, value from request body
         const { key, value } = req.body;
@@ -15,14 +15,14 @@ const patchUser = async (req, res) => {
             throw new Error();
         }
 
-        // Check key to patch
+        // Check key to update
         if (key === "email") {
             // Check user email same as value
             if (req.user.email === value) {
                 throw new Error();
             }
 
-            // Patch email
+            // Update email
             await User.updateOne(
                 { _id: req.user._id },
                 { $set: { email: value } }
@@ -37,7 +37,7 @@ const patchUser = async (req, res) => {
                 throw new Error();
             }
 
-            // Patch password
+            // Update password
             await User.updateOne(
                 { _id: req.user._id },
                 { $set: { password: value } }
@@ -53,4 +53,4 @@ const patchUser = async (req, res) => {
     }
 };
 
-module.exports = { patchUser };
+module.exports = { updateUser };
