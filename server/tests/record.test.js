@@ -40,8 +40,11 @@ describe("POST /record", () => {
                     }
 
                     Record.findOne({ _creator: users[1]._id.toHexString() }).then((record) => {
-                        expect(record.log[0].event).toBe("GENESIS");
-                        expect(record.log[0].data).toBe("GENESIS");
+                        const action = record.log[0].action.split(":");
+
+                        expect(action[0]).toBe("GENESIS");
+                        expect(action[1]).toBe(`USER${users[1]._id.toHexString()}`);
+                        expect(record.log[0].body.userType).toBe(users[1].userType);
                         expect(record._creator.toHexString()).toBe(users[1]._id.toString());
                         done();
                     }).catch(e => done(e));
@@ -62,47 +65,131 @@ describe("POST /record", () => {
                 .post("/record")
                 .set("x-auth", users[0].tokens[0].token)
                 .expect(400)
-                .end((err) => {
-                    if (err) {
-                        done(err);
-                    }
-
-                    Record.findOne({ _creator: users[0]._id.toHexString() }).then((record) => {
-                        expect(record.log.length).toBe(1);
-                        expect(record.log[0].event).toBe("GENESIS");
-                        expect(record.log[0].data).toBe("GENESIS");
-                        expect(record._creator.toHexString()).toBe(users[0]._id.toString());
-                        done();
-                    }).catch(e => done(e));
-                });
+                .end(done);
         });
     });
 });
 
 describe("GET /record", () => {
     describe("POPULATED", () => {
-        it("should get record if authenticated", (done) => {
-            request(app)
-                .get("/record")
-                .set("x-auth", users[0].tokens[0].token)
-                .expect(200)
-                .expect((res) => {
-                    expect(res.body.email).toBe(users[0].email);
-                    expect(res.body.record.allergy[0].data).toBe(records[0].allergy[0].data);
-                    expect(res.body.record.medication[0].data).toBe(records[0].medication[0].data);
-                    expect(res.body.record.problem[0].data).toBe(records[0].problem[0].data);
-                    expect(res.body.record.immunization[0].data).toBe(records[0].immunization[0].data);
-                    expect(res.body.record.vital_sign[0].data).toBe(records[0].vital_sign[0].data);
-                    expect(res.body.record.procedure[0].data).toBe(records[0].procedure[0].data);
-                })
-                .end(done);
+        describe("SELLER", () => {
+            it("should get record if authenticated", (done) => {
+                request(app)
+                    .get("/record")
+                    .set("x-auth", users[0].tokens[0].token)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body.email).toBe(users[0].email);
+                        expect(res.body.record.allergy[0].data).toBe(records[0].allergy[0].data);
+                        expect(res.body.record.allergy[0].createdAt).toBe(records[0].allergy[0].createdAt);
+                        expect(res.body.record.allergy[0].owner[0]).toBe(records[0].allergy[0].owner[0].email);
+                        expect(res.body.record.medication[0].data).toBe(records[0].medication[0].data);
+                        expect(res.body.record.medication[0].createdAt).toBe(records[0].medication[0].createdAt);
+                        expect(res.body.record.medication[0].owner[0]).toBe(records[0].medication[0].owner[0].email);
+                        expect(res.body.record.problem[0].data).toBe(records[0].problem[0].data);
+                        expect(res.body.record.problem[0].createdAt).toBe(records[0].problem[0].createdAt);
+                        expect(res.body.record.problem[0].owner[0]).toBe(records[0].problem[0].owner[0].email);
+                        expect(res.body.record.immunization[0].data).toBe(records[0].immunization[0].data);
+                        expect(res.body.record.immunization[0].createdAt).toBe(records[0].immunization[0].createdAt);
+                        expect(res.body.record.immunization[0].owner[0]).toBe(records[0].immunization[0].owner[0].email);
+                        expect(res.body.record.vital_sign[0].data).toBe(records[0].vital_sign[0].data);
+                        expect(res.body.record.vital_sign[0].createdAt).toBe(records[0].vital_sign[0].createdAt);
+                        expect(res.body.record.vital_sign[0].owner[0]).toBe(records[0].vital_sign[0].owner[0].email);
+                        expect(res.body.record.procedure[0].data).toBe(records[0].procedure[0].data);
+                        expect(res.body.record.procedure[0].createdAt).toBe(records[0].procedure[0].createdAt);
+                        expect(res.body.record.procedure[0].owner[0]).toBe(records[0].procedure[0].owner[0].email);
+                    })
+                    .end(done);
+            });
         });
 
-        it("should not get record if not authenticated", (done) => {
-            request(app)
-                .get("/record")
-                .expect(401)
-                .end(done);
+        describe("BUYER", () => {
+            it("should get record if authenticated", (done) => {
+                request(app)
+                    .get("/record")
+                    .set("x-auth", users[1].tokens[0].token)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body.email).toBe(users[1].email);
+                        expect(res.body.record.allergy[0].data).toBe(records[1].allergy[0].data);
+                        expect(res.body.record.allergy[0].createdAt).toBe(records[1].allergy[0].createdAt);
+                        expect(res.body.record.allergy[0].owner[0]).toBe(records[1].allergy[0].owner[0].email);
+                        expect(res.body.record.allergy[0].owner[1]).toBe(records[1].allergy[0].owner[1].email);
+                        expect(res.body.record.allergy[0].verifier[0]).toBe(records[1].allergy[0].verifier[0].email);
+                        expect(res.body.record.medication[0].data).toBe(records[1].medication[0].data);
+                        expect(res.body.record.medication[0].createdAt).toBe(records[1].medication[0].createdAt);
+                        expect(res.body.record.medication[0].owner[0]).toBe(records[1].medication[0].owner[0].email);
+                        expect(res.body.record.medication[0].owner[1]).toBe(records[1].medication[0].owner[1].email);
+                        expect(res.body.record.medication[0].verifier[0]).toBe(records[1].medication[0].verifier[0].email);
+                        expect(res.body.record.problem[0].data).toBe(records[1].problem[0].data);
+                        expect(res.body.record.problem[0].createdAt).toBe(records[1].problem[0].createdAt);
+                        expect(res.body.record.problem[0].owner[0]).toBe(records[1].problem[0].owner[0].email);
+                        expect(res.body.record.problem[0].owner[1]).toBe(records[1].problem[0].owner[1].email);
+                        expect(res.body.record.problem[0].verifier[0]).toBe(records[1].problem[0].verifier[0].email);
+                        expect(res.body.record.immunization[0].data).toBe(records[1].immunization[0].data);
+                        expect(res.body.record.immunization[0].createdAt).toBe(records[1].immunization[0].createdAt);
+                        expect(res.body.record.immunization[0].owner[0]).toBe(records[1].immunization[0].owner[0].email);
+                        expect(res.body.record.immunization[0].owner[1]).toBe(records[1].immunization[0].owner[1].email);
+                        expect(res.body.record.immunization[0].verifier[0]).toBe(records[1].immunization[0].verifier[0].email);
+                        expect(res.body.record.vital_sign[0].data).toBe(records[1].vital_sign[0].data);
+                        expect(res.body.record.vital_sign[0].createdAt).toBe(records[1].vital_sign[0].createdAt);
+                        expect(res.body.record.vital_sign[0].owner[0]).toBe(records[1].vital_sign[0].owner[0].email);
+                        expect(res.body.record.vital_sign[0].owner[1]).toBe(records[1].vital_sign[0].owner[1].email);
+                        expect(res.body.record.vital_sign[0].verifier[0]).toBe(records[1].vital_sign[0].verifier[0].email);
+                        expect(res.body.record.procedure[0].data).toBe(records[1].procedure[0].data);
+                        expect(res.body.record.procedure[0].createdAt).toBe(records[1].procedure[0].createdAt);
+                        expect(res.body.record.procedure[0].owner[0]).toBe(records[1].procedure[0].owner[0].email);
+                        expect(res.body.record.procedure[0].owner[1]).toBe(records[1].procedure[0].owner[1].email);
+                        expect(res.body.record.procedure[0].verifier[0]).toBe(records[1].procedure[0].verifier[0].email);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe("VERIFIER", () => {
+            it("should get record if authenticated", (done) => {
+                request(app)
+                    .get("/record")
+                    .set("x-auth", users[2].tokens[0].token)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body.email).toBe(users[2].email);
+                        expect(res.body.record.allergy[0].data).toBe(records[2].allergy[0].data);
+                        expect(res.body.record.allergy[0].createdAt).toBe(records[2].allergy[0].createdAt);
+                        expect(res.body.record.allergy[0].owner[0]).toBe(records[2].allergy[0].owner[0].email);
+                        expect(res.body.record.allergy[0].verifier[0]).toBe(records[2].allergy[0].verifier[0].email);
+                        expect(res.body.record.medication[0].data).toBe(records[2].medication[0].data);
+                        expect(res.body.record.medication[0].createdAt).toBe(records[2].medication[0].createdAt);
+                        expect(res.body.record.medication[0].owner[0]).toBe(records[2].medication[0].owner[0].email);
+                        expect(res.body.record.medication[0].verifier[0]).toBe(records[2].medication[0].verifier[0].email);
+                        expect(res.body.record.problem[0].data).toBe(records[2].problem[0].data);
+                        expect(res.body.record.problem[0].createdAt).toBe(records[2].problem[0].createdAt);
+                        expect(res.body.record.problem[0].owner[0]).toBe(records[2].problem[0].owner[0].email);
+                        expect(res.body.record.problem[0].verifier[0]).toBe(records[2].problem[0].verifier[0].email);
+                        expect(res.body.record.immunization[0].data).toBe(records[2].immunization[0].data);
+                        expect(res.body.record.immunization[0].createdAt).toBe(records[2].immunization[0].createdAt);
+                        expect(res.body.record.immunization[0].owner[0]).toBe(records[2].immunization[0].owner[0].email);
+                        expect(res.body.record.immunization[0].verifier[0]).toBe(records[2].immunization[0].verifier[0].email);
+                        expect(res.body.record.vital_sign[0].data).toBe(records[2].vital_sign[0].data);
+                        expect(res.body.record.vital_sign[0].createdAt).toBe(records[2].vital_sign[0].createdAt);
+                        expect(res.body.record.vital_sign[0].owner[0]).toBe(records[2].vital_sign[0].owner[0].email);
+                        expect(res.body.record.vital_sign[0].verifier[0]).toBe(records[2].vital_sign[0].verifier[0].email);
+                        expect(res.body.record.procedure[0].data).toBe(records[2].procedure[0].data);
+                        expect(res.body.record.procedure[0].createdAt).toBe(records[2].procedure[0].createdAt);
+                        expect(res.body.record.procedure[0].owner[0]).toBe(records[2].procedure[0].owner[0].email);
+                        expect(res.body.record.procedure[0].verifier[0]).toBe(records[2].procedure[0].verifier[0].email);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe("COMMON", () => {
+            it("should not get record if not authenticated", (done) => {
+                request(app)
+                    .get("/record")
+                    .expect(401)
+                    .end(done);
+            });
         });
     });
 
@@ -186,17 +273,26 @@ describe("PATCH /record", () => {
                             }
 
                             Record.findOne({ _creator: user._id }).then((record) => {
-                                record[key].forEach((rec) => {
-                                    expect(rec.isVerified).toBeFalsy();
-
-                                    const owner = jwt.verify(rec.owner[0], process.env.USER_SECRET);
-                                    expect(owner.owner).toBe(user._id.toHexString());
-                                    expect(owner.record).toBe(record._id.toHexString());
-                                });
                                 expect(record[key].length).toBe(3);
-                                expect(record.log.length).toBe(2);
-                                expect(record[key][1].data).toBe(body.value[0]);
-                                expect(record[key][2].data).toBe(body.value[1]);
+                                record[key].forEach((rec, i) => {
+                                    if (i !== 0) {
+                                        expect(rec.data).toBe(body.value[i - 1]);
+                                        expect(rec.owner[0].email).toBe(user.email);
+
+                                        const signOwner = jwt.verify(rec.owner[0].sign, process.env.USER_SECRET);
+                                        expect(signOwner.owner).toBe(user._id.toHexString());
+                                        expect(signOwner.record).toBe(record._id.toHexString());
+                                        expect(signOwner.time).toBeTruthy();
+
+                                        expect(rec.verifier.length).toBe(0);
+                                        expect(rec.createdAt).toBeTruthy();
+                                    }
+                                });
+                                expect(record.log.length).toBe(3);
+                                expect(record.log[1].body.key).toBe(body.key);
+                                expect(record.log[1].body.value).toBe(body.value[0]);
+                                expect(record.log[2].body.key).toBe(body.key);
+                                expect(record.log[2].body.value).toBe(body.value[1]);
                                 done();
                             }).catch(e => done(e));
                         });
@@ -222,7 +318,7 @@ describe("PATCH /record", () => {
                     const body = {
                         key,
                         value: ["New value", "Other new value"],
-                        owner: users[0].email
+                        sellerEmail: users[0].email
                     };
 
                     request(app)
@@ -240,22 +336,33 @@ describe("PATCH /record", () => {
                             }
 
                             Record.findOne({ _creator: user._id }).then((record) => {
+                                expect(record[key].length).toBe(3);
                                 record[key].forEach((rec, i) => {
-                                    if (i > 0) {
-                                        expect(rec.isVerified).toBeTruthy();
+                                    if (i !== 0) {
+                                        expect(rec.data).toBe(body.value[i - 1]);
+                                        expect(rec.owner[0].email).toBe(users[0].email);
+                                        expect(rec.verifier[0].email).toBe(user.email);
 
-                                        const owner = jwt.verify(rec.owner[0], process.env.USER_SECRET);
-                                        const verifier = jwt.verify(rec.verifier[0], process.env.USER_SECRET);
-                                        expect(owner.owner).toBe(users[0]._id.toHexString());
-                                        expect(owner.record).toBe(records[0]._id.toHexString());
-                                        expect(verifier.owner).toBe(user._id.toHexString());
-                                        expect(verifier.record).toBe(record._id.toHexString());
+                                        const signOwner = jwt.verify(rec.owner[0].sign, process.env.USER_SECRET);
+                                        expect(signOwner.owner).toBe(users[0]._id.toHexString());
+                                        expect(signOwner.record).toBe(records[0]._id.toHexString());
+                                        expect(signOwner.time).toBeTruthy();
+
+                                        const signVerifier = jwt.verify(rec.verifier[0].sign, process.env.USER_SECRET);
+                                        expect(signVerifier.owner).toBe(user._id.toHexString());
+                                        expect(signVerifier.record).toBe(record._id.toHexString());
+                                        expect(signVerifier.time).toBeTruthy();
+
+                                        expect(rec.createdAt).toBeTruthy();
                                     }
                                 });
-                                expect(record[key].length).toBe(3);
-                                expect(record.log.length).toBe(2);
-                                expect(record[key][1].data).toBe(body.value[0]);
-                                expect(record[key][2].data).toBe(body.value[1]);
+
+                                expect(record.log.length).toBe(3);
+                                expect(record.log[1].body.key).toBe(body.key);
+                                expect(record.log[1].body.value).toBe(body.value[0]);
+                                expect(record.log[2].body.key).toBe(body.key);
+                                expect(record.log[2].body.value).toBe(body.value[1]);
+
                                 done();
                             }).catch(e => done(e));
                         });
@@ -274,7 +381,7 @@ describe("PATCH /record", () => {
 
             patchRecord(users[2], "procedure");
 
-            it("should not patch record if request invalid (no owner)", (done) => {
+            it("should not patch record if request invalid (no sellerEmail)", (done) => {
                 const body = {
                     key: "allergy",
                     value: ["New allergy"]
@@ -288,11 +395,11 @@ describe("PATCH /record", () => {
                     .end(done);
             });
 
-            it("should not patch record if request invalid (invalid owner)", (done) => {
+            it("should not patch record if request invalid (invalid sellerEmail)", (done) => {
                 const body = {
                     key: "allergy",
                     value: ["New allergy"],
-                    owner: "new@mail.com"
+                    sellerEmail: "new@mail.com"
                 };
 
                 request(app)
@@ -303,11 +410,11 @@ describe("PATCH /record", () => {
                     .end(done);
             });
 
-            it("should not patch record if request invalid (invalid owner/userType)", (done) => {
+            it("should not patch record if request invalid (invalid seller/userType)", (done) => {
                 const body = {
                     key: "allergy",
                     value: ["New allergy"],
-                    owner: users[1].email
+                    sellerEmail: users[1].email
                 };
 
                 request(app)
@@ -412,28 +519,46 @@ describe("PATCH /record", () => {
 
 describe("DELETE /record/:id", () => {
     describe("POPULATED", () => {
-        it("should delete record element if authenticated", (done) => {
-            const id = records[0].allergy[0]._id;
+        const deleteRecord = (user, key) => {
+            it(`should delete ${key} if authenticated`, (done) => {
+                const id = records[0][key][0]._id.toHexString();
 
-            request(app)
-                .delete(`/record/${id}`)
-                .set("x-auth", users[0].tokens[0].token)
-                .expect(200)
-                .expect((res) => {
-                    expect(res.body.message).toBe("record deleted");
-                    expect(res.body.email).toBe(users[0].email);
-                })
-                .end((err) => {
-                    if (err) {
-                        done(err);
-                    }
+                request(app)
+                    .delete(`/record/${id}`)
+                    .set("x-auth", user.tokens[0].token)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body.message).toBe("record deleted");
+                        expect(res.body.email).toBe(user.email);
+                    })
+                    .end((err) => {
+                        if (err) {
+                            done(err);
+                        }
 
-                    Record.findOne({ _creator: users[0]._id }).then((record) => {
-                        expect(record.deleteByRecordId(id)).toBeFalsy();
-                        done();
-                    }).catch(e => done(e));
-                });
-        });
+                        Record.findOne({ _creator: user._id }).then((record) => {
+                            expect(record[key].length).toBe(0);
+                            expect(record.log.length).toBe(2);
+                            expect(record.log[1].body.key).toBe(id);
+                            expect(record.log[1].createdAt).toBeTruthy();
+
+                            done();
+                        }).catch(e => done(e));
+                    });
+            });
+        };
+
+        deleteRecord(users[0], "allergy");
+
+        deleteRecord(users[0], "medication");
+
+        deleteRecord(users[0], "problem");
+
+        deleteRecord(users[0], "immunization");
+
+        deleteRecord(users[0], "vital_sign");
+
+        deleteRecord(users[0], "procedure");
 
         it("should not delete record element if not authenticated", (done) => {
             const id = records[1].allergy[0]._id;
@@ -483,67 +608,123 @@ describe("DELETE /record/:id", () => {
 describe("PATCH /record/:id", () => {
     describe("POPULATED", () => {
         describe("SELLER", () => {
-            it("should patch record element if authenticated", (done) => {
-                const id = records[0].allergy[0]._id;
-                const body = {
-                    value: "New Allergy"
-                };
+            const patchRecord = (user, key) => {
+                it(`should patch ${key} if authenticated`, (done) => {
+                    const id = records[0][key][0]._id.toHexString();
+                    const body = {
+                        value: `new ${key}`
+                    };
 
-                request(app)
-                    .patch(`/record/${id}`)
-                    .set("x-auth", users[0].tokens[0].token)
-                    .send(body)
-                    .expect(200)
-                    .expect((res) => {
-                        expect(res.body.message).toBe("record updated");
-                        expect(res.body.email).toBe(users[0].email);
-                    })
-                    .end((err) => {
-                        if (err) {
-                            done(err);
-                        }
+                    request(app)
+                        .patch(`/record/${id}`)
+                        .set("x-auth", user.tokens[0].token)
+                        .send(body)
+                        .expect(200)
+                        .expect((res) => {
+                            expect(res.body.message).toBe("record updated");
+                            expect(res.body.email).toBe(user.email);
+                        })
+                        .end((err) => {
+                            if (err) {
+                                done(err);
+                            }
 
-                        Record.findOne({ _creator: users[0]._id }).then((record) => {
-                            expect(record.allergy.length).toBe(1);
-                            expect(record.log.length).toBe(2);
-                            expect(record.allergy[0].data).toBe(body.value);
-                            expect(record.allergy[0].isVerified).toBeFalsy();
-                            done();
-                        }).catch(e => done(e));
-                    });
-            });
+                            Record.findOne({ _creator: user._id }).then((record) => {
+                                expect(record[key].length).toBe(1);
+                                expect(record[key][0].data).toBe(body.value);
+                                expect(record[key][0].owner[0].email).toBe(user.email);
+                                expect(record[key][0].verifier.length).toBe(0);
+                                expect(record[key][0].updatedAt).toBeTruthy();
+
+                                const signOwner = jwt.verify(record[key][0].owner[0].sign, process.env.USER_SECRET);
+                                expect(signOwner.owner).toBe(user._id.toHexString());
+                                expect(signOwner.record).toBe(records[0]._id.toHexString());
+                                expect(signOwner.time).toBeTruthy();
+
+                                expect(record.log.length).toBe(2);
+                                expect(record.log[1].body.key).toBe(id);
+                                expect(record.log[1].createdAt).toBeTruthy();
+
+                                done();
+                            }).catch(e => done(e));
+                        });
+                });
+            };
+
+            patchRecord(users[0], "allergy");
+
+            patchRecord(users[0], "medication");
+
+            patchRecord(users[0], "problem");
+
+            patchRecord(users[0], "immunization");
+
+            patchRecord(users[0], "vital_sign");
+
+            patchRecord(users[0], "procedure");
         });
 
         describe("VERIFIER", () => {
-            it("should patch record element if authenticated", (done) => {
-                const id = records[2].allergy[0]._id;
-                const body = {
-                    value: "New Allergy"
-                };
+            const patchRecord = (user, key) => {
+                it(`should patch ${key} if authenticated`, (done) => {
+                    const id = records[2][key][0]._id.toHexString();
+                    const body = {
+                        value: `new ${key}`
+                    };
 
-                request(app)
-                    .patch(`/record/${id}`)
-                    .set("x-auth", users[2].tokens[0].token)
-                    .send(body)
-                    .expect(200)
-                    .expect((res) => {
-                        expect(res.body.message).toBe("record updated");
-                        expect(res.body.email).toBe(users[2].email);
-                    })
-                    .end((err) => {
-                        if (err) {
-                            done(err);
-                        }
+                    request(app)
+                        .patch(`/record/${id}`)
+                        .set("x-auth", user.tokens[0].token)
+                        .send(body)
+                        .expect(200)
+                        .expect((res) => {
+                            expect(res.body.message).toBe("record updated");
+                            expect(res.body.email).toBe(user.email);
+                        })
+                        .end((err) => {
+                            if (err) {
+                                done(err);
+                            }
 
-                        Record.findOne({ _creator: users[2]._id }).then((record) => {
-                            expect(record.allergy.length).toBe(1);
-                            expect(record.log.length).toBe(2);
-                            expect(record.allergy[0].data).toBe(body.value);
-                            expect(record.allergy[0].isVerified).toBeTruthy();
-                            done();
-                        }).catch(e => done(e));
-                    });
-            });
+                            Record.findOne({ _creator: user._id }).then((record) => {
+                                expect(record[key].length).toBe(1);
+                                expect(record[key][0].data).toBe(body.value);
+                                expect(record[key][0].owner[0].email).toBe(users[0].email);
+                                expect(record[key][0].verifier[0].email).toBe(user.email);
+                                expect(record[key][0].updatedAt).toBeTruthy();
+
+                                const signOwner = jwt.verify(record[key][0].owner[0].sign, process.env.USER_SECRET);
+                                expect(signOwner.owner).toBe(users[0]._id.toHexString());
+                                expect(signOwner.record).toBe(records[0]._id.toHexString());
+                                expect(signOwner.time).toBeTruthy();
+
+                                const signVerifier = jwt.verify(record[key][0].verifier[0].sign, process.env.USER_SECRET);
+                                expect(signVerifier.owner).toBe(user._id.toHexString());
+                                expect(signVerifier.record).toBe(record._id.toHexString());
+                                expect(signVerifier.time).toBeTruthy();
+
+                                expect(record.log.length).toBe(2);
+                                expect(record.log[1].body.key).toBe(id);
+                                expect(record.log[1].body.value).toBe(body.value);
+                                expect(record.log[1].createdAt).toBeTruthy();
+
+                                done();
+                            }).catch(e => done(e));
+                        });
+                });
+            };
+
+            patchRecord(users[2], "allergy");
+
+            patchRecord(users[2], "medication");
+
+            patchRecord(users[2], "problem");
+
+            patchRecord(users[2], "immunization");
+
+            patchRecord(users[2], "vital_sign");
+
+            patchRecord(users[2], "procedure");
         });
 
         describe("COMMON", () => {
@@ -601,7 +782,6 @@ describe("PATCH /record/:id", () => {
                     .expect(400)
                     .end(done);
             });
-
 
             it("should not patch record element if request invalid (unknown id)", (done) => {
                 const id = records[0]._id;

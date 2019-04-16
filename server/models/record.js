@@ -17,8 +17,8 @@
 //                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
 //                 }
 //             ],
-//             createdAt: [string],
-//             updatedAt: [string]
+//             createdAt: [number],
+//             updatedAt: [number]
 //         }
 //     ],
 //     medication: [
@@ -36,8 +36,8 @@
 //                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
 //                 }
 //             ],
-//             createdAt: [string],
-//             updatedAt: [string]
+//             createdAt: [number],
+//             updatedAt: [number]
 //         }
 //     ],
 //     problem: [
@@ -55,8 +55,8 @@
 //                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
 //                 }
 //             ],
-//             createdAt: [string],
-//             updatedAt: [string]
+//             createdAt: [number],
+//             updatedAt: [number]
 //         }
 //     ],
 //     immunization: [
@@ -74,8 +74,8 @@
 //                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
 //                 }
 //             ],
-//             createdAt: [string],
-//             updatedAt: [string]
+//             createdAt: [number],
+//             updatedAt: [number]
 //         }
 //     ],
 //     vital_sign: [
@@ -93,8 +93,8 @@
 //                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
 //                 }
 //             ],
-//             createdAt: [string],
-//             updatedAt: [string]
+//             createdAt: [number],
+//             updatedAt: [number]
 //         }
 //     ],
 //     procedure: [
@@ -112,8 +112,8 @@
 //                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
 //                 }
 //             ],
-//             createdAt: [string],
-//             updatedAt: [string]
+//             createdAt: [number],
+//             updatedAt: [number]
 //         }
 //     ],
 //     log: [
@@ -123,8 +123,12 @@
 //             // SELLER -> ADD, DELETE, UPDATE, VERIFY, SHARE
 //             // VERIFIER -> VERIFY, ADD, DELETE, UPDATE, SHARE
 //             action: [string],
-//             data: [object],
-//             createdAt: [string]
+//             // BODY
+//             // [BUYER <- SELLERS ({ key: [string], value: [string] })]
+//             // [SELLER ({ key: [string], value: [string] }) <- VERIFIER ({ key: [string], value: [string] })]
+//             // [VERIFIER ({ key: [string], value: [string] }) <- SELLER ({ key: [string], value: [string] })]
+//             body: [object],
+//             createdAt: [number]
 //         }
 //     ],
 //     _creator: [string] // UNIQUE USER IDENTIFIER
@@ -137,6 +141,8 @@
 const _ = require("lodash");
 // MongoDB
 const mongoose = require("mongoose");
+// Validation Middleware
+const validator = require("validator");
 // JSON Web Token Middleware
 const jwt = require("jsonwebtoken");
 
@@ -147,22 +153,44 @@ const RecordSchema = new mongoose.Schema({
             minlength: 1,
             trim: true
         },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        owner: {
-            type: [String],
+        owner: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        verifier: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        createdAt: {
+            type: Number,
+            required: true,
             minlength: 1,
             trim: true
         },
-        verifier: {
-            type: [String],
-            minlength: 1,
-            trim: true
-        },
-        enteredAt: {
-            type: String,
+        updatedAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
@@ -173,22 +201,44 @@ const RecordSchema = new mongoose.Schema({
             minlength: 1,
             trim: true
         },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        owner: {
-            type: [String],
+        owner: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        verifier: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        createdAt: {
+            type: Number,
+            required: true,
             minlength: 1,
             trim: true
         },
-        verifier: {
-            type: [String],
-            minlength: 1,
-            trim: true
-        },
-        enteredAt: {
-            type: String,
+        updatedAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
@@ -199,22 +249,44 @@ const RecordSchema = new mongoose.Schema({
             minlength: 1,
             trim: true
         },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        owner: {
-            type: [String],
+        owner: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        verifier: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        createdAt: {
+            type: Number,
+            required: true,
             minlength: 1,
             trim: true
         },
-        verifier: {
-            type: [String],
-            minlength: 1,
-            trim: true
-        },
-        enteredAt: {
-            type: String,
+        updatedAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
@@ -225,22 +297,44 @@ const RecordSchema = new mongoose.Schema({
             minlength: 1,
             trim: true
         },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        owner: {
-            type: [String],
+        owner: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        verifier: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        createdAt: {
+            type: Number,
+            required: true,
             minlength: 1,
             trim: true
         },
-        verifier: {
-            type: [String],
-            minlength: 1,
-            trim: true
-        },
-        enteredAt: {
-            type: String,
+        updatedAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
@@ -251,22 +345,44 @@ const RecordSchema = new mongoose.Schema({
             minlength: 1,
             trim: true
         },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        owner: {
-            type: [String],
+        owner: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        verifier: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        createdAt: {
+            type: Number,
+            required: true,
             minlength: 1,
             trim: true
         },
-        verifier: {
-            type: [String],
-            minlength: 1,
-            trim: true
-        },
-        enteredAt: {
-            type: String,
+        updatedAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
@@ -277,39 +393,59 @@ const RecordSchema = new mongoose.Schema({
             minlength: 1,
             trim: true
         },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        owner: {
-            type: [String],
+        owner: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        verifier: [{
+            email: {
+                type: String,
+                required: true,
+                trim: true,
+                validate: {
+                    validator: validator.isEmail,
+                    message: "{VALUE} is not a valid email!"
+                }
+            },
+            sign: {
+                type: String,
+                required: true
+            }
+        }],
+        createdAt: {
+            type: Number,
+            required: true,
             minlength: 1,
             trim: true
         },
-        verifier: {
-            type: [String],
-            minlength: 1,
-            trim: true
-        },
-        enteredAt: {
-            type: String,
+        updatedAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
     }],
     log: [{
-        event: {
+        action: {
             type: String,
             minlength: 1,
             trim: true
         },
-        data: {
-            type: String,
-            minlength: 1,
-            trim: true
+        body: {
+            type: mongoose.Schema.Types.Mixed
         },
-        enteredAt: {
-            type: String,
+        createdAt: {
+            type: Number,
             minlength: 1,
             trim: true
         }
@@ -345,7 +481,9 @@ RecordSchema.methods.toJSON = function () {
     // Populate function
     const populateRecord = (key) => {
         recordObject[key].forEach((rec) => {
-            returnObject[key].push({ _id: rec._id, data: rec.data, isVerified: rec.isVerified });
+            const owner = rec.owner.map(res => res.email);
+            const verifier = rec.verifier.map(res => res.email);
+            returnObject[key].push({ _id: rec._id, data: rec.data, owner, verifier, createdAt: rec.createdAt, updatedAt: rec.updateAt });
         });
     };
 
@@ -375,7 +513,8 @@ RecordSchema.methods.generateOwnerToken = function (owner) {
     const ownerToken = jwt.sign(
         {
             owner: owner._id.toHexString(),
-            record: record._id.toHexString()
+            record: record._id.toHexString(),
+            time: new Date().getTime()
         },
         process.env.USER_SECRET
     );
@@ -385,7 +524,7 @@ RecordSchema.methods.generateOwnerToken = function (owner) {
 };
 // ###################################################################
 // To find and delete by record _id
-RecordSchema.methods.deleteByRecordId = function (id) {
+RecordSchema.methods.deleteByRecordId = function (id, user) {
     const record = this;
 
     // Flag
@@ -396,15 +535,33 @@ RecordSchema.methods.deleteByRecordId = function (id) {
     // Update record body
     const findAndDelete = (key) => {
         // Get rec
-        const rec = _.remove(record[key], (res => res._id.toHexString() === id));
+        const rec = _.remove(record[key], (res => res._id.toHexString() === id));// Removes all elements matching condition
+
         // Check rec
         if (!_.isEmpty(rec)) {
-            // Update the record log
-            record.log.push({
-                event: `DELETE:USER${id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
-                data: `${key}:${rec[0].data}`,
-                enteredAt: new Date().toUTCString()
-            });
+            // Check if buyer, seller or verifier
+            if (user.userType === "b") {
+                // Update the record log
+                record.log.push({
+                    action: `DELETE:BUYER${user._id.toHexString()}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key: id },
+                    createdAt: new Date().getTime()
+                });
+            } else if (user.userType === "s") {
+                // Update the record log
+                record.log.push({
+                    action: `DELETE:SELLER${user._id.toHexString()}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key: id },
+                    createdAt: new Date().getTime()
+                });
+            } else if (user.userType === "v") {
+                // Update the record log
+                record.log.push({
+                    action: `DELETE:VERIFIER${user._id.toHexString()}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key: id },
+                    createdAt: new Date().getTime()
+                });
+            }
 
             // Flip flag
             flag = true;
@@ -422,7 +579,7 @@ RecordSchema.methods.deleteByRecordId = function (id) {
 };
 // ###################################################################
 // To find and update by record _id
-RecordSchema.methods.updateByRecordId = function (id, value, verified) {
+RecordSchema.methods.updateByRecordId = function (id, value, user) {
     const record = this;
 
     // Flag
@@ -433,26 +590,35 @@ RecordSchema.methods.updateByRecordId = function (id, value, verified) {
     // Update record body
     const findAndUpdate = (key) => {
         // Get rec
-        const rec = _.remove(record[key], (res => res._id.toHexString() === id));
+        const rec = _.remove(record[key], (res => res._id.toHexString() === id));// Removes all elements matching condition
+
+        // Check rec
         if (!_.isEmpty(rec)) {
             // Update the rec body
             rec[0].data = value;
-            rec[0].enteredAt = new Date().getTime().toString();
-            if (verified) {
-                rec[0].isVerified = true;
-            } else {
-                rec[0].isVerified = false;
+            rec[0].updatedAt = new Date().getTime();
+
+            // Check if seller or verifier
+            if (user.userType === "s") {
+                rec[0].verifier = [];
+
+                // Update the record log
+                record.log.push({
+                    action: `UPDATE:SELLER${user._id.toHexString()}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key: id, value },
+                    createdAt: new Date().getTime()
+                });
+            } else if (user.userType === "v") {
+                // Update the record log
+                record.log.push({
+                    action: `UPDATE:VERIFIER${user._id.toHexString()}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key: id, value },
+                    createdAt: new Date().getTime()
+                });
             }
 
             // Push the rec body
             record[key].push(rec[0]);
-
-            // Update the record log
-            record.log.push({
-                event: `PATCH:USER${id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
-                data: `${key}:${rec[0].data}`,
-                enteredAt: new Date().toUTCString()
-            });
 
             // Flip flag
             flag = true;
@@ -469,8 +635,8 @@ RecordSchema.methods.updateByRecordId = function (id, value, verified) {
     }
 };
 // ###################################################################
-// To find ownerRecords by owner _id
-RecordSchema.methods.findByOwnerRecords = function (id, key) {
+// To find verified ownerRecords by owner _id
+RecordSchema.methods.findVerifiedOwnerRecords = function (id, key) {
     const record = this;
 
     // Create ownerRecords
@@ -478,19 +644,19 @@ RecordSchema.methods.findByOwnerRecords = function (id, key) {
 
     // Check record[key]
     record[key].forEach((rec) => {
-        // Check isVerified
-        if (rec.isVerified) {
+        // Check if verified
+        if (rec.verifier.length !== 0) {
             let decoded;
 
             try {
-                // Get object with owner and record property
-                decoded = jwt.verify(rec.owner[0], process.env.USER_SECRET);
+                // Get object with owner, record, time property
+                decoded = jwt.verify(rec.owner[0].sign, process.env.USER_SECRET);
             } catch (err) {
                 throw err;
             }
 
             if (decoded.owner === id.toHexString()) {
-                // Update the sellerRecord body
+                // Update the ownerRecords body
                 ownerRecords.push(rec);
             }
         }

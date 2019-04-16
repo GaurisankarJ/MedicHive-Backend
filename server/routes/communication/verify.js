@@ -54,13 +54,13 @@ const sellerVerifyRecord = async (req, res) => {
             action: "VERIFY",
             body: { key },
             from: req.user.email,
-            time: new Date().getTime().toString()
+            time: new Date().getTime()
         },
         {
             action: "VERIFY",
             body: { key },
             to: verifierEmail,
-            time: new Date().getTime().toString()
+            time: new Date().getTime()
         }];
 
         // Patch verifierData
@@ -125,9 +125,9 @@ const verifierGetRecord = async (req, res) => {
             throw new Error(400);
         } else {
             // Get seller
-            const seller = await User.findOne({ email: sellerEmail });
+            const seller = await User.findOne({ email: sellerEmail, isActive: true });
             // Check seller
-            if (!seller || !seller.isActive) {
+            if (!seller) {
                 throw new Error(404);
             }
 
@@ -138,7 +138,7 @@ const verifierGetRecord = async (req, res) => {
                 throw new Error(404);
             }
             // Filter sellerRecord
-            sellerRecord[keyToVerify] = sellerRecord[keyToVerify].filter(record => !record.isVerified);
+            sellerRecord[keyToVerify] = sellerRecord[keyToVerify].filter(record => record.verifier.length === 0);
 
             // Send JSON body
             res.json({ record: sellerRecord[keyToVerify], seller: sellerEmail, email: req.user.email });
@@ -166,9 +166,9 @@ const verifierVerifyRecord = async (req, res) => {
         }
 
         // Get seller
-        const seller = await User.findOne({ email: sellerEmail, userType: "s" });
+        const seller = await User.findOne({ email: sellerEmail, userType: "s", isActive: true });
         // Check seller
-        if (!seller || !seller.isActive) {
+        if (!seller) {
             throw new Error(404);
         }
 
@@ -200,9 +200,6 @@ const verifierVerifyRecord = async (req, res) => {
             throw new Error(404);
         }
 
-        // Create ownerToken
-        const ownerToken = sellerRecord.generateOwnerToken(seller);
-
         // Create verifierToken
         const verifierToken = verifierRecord.generateOwnerToken(req.user);
 
@@ -210,16 +207,13 @@ const verifierVerifyRecord = async (req, res) => {
         let count = 0;
         // Check sellerRecord array
         sellerRecord[key].forEach((record) => {
-            // Check isVerified
-            if (!record.isVerified) {
-                // Update isVerified body
-                record.isVerified = true;
-
-                // Update owner
-                record.owner[0] = ownerToken;
-
-                // Update verifier
-                record.verifier.push(verifierToken);
+            // Check if verified
+            if (record.verifier.length === 0) {
+                // Update sellerRecord
+                record.verifier.push({
+                    email: req.user.email,
+                    sign: verifierToken
+                });
 
                 // Update verifierRecord
                 verifierRecord[key].push(record);
@@ -235,16 +229,16 @@ const verifierVerifyRecord = async (req, res) => {
         } else {
             // Update the sellerRecord log
             sellerRecord.log.push({
-                event: `GET:VERIFIER${req.user._id}:VERIFIER_REC${verifierRecord._id}:SELLER${seller._id}:SELLER_REC${sellerRecord._id}:DATE${new Date().getTime().toString()}`,
-                data: `VERIFIED:${key}:${count}`,
-                enteredAt: new Date().toUTCString()
+                action: `VERIFY:VERIFIER${req.user._id}:VERIFIER_RECORD${verifierRecord._id}:SELLER${seller._id}:SELLER_RECORD${sellerRecord._id}:DATE${new Date().getTime().toString()}`,
+                body: { key, count },
+                createdAt: new Date().getTime()
             });
 
             // Update the verifierRecord log
             verifierRecord.log.push({
-                event: `POST:SELLER${seller._id}:SELLER_REC${sellerRecord._id}:VERIFIER${req.user._id}:VERIFIER_REC${verifierRecord._id}:DATE${new Date().getTime().toString()}`,
-                data: `VERIFY:${key}:${count}`,
-                enteredAt: new Date().toUTCString()
+                action: `POST:SELLER${seller._id}:SELLER_RECORD${sellerRecord._id}:VERIFIER${req.user._id}:VERIFIER_RECORD${verifierRecord._id}:DATE${new Date().getTime().toString()}`,
+                body: { key, count },
+                createdAt: new Date().getTime()
             });
 
             // Patch sellerRecord
@@ -261,16 +255,16 @@ const verifierVerifyRecord = async (req, res) => {
 
             // Set message
             const message = [{
-                action: "VERIFIED",
+                action: "VERIFY",
                 body: { key, count },
                 from: req.user.email,
-                time: new Date().getTime().toString()
+                time: new Date().getTime()
             },
             {
-                action: "VERIFIED",
+                action: "VERIFY",
                 body: { key, count },
                 to: sellerEmail,
-                time: new Date().getTime().toString()
+                time: new Date().getTime()
             }];
 
             // Patch sellerData

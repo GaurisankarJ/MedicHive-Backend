@@ -207,7 +207,8 @@ const userData = [
                     _id: messageSentId,
                     action: "VERIFY",
                     body: { key: "allergy" },
-                    to: users[2].email
+                    to: users[2].email,
+                    time: 100
                 }
             ]
         },
@@ -237,7 +238,8 @@ const userData = [
                     _id: messageReceivedId,
                     action: "VERIFY",
                     body: { key: "allergy" },
-                    from: users[0].email
+                    from: users[0].email,
+                    time: 100
                 }
             ]
         },
@@ -306,7 +308,8 @@ const signToken = (userId, recordId) => {
     const token = jwt.sign(
         {
             owner: userId.toHexString(),
-            record: recordId.toHexString()
+            record: recordId.toHexString(),
+            time: new Date(100).getTime()
         },
         process.env.USER_SECRET
     );
@@ -321,55 +324,87 @@ const records = [
             {
                 _id: new ObjectID(),
                 data: "Allergy Seller",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         medication: [
             {
                 _id: new ObjectID(),
                 data: "Medication Seller",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         problem: [
             {
                 _id: new ObjectID(),
                 data: "Problem Seller",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         immunization: [
             {
                 _id: new ObjectID(),
                 data: "Immunization Seller",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         vital_sign: [
             {
                 _id: new ObjectID(),
                 data: "Vital Sign Seller",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         procedure: [
             {
                 _id: new ObjectID(),
                 data: "Procedure Seller",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         log: [
             {
-                event: "GENESIS",
-                data: "GENESIS",
-                enteredAt: new Date().toUTCString()
+                action: `GENESIS:USER${users[0]._id}:DATE${new Date(100).getTime().toString()}`,
+                body: {
+                    userType: users[0].userType
+                },
+                createdAt: new Date(100).getTime()
             }
         ],
         _creator: userOneId
@@ -380,61 +415,147 @@ const records = [
             {
                 _id: new ObjectID(),
                 data: "Allergy Buyer",
-                isVerified: true,
-                owner: [signToken(userOneId, recordOneId), signToken(userTwoId, recordTwoId)],
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    },
+                    {
+                        email: users[1].email,
+                        sign: signToken(userTwoId, recordTwoId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         medication: [
             {
                 _id: new ObjectID(),
                 data: "Medication Buyer",
-                isVerified: true,
-                owner: [signToken(userOneId, recordOneId), signToken(userTwoId, recordTwoId)],
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    },
+                    {
+                        email: users[1].email,
+                        sign: signToken(userTwoId, recordTwoId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         problem: [
             {
                 _id: new ObjectID(),
                 data: "Problem Buyer",
-                isVerified: true,
-                owner: [signToken(userOneId, recordOneId), signToken(userTwoId, recordTwoId)],
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    },
+                    {
+                        email: users[1].email,
+                        sign: signToken(userTwoId, recordTwoId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         immunization: [
             {
                 _id: new ObjectID(),
                 data: "Immunization Buyer",
-                isVerified: true,
-                owner: [signToken(userOneId, recordOneId), signToken(userTwoId, recordTwoId)],
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    },
+                    {
+                        email: users[1].email,
+                        sign: signToken(userTwoId, recordTwoId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         vital_sign: [
             {
                 _id: new ObjectID(),
                 data: "Vital Sign Buyer",
-                isVerified: true,
-                owner: [signToken(userOneId, recordOneId), signToken(userTwoId, recordTwoId)],
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    },
+                    {
+                        email: users[1].email,
+                        sign: signToken(userTwoId, recordTwoId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         procedure: [
             {
                 _id: new ObjectID(),
                 data: "Procedure Buyer",
-                isVerified: true,
-                owner: [signToken(userOneId, recordOneId), signToken(userTwoId, recordTwoId)],
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    },
+                    {
+                        email: users[1].email,
+                        sign: signToken(userTwoId, recordTwoId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         log: [
             {
-                event: "GENESIS",
-                data: "GENESIS",
-                enteredAt: new Date().toUTCString()
+                action: `GENESIS:USER${users[1]._id}:DATE${new Date(100).getTime().toString()}`,
+                body: {
+                    userType: users[1].userType
+                },
+                createdAt: new Date(100).getTime()
             }
         ],
         _creator: userTwoId
@@ -445,61 +566,123 @@ const records = [
             {
                 _id: new ObjectID(),
                 data: "Allergy Verifier",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId),
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         medication: [
             {
                 _id: new ObjectID(),
                 data: "Medication Verifier",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId),
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         problem: [
             {
                 _id: new ObjectID(),
                 data: "Problem Verifier",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId),
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         immunization: [
             {
                 _id: new ObjectID(),
                 data: "Immunization Verifier",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId),
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         vital_sign: [
             {
                 _id: new ObjectID(),
                 data: "Vital Sign Verifier",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId),
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         procedure: [
             {
                 _id: new ObjectID(),
                 data: "Procedure Verifier",
-                isVerified: true,
-                owner: signToken(userOneId, recordOneId),
-                verifier: signToken(userThreeId, recordThreeId)
+                owner: [
+                    {
+                        email: users[0].email,
+                        sign: signToken(userOneId, recordOneId)
+                    }
+                ],
+                verifier: [
+                    {
+                        email: users[2].email,
+                        sign: signToken(userThreeId, recordThreeId)
+                    }
+                ],
+                createdAt: new Date(100).getTime()
             }
         ],
         log: [
             {
-                event: "GENESIS",
-                data: "GENESIS",
-                enteredAt: new Date().toUTCString()
+                action: `GENESIS:USER${users[2]._id}:DATE${new Date(100).getTime().toString()}`,
+                body: {
+                    userType: users[2].userType
+                },
+                createdAt: new Date(100).getTime()
             }
         ],
         _creator: userThreeId
@@ -523,14 +706,15 @@ const populateRecords = (done) => {
 // TO CLEAR AND REPOPULATE "records" with verified "records"
 const populateVerifiedRecords = (done) => {
     Record.deleteMany({}).then(() => {
-        records.forEach((record) => {
-            // Keys
-            const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
+        // Keys
+        const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
 
-            // Verify record
-            keys.forEach((key) => {
-                record[key][0].isVerified = true;
-            });
+        // Verify record
+        keys.forEach((key) => {
+            records[0][key][0].verifier = [{
+                email: users[2].email,
+                sign: signToken(userThreeId, recordThreeId)
+            }];
         });
 
         return Record.insertMany(records);
@@ -540,14 +724,12 @@ const populateVerifiedRecords = (done) => {
 // TO CLEAR AND REPOPULATE "records" with unverified "records"
 const populateUnverifiedRecords = (done) => {
     Record.deleteMany({}).then(() => {
-        records.forEach((record) => {
-            // Keys
-            const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
+        // Keys
+        const keys = ["allergy", "medication", "problem", "immunization", "vital_sign", "procedure"];
 
-            // Invert record
-            keys.forEach((key) => {
-                record[key][0].isVerified = false;
-            });
+        // Invert record
+        keys.forEach((key) => {
+            records[0][key][0].verifier = [];
         });
 
         return Record.insertMany(records);

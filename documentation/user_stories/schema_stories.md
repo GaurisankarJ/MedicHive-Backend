@@ -1,6 +1,7 @@
 # SCHEMA
 
 ## USER
+
 ```
 {
     email: [string], // VALID EMAIL ID
@@ -22,6 +23,7 @@
 ```
 
 ## DATA
+
 ```
 {
     name: [string],
@@ -45,7 +47,7 @@
             // [SELLER -> BUYER, VERIFIER]
             // [VERIFIER -> SELLER]
             to: [string], // VALID EMAIL ID
-            time: [string]
+            time: [number]
             }
         ],
         received: [
@@ -65,7 +67,7 @@
             // [SELLER <- BUYER, VERIFIER]
             // [VERIFIER <- SELLERS]
             from: [string], // VALID EMAIL ID
-            time: [string]
+            time: [number]
             }
         ]
     },
@@ -86,6 +88,7 @@
 ```
 
 ## RECORD
+
 ```
 {
     allergy: [
@@ -103,8 +106,8 @@
                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
                 }
             ],
-            createdAt: [string],
-            updatedAt: [string]
+            createdAt: [number],
+            updatedAt: [number]
         }
     ],
     medication: [
@@ -122,8 +125,8 @@
                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
                 }
             ],
-            createdAt: [string],
-            updatedAt: [string]
+            createdAt: [number],
+            updatedAt: [number]
         }
     ],
     problem: [
@@ -141,8 +144,8 @@
                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
                 }
             ],
-            createdAt: [string],
-            updatedAt: [string]
+            createdAt: [number],
+            updatedAt: [number]
         }
     ],
     immunization: [
@@ -160,8 +163,8 @@
                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
                 }
             ],
-            createdAt: [string],
-            updatedAt: [string]
+            createdAt: [number],
+            updatedAt: [number]
         }
     ],
     vital_sign: [
@@ -179,8 +182,8 @@
                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
                 }
             ],
-            createdAt: [string],
-            updatedAt: [string]
+            createdAt: [number],
+            updatedAt: [number]
         }
     ],
     procedure: [
@@ -198,8 +201,8 @@
                     sign: [string], // VALID JWT TOKEN (unique user id, unique record id, time)
                 }
             ],
-            createdAt: [string],
-            updatedAt: [string]
+            createdAt: [number],
+            updatedAt: [number]
         }
     ],
     log: [
@@ -209,8 +212,12 @@
             // SELLER -> ADD, DELETE, UPDATE, VERIFY, SHARE
             // VERIFIER -> VERIFY, ADD, DELETE, UPDATE, SHARE
             action: [string],
-            data: [object],
-            createdAt: [string]
+            // BODY
+            // [BUYER <- SELLERS ({ key: [string], value: [string] })]
+            // [SELLER ({ key: [string], value: [string] }) <- VERIFIER ({ key: [string], value: [string] })]
+            // [VERIFIER ({ key: [string], value: [string] }) <- SELLER ({ key: [string], value: [string] })]
+            body: [object],
+            createdAt: [number]
         }
     ],
     _creator: [string] // UNIQUE USER IDENTIFIER

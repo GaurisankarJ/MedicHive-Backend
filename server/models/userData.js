@@ -23,7 +23,7 @@
 //             // [SELLER -> BUYER, VERIFIER]
 //             // [VERIFIER -> SELLER]
 //             to: [string], // VALID EMAIL ID
-//             time: [string]
+//             time: [number]
 //             }
 //         ],
 //         received: [
@@ -43,7 +43,7 @@
 //             // [SELLER <- BUYER, VERIFIER]
 //             // [VERIFIER <- SELLERS]
 //             from: [string], // VALID EMAIL ID
-//             time: [string]
+//             time: [number]
 //             }
 //         ]
 //     },
@@ -111,7 +111,8 @@ const UserDataSchema = new mongoose.Schema({
                 trim: true
             },
             time: {
-                type: String,
+                type: Number,
+                required: true,
                 minlength: 1,
                 trim: true
             }
@@ -129,7 +130,8 @@ const UserDataSchema = new mongoose.Schema({
                 trim: true
             },
             time: {
-                type: String,
+                type: Number,
+                required: true,
                 minlength: 1,
                 trim: true
             }

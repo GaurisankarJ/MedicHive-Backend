@@ -3,7 +3,9 @@
 ### CREATE USER RECORD
 >  Handle creating record of a user.
 * **URL**
+  ```
   /record
+  ```
 * **Method:**
   ```
   POST
@@ -46,32 +48,82 @@
 ### GET USER RECORD
 >  Handle fetching record of a user.
 * **URL**
+  ```
   /record
+  ```
 * **Method:**
   ```
   GET
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
 * **URL Params**
-* **Query Params** 
+* **Query Params**
 * **Data Params**
 * **Success Response:**
-  * ***Code:*** 
+  * ***Code:***
       200
   * ***Content:***
     ```
     {
     "record": {
-        "allergy": ALLERGY ARRAY,
-        "medication": MEDICATION ARRAY,
-        "problem": PROBLEM ARRAY,
-        "immunization": IMMUNIZATION ARRAY,
-        "vital_sign": VITAL SIGN ARRAY,
-        "procedure": PROCEDURE ARRAY
+        "allergy": [
+          {
+            "_id": VALID ID,
+            "data": VALID DATA,
+            "owner: OWNER ARRAY,
+            "verifier: VERIFIER ARRAY,
+            "createdAt": VALID TIME
+          }
+        ],
+        "medication": [
+          {
+            "_id": VALID ID,
+            "data": VALID DATA,
+            "owner: OWNER ARRAY,
+            "verifier: VERIFIER ARRAY,
+            "createdAt": VALID TIME
+          }
+        ],
+        "problem": [
+          {
+            "_id": VALID ID,
+            "data": VALID DATA,
+            "owner: OWNER ARRAY,
+            "verifier: VERIFIER ARRAY,
+            "createdAt": VALID TIME
+          }
+        ],
+        "immunization": [
+          {
+            "_id": VALID ID,
+            "data": VALID DATA,
+            "owner: OWNER ARRAY,
+            "verifier: VERIFIER ARRAY,
+            "createdAt": VALID TIME
+          }
+        ],
+        "vital_sign": [
+          {
+            "_id": VALID ID,
+            "data": VALID DATA,
+            "owner: OWNER ARRAY,
+            "verifier: VERIFIER ARRAY,
+            "createdAt": VALID TIME
+          }
+        ],
+        "procedure": [
+          {
+            "_id": VALID ID,
+            "data": VALID DATA,
+            "owner: OWNER ARRAY,
+            "verifier: VERIFIER ARRAY,
+            "createdAt": VALID TIME
+          }
+        ]
     },
     "email": VALID EMAIL ID
     }
@@ -89,7 +141,17 @@
   ```
   {
     "record": {
-        "allergy": [],
+        "allergy": [
+            {
+                "_id": "5cb0ccda5f196e0578e75cef",
+                "data": "Allergy",
+                "owner": [
+                    "example@example.com"
+                ],
+                "verifier": [],
+                "createdAt": 1555090650935
+            }
+        ],
         "medication": [],
         "problem": [],
         "immunization": [],
@@ -105,13 +167,15 @@
 ### DELETE USER RECORD
 >  Handle deleting record of a user.
 * **URL**
+  ```
   /record
+  ```
 * **Method:**
   ```
   DELETE
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
@@ -136,7 +200,9 @@
 ### UPDATE USER RECORD
 >  Handle updating record of a user.
 * **URL**
+  ```
   /record
+  ```
 * **Method:**
   ```
   PATCH
@@ -164,8 +230,8 @@
   * ***Content:***
     ```
     {
-    	"message": "KEY updated",
-    	"email": VALID EMAIL ID
+      "message": "KEY updated",
+      "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -195,7 +261,9 @@
 ### DELETE USER RECORD ELEMENT
 >  Handle deleting record element of a user.
 * **URL**
+  ```
   /record/:id
+  ```
 * **Method:**
   ```
   DELETE
@@ -217,8 +285,8 @@
   * ***Content:***
     ```
     {
-    	"message": "record deleted",
-    	"email": VALID EMAIL ID
+      "message": "record deleted",
+      "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -243,7 +311,9 @@
 ### UPDATE USER RECORD ELEMENT
 >  Handle updating record element of a user.
 * **URL**
+  ```
   /record/:id
+  ```
 * **Method:**
   ```
   PATCH
@@ -272,8 +342,8 @@
   * ***Content:***
     ```
     {
-    	"message": "record updated",
-    	"email": VALID EMAIL ID
+      "message": "record updated",
+      "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**

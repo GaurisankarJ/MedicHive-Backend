@@ -26,24 +26,24 @@ const buyerRequestRecord = async (req, res) => {
 
         // Set message
         const message = [{
-            action: "REQUESTED",
+            action: "REQUEST",
             body: { key },
             from: req.user.email,
-            time: new Date().getTime().toString()
+            time: new Date().getTime()
         },
         {
             action: "REQUEST",
             body: { key },
-            time: new Date().getTime().toString()
+            time: new Date().getTime()
         }];
 
-        // Patch all sellerData
+        // Update all sellerData
         await UserData.updateMany(
             { userType: "s" },
             { $push: { "message.received": message[0] } }
         );
 
-        // Patch buyerData
+        // Update buyerData
         await UserData.updateOne(
             { _creator: req.user._id },
             { $push: { "message.sent": message[1] } }
@@ -74,7 +74,7 @@ const sellerRequestRecord = async (req, res) => {
         }
 
         // Get verifier
-        const verifier = await User.findOne({ email: verifierEmail, userType: "v"});
+        const verifier = await User.findOne({ email: verifierEmail, userType: "v" });
         // Check verifier
         if (!verifier || !verifier.isActive) {
             throw new Error(404);
@@ -96,25 +96,25 @@ const sellerRequestRecord = async (req, res) => {
 
         // Set messages
         const message = [{
-            action: "REQUESTED",
+            action: "REQUEST",
             body: { key },
             from: req.user.email,
-            time: new Date().getTime().toString()
+            time: new Date().getTime()
         },
         {
             action: "REQUEST",
             body: { key },
             to: verifierEmail,
-            time: new Date().getTime().toString()
+            time: new Date().getTime()
         }];
 
-        // Patch verifierData
+        // Update verifierData
         await UserData.updateOne(
             { _creator: verifier._id },
             { $push: { "message.received": message[0] } },
         );
 
-        // Patch sellerData
+        // Update sellerData
         await UserData.updateOne(
             { _creator: req.user._id },
             { $push: { "message.sent": message[1] } }

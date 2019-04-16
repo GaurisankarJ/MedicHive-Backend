@@ -3,13 +3,15 @@
 ### CREATE USER DATA
 >  Handle creating user data of a user.
 * **URL**
+  ```
   /users/me
+  ```
 * **Method:**
   ```
   POST
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
@@ -19,14 +21,14 @@
   ***Payload:***
   ```
   {
-	"name": NAME,
-	"address": ADDRESS,
-	"seller": {
-		"age": VALID AGE,
-		"weight": VALID WEIGHT,
-		"sex": VALID SEX,
-		"occupation": OCCUPATION
-	}
+	  "name": NAME,
+	  "address": ADDRESS,
+	  "seller": {
+		  "age": VALID AGE,
+		  "weight": VALID WEIGHT,
+		  "sex": VALID SEX,
+		  "occupation": OCCUPATION
+	  }
   }
   ```
   ***Constraints:***
@@ -37,7 +39,7 @@
   * ***Code:*** 200
   * ***Content:***
     ```
-    { 
+    {
       message : "user created",
       email: VALID EMAIL ID
     }
@@ -74,7 +76,9 @@
 ### GET USER DATA
 >  Handle fetching user data of a user.
 * **URL**
+  ```
   /users/me
+  ```
 * **Method:**
   ```
   GET
@@ -139,13 +143,15 @@
 ### DELETE USER DATA
 >  Handle deleting user data of a user.
 * **URL**
+  ```
   /users/me
+  ```
 * **Method:**
   ```
   DELETE
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
@@ -170,13 +176,15 @@
 ### UPDATE USER DATA
 >  Handle updating user data of a user.
 * **URL**
+  ```
   /users/me
+  ```
 * **Method:**
   ```
   PATCH
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
@@ -192,14 +200,14 @@
   ```
   ***Constraints:***
   * Key must be valid.
-* **Success Response:** 
-  * ***Code:*** 
+* **Success Response:**
+  * ***Code:***
       200
   * ***Content:***
     ```
     {
-    	"message": "KEY updated",
-    	"email": VALID EMAIL ID
+      "message": "KEY updated",
+      "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -226,16 +234,18 @@
 * **Notes:**
 ***
 
-### GET MESSAGE'S OF USERS
+### GET USER'S MESSAGES
 >  Handle fetching messages of a user.
 * **URL**
+  ```
   /message/me
+  ```
 * **Method:**
   ```
   GET
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
@@ -243,13 +253,13 @@
 * **Query Params**
 * **Data Params**
 * **Success Response:**
-  * ***Code:*** 
+  * ***Code:***
       200
   * ***Content:***
     ```
-    { 
-      "sent": SENT MESSAGES ARRAY, 
-      "received": RECEIVED MESSAGES ARRAY, 
+    {
+      "sent": SENT MESSAGES ARRAY,
+      "received": RECEIVED MESSAGES ARRAY,
       "email": VALID EMAIL ID
     }
     ```
@@ -265,8 +275,8 @@
 * **Sample Response:**
   ```
   { 
-    "sent": [], 
-    "received": [], 
+    "sent": [],
+    "received": [],
     "email": "seller@example.com"
   }
   ```

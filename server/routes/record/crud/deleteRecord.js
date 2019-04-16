@@ -42,7 +42,7 @@ const deleteRecordById = async (req, res) => {
         }
 
         // Update record body
-        record = await record.deleteByRecordId(id);
+        record = await record.deleteByRecordId(id, req.user);
         // Check record
         if (!record) {
             throw new Error(404);
@@ -51,8 +51,7 @@ const deleteRecordById = async (req, res) => {
         // Update record
         await Record.updateOne(
             { _creator: req.user._id },
-            { $set: record },
-            { new: true }
+            { $set: record }
         );
 
         // Send JSON body

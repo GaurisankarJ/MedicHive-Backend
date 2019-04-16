@@ -55,21 +55,24 @@ const sellerShareRecord = async (req, res) => {
         }
 
         // Get sellerRecords from seller
-        const sellerRecords = sellerRecord.findByOwnerRecords(req.user._id, key);
+        const sellerRecords = sellerRecord.findVerifiedOwnerRecords(req.user._id, key);
 
-        // Create ownerToken
-        const ownerToken = buyerRecord.generateOwnerToken(buyer);
+        // Create ownerTokenBuyer
+        const ownerTokenBuyer = buyerRecord.generateOwnerToken(buyer);
 
         // Count
         let count = 0;
         // Check sellerRecords
         sellerRecords.forEach((record) => {
-            // Check record
+            // Check record against buyerRecord
             if (!_.find(buyerRecord[key], { _id: record._id })) {
-                // Update owner
-                record.owner.push(ownerToken);
+                // Update sellerRecord
+                record.owner.push({
+                    email: buyer.email,
+                    sign: ownerTokenBuyer
+                });
 
-                // Update buyerRecord body
+                // Update buyerRecord
                 buyerRecord[key].push(record);
 
                 // Update count
@@ -83,25 +86,25 @@ const sellerShareRecord = async (req, res) => {
         } else {
             // Update the buyerRecord log
             buyerRecord.log.push({
-                event: `GET:SELLER${req.user._id}:SELLER_REC${sellerRecord._id}:BUYER${buyer._id}:BUYER_REC${buyerRecord._id}:DATE${new Date().getTime().toString()}`,
-                data: `RECEIVED:${key}:${count}`,
-                enteredAt: new Date().toUTCString()
+                action: `SHARE:SELLER${req.user._id}:SELLER_RECORD${sellerRecord._id}:BUYER${buyer._id}:BUYER_RECORD${buyerRecord._id}:DATE${new Date().getTime().toString()}`,
+                body: { key, count },
+                createdAt: new Date().getTime()
             });
 
             // Update the sellerRecord log
             sellerRecord.log.push({
-                event: `POST:BUYER${buyer._id}:BUYER_REC${buyerRecord._id}:SELLER${req.user._id}:SELLER_REC${sellerRecord._id}:DATE${new Date().getTime().toString()}`,
-                data: `SENT:${key}:${count}`,
-                enteredAt: new Date().toUTCString()
+                action: `SHARE:BUYER${buyer._id}:BUYER_RECORD${buyerRecord._id}:SELLER${req.user._id}:SELLER_RECORD${sellerRecord._id}:DATE${new Date().getTime().toString()}`,
+                body: { key, count },
+                createdAt: new Date().getTime()
             });
 
-            // Patch buyerRecord
+            // Update buyerRecord
             await Record.updateOne(
                 { _creator: buyer._id },
                 { $set: buyerRecord }
             );
 
-            // Patch sellerRecord
+            // Update sellerRecord
             await Record.updateOne(
                 { _creator: req.user._id },
                 { $set: sellerRecord }
@@ -109,29 +112,29 @@ const sellerShareRecord = async (req, res) => {
 
             // Set messages
             const message = [{
-                action: "RECEIVED",
+                action: "SHARE",
                 body: {
                     key, count
                 },
                 from: req.user.email,
-                time: new Date().getTime().toString()
+                time: new Date().getTime()
             },
             {
-                action: "SENT",
+                action: "SHARE",
                 body: {
                     key, count
                 },
                 to: buyerEmail,
-                time: new Date().getTime().toString()
+                time: new Date().getTime()
             }];
 
-            // Patch buyerData
+            // Update buyerData
             await UserData.updateOne(
                 { _creator: buyer._id },
                 { $push: { "message.received": message[0] } }
             );
 
-            // Patch sellerData
+            // Update sellerData
             await UserData.updateOne(
                 { _creator: req.user._id },
                 { $push: { "message.sent": message[1] } }
@@ -198,19 +201,22 @@ const verifierShareRecord = async (req, res) => {
         }
 
         // Get verifierRecords from verifier
-        const verifierRecords = verifierRecord.findByOwnerRecords(seller._id, key);
+        const verifierRecords = verifierRecord.findVerifiedOwnerRecords(seller._id, key);
 
-        // Create ownerToken
-        const ownerToken = sellerRecord.generateOwnerToken(seller);
+        // Create ownerTokenSeller
+        const ownerTokenSeller = sellerRecord.generateOwnerToken(seller);
 
         // Count
         let count = 0;
         // Check verifierRecords array
         verifierRecords.forEach((record) => {
-            // Check record
+            // Check record against sellerRecord
             if (!_.find(sellerRecord[key], { _id: record._id })) {
                 // Update owner
-                record.owner[0] = ownerToken;
+                record.owner.push({
+                    email: seller.email,
+                    sign: ownerTokenSeller
+                });
 
                 // Update sellerRecord body
                 sellerRecord[key].push(record);
@@ -226,25 +232,25 @@ const verifierShareRecord = async (req, res) => {
         } else {
             // Update the sellerRecord log
             sellerRecord.log.push({
-                event: `GET:VERIFIER${req.user._id}:VERIFIER_REC${verifierRecord._id}:SELLER${seller._id}:SELLER_REC${sellerRecord._id}:DATE${new Date().getTime().toString()}`,
-                data: `RECEIVED:${key}:${count}`,
-                enteredAt: new Date().toUTCString()
+                action: `SHARE:VERIFIER${req.user._id}:VERIFIER_RECORD${verifierRecord._id}:SELLER${seller._id}:SELLER_RECORD${sellerRecord._id}:DATE${new Date().getTime().toString()}`,
+                body: { key, count },
+                createdAt: new Date().getTime()
             });
 
             // Update the verifierRecord log
             verifierRecord.log.push({
-                event: `POST:SELLER${seller._id}:SELLER_REC${sellerRecord._id}:VERIFIER${req.user._id}:VERIFIER_REC${verifierRecord._id}:DATE${new Date().getTime().toString()}`,
-                data: `SENT:${key}:${count}`,
-                enteredAt: new Date().toUTCString()
+                action: `SHARE:SELLER${seller._id}:SELLER_RECORD${sellerRecord._id}:VERIFIER${req.user._id}:VERIFIER_RECORD${verifierRecord._id}:DATE${new Date().getTime().toString()}`,
+                body: { key, count },
+                createdAt: new Date().getTime()
             });
 
-            // Patch sellerRecord
+            // Update sellerRecord
             await Record.updateOne(
                 { _creator: seller._id },
                 { $set: sellerRecord }
             );
 
-            // Patch verifierRecord
+            // Update verifierRecord
             await Record.updateOne(
                 { _creator: req.user._id },
                 { $set: verifierRecord }
@@ -252,25 +258,25 @@ const verifierShareRecord = async (req, res) => {
 
             // Set messages
             const message = [{
-                action: "RECEIVED",
+                action: "SHARE",
                 body: { key, count },
                 from: req.user.email,
-                time: new Date().getTime().toString()
+                time: new Date().getTime()
             },
             {
-                action: "SENT",
+                action: "SHARE",
                 body: { key, count },
                 to: sellerEmail,
-                time: new Date().getTime().toString()
+                time: new Date().getTime()
             }];
 
-            // Patch sellerData
+            // Update sellerData
             await UserData.updateOne(
                 { _creator: seller._id },
                 { $push: { "message.received": message[0] } }
             );
 
-            // Patch verifierData
+            // Update verifierData
             await UserData.updateOne(
                 { _creator: req.user._id },
                 { $push: { "message.sent": message[1] } }

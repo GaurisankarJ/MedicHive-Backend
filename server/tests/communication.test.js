@@ -180,13 +180,15 @@ describe("POST /request/s", () => {
                         expect(sellerData.message.sent[1].action).toBe("REQUEST");
                         expect(sellerData.message.sent[1].body.key).toBe(body.key);
                         expect(sellerData.message.sent[1].to).toBe(body.verifierEmail);
+                        expect(sellerData.message.sent[1].time).toBeTruthy();
                     }).catch(e => done(e));
 
                     UserData.findOne({ _creator: users[2]._id.toHexString() }).then((verifierData) => {
                         expect(verifierData.message.received.length).toBe(2);
-                        expect(verifierData.message.received[1].action).toBe("REQUESTED");
+                        expect(verifierData.message.received[1].action).toBe("REQUEST");
                         expect(verifierData.message.received[1].body.key).toBe(body.key);
                         expect(verifierData.message.received[1].from).toBe(users[0].email);
+                        expect(verifierData.message.received[1].time).toBeTruthy();
                     }).catch(e => done(e));
 
                     done();
@@ -375,6 +377,8 @@ describe("POST /request/s", () => {
 
 describe("POST /share/s", () => {
     describe("POPULATED", () => {
+        beforeEach(populateVerifiedRecords);
+
         const shareRecord = (key) => {
             it(`should share ${key} if authenticated, activated, verified`, (done) => {
                 const body = {
@@ -399,26 +403,35 @@ describe("POST /share/s", () => {
 
                         Record.findOne({ _creator: users[0]._id.toHexString() }).then((sellerRecord) => {
                             expect(sellerRecord.log.length).toBe(2);
+                            expect(sellerRecord.log[1].action).toBeTruthy();
+                            expect(sellerRecord.log[1].body).toBeTruthy();
+                            expect(sellerRecord.log[1].createdAt).toBeTruthy();
 
                             Record.findOne({ _creator: users[1]._id.toHexString() }).then((buyerRecord) => {
                                 expect(buyerRecord[key][1].toObject()).toMatchObject(sellerRecord[key][0].toObject());
                                 expect(buyerRecord.log.length).toBe(2);
+                                expect(buyerRecord.log[1].action).toBeTruthy();
+                                expect(buyerRecord.log[1].body).toBeTruthy();
+                                expect(buyerRecord.log[1].createdAt).toBeTruthy();
                             }).catch(e => done(e));
                         }).catch(e => done(e));
 
                         UserData.findOne({ _creator: users[0]._id.toHexString() }).then((sellerData) => {
                             expect(sellerData.message.sent.length).toBe(2);
-                            expect(sellerData.message.sent[1].action).toBe("SENT");
+                            expect(sellerData.message.sent[1].action).toBe("SHARE");
                             expect(sellerData.message.sent[1].body.key).toBe(body.key);
                             expect(sellerData.message.sent[1].body.count).toBe(1);
+                            expect(sellerData.message.sent[1].to).toBe(users[1].email);
+                            expect(sellerData.message.sent[1].time).toBeTruthy();
                         }).catch(e => done(e));
 
                         UserData.findOne({ _creator: users[1]._id.toHexString() }).then((buyerData) => {
                             expect(buyerData.message.received.length).toBe(1);
-                            expect(buyerData.message.received[0].action).toBe("RECEIVED");
+                            expect(buyerData.message.received[0].action).toBe("SHARE");
                             expect(buyerData.message.received[0].body.key).toBe(body.key);
                             expect(buyerData.message.received[0].body.count).toBe(1);
                             expect(buyerData.message.received[0].from).toBe(users[0].email);
+                            expect(buyerData.message.received[0].time).toBeTruthy();
                         }).catch(e => done(e));
 
                         done();
@@ -712,26 +725,35 @@ describe("POST /share/v", () => {
 
                         Record.findOne({ _creator: users[2]._id.toHexString() }).then((verifierRecord) => {
                             expect(verifierRecord.log.length).toBe(2);
+                            expect(verifierRecord.log[1].action).toBeTruthy();
+                            expect(verifierRecord.log[1].body).toBeTruthy();
+                            expect(verifierRecord.log[1].createdAt).toBeTruthy();
 
                             Record.findOne({ _creator: users[0]._id.toHexString() }).then((sellerRecord) => {
                                 expect(sellerRecord[key][1].toObject()).toMatchObject(verifierRecord[key][0].toObject());
                                 expect(sellerRecord.log.length).toBe(2);
+                                expect(sellerRecord.log[1].action).toBeTruthy();
+                                expect(sellerRecord.log[1].body).toBeTruthy();
+                                expect(sellerRecord.log[1].createdAt).toBeTruthy();
                             }).catch(e => done(e));
                         }).catch(e => done(e));
 
-                        UserData.findOne({ _creator: users[2]._id.toHexString() }).then((sellerData) => {
-                            expect(sellerData.message.sent.length).toBe(1);
-                            expect(sellerData.message.sent[0].action).toBe("SENT");
-                            expect(sellerData.message.sent[0].body.key).toBe(body.key);
-                            expect(sellerData.message.sent[0].body.count).toBe(1);
+                        UserData.findOne({ _creator: users[2]._id.toHexString() }).then((verifierData) => {
+                            expect(verifierData.message.sent.length).toBe(1);
+                            expect(verifierData.message.sent[0].action).toBe("SHARE");
+                            expect(verifierData.message.sent[0].body.key).toBe(body.key);
+                            expect(verifierData.message.sent[0].body.count).toBe(1);
+                            expect(verifierData.message.sent[0].to).toBe(users[0].email);
+                            expect(verifierData.message.sent[0].time).toBeTruthy();
                         }).catch(e => done(e));
 
-                        UserData.findOne({ _creator: users[0]._id.toHexString() }).then((buyerData) => {
-                            expect(buyerData.message.received.length).toBe(1);
-                            expect(buyerData.message.received[0].action).toBe("RECEIVED");
-                            expect(buyerData.message.received[0].body.key).toBe(body.key);
-                            expect(buyerData.message.received[0].body.count).toBe(1);
-                            expect(buyerData.message.received[0].from).toBe(users[2].email);
+                        UserData.findOne({ _creator: users[0]._id.toHexString() }).then((sellerData) => {
+                            expect(sellerData.message.received.length).toBe(1);
+                            expect(sellerData.message.received[0].action).toBe("SHARE");
+                            expect(sellerData.message.received[0].body.key).toBe(body.key);
+                            expect(sellerData.message.received[0].body.count).toBe(1);
+                            expect(sellerData.message.received[0].from).toBe(users[2].email);
+                            expect(sellerData.message.received[0].time).toBeTruthy();
                         }).catch(e => done(e));
 
                         done();
@@ -964,39 +986,6 @@ describe("POST /share/v", () => {
             });
         });
     });
-
-    describe("NOT VERIFIED", () => {
-        beforeEach(populateUnverifiedRecords);
-        afterEach(populateVerifiedRecords);
-
-        const doNotShareRecord = (key) => {
-            it(`should not share ${key} if authenticated, activated, not verified`, (done) => {
-                const body = {
-                    key: "allergy",
-                    sellerEmail: users[0].email
-                };
-
-                request(app)
-                    .post("/share/v")
-                    .set("x-auth", users[2].tokens[0].token)
-                    .send(body)
-                    .expect(400)
-                    .end(done);
-            });
-        };
-
-        doNotShareRecord("allergy");
-
-        doNotShareRecord("medication");
-
-        doNotShareRecord("problem");
-
-        doNotShareRecord("immunization");
-
-        doNotShareRecord("vital_sign");
-
-        doNotShareRecord("procedure");
-    });
 });
 
 describe("POST /verify/s", () => {
@@ -1026,6 +1015,7 @@ describe("POST /verify/s", () => {
                         expect(sellerData.message.sent[0].action).toBe("VERIFY");
                         expect(sellerData.message.sent[0].body.key).toBe(body.key);
                         expect(sellerData.message.sent[0].to).toBe(body.verifierEmail);
+                        expect(sellerData.message.sent[0].time).toBeTruthy();
                     }).catch(e => done(e));
 
                     UserData.findOne({ _creator: users[2]._id.toHexString() }).then((verifierData) => {
@@ -1033,6 +1023,7 @@ describe("POST /verify/s", () => {
                         expect(verifierData.message.received[0].action).toBe("VERIFY");
                         expect(verifierData.message.received[0].body.key).toBe(body.key);
                         expect(verifierData.message.received[0].from).toBe(users[0].email);
+                        expect(verifierData.message.received[0].time).toBeTruthy();
                     }).catch(e => done(e));
 
                     done();
@@ -1387,9 +1378,9 @@ describe("GET /verify/v", () => {
 
 describe("POST /verify/v", () => {
     describe("POPULATED", () => {
-        const verifyRecord = (key) => {
-            beforeEach(populateUnverifiedRecords);
+        beforeEach(populateUnverifiedRecords);
 
+        const verifyRecord = (key) => {
             it(`should verify ${key} if authenticated, activated, unverified`, (done) => {
                 const body = {
                     key,
@@ -1413,25 +1404,31 @@ describe("POST /verify/v", () => {
 
                         Record.findOne({ _creator: users[2]._id.toHexString() }).then((verifierRecord) => {
                             expect(verifierRecord.log.length).toBe(2);
+                            expect(verifierRecord.log[1].action).toBeTruthy();
+                            expect(verifierRecord.log[1].body).toBeTruthy();
+                            expect(verifierRecord.log[1].createdAt).toBeTruthy();
 
                             Record.findOne({ _creator: users[0]._id.toHexString() }).then((sellerRecord) => {
                                 expect(sellerRecord.log.length).toBe(2);
+                                expect(sellerRecord.log[1].action).toBeTruthy();
+                                expect(sellerRecord.log[1].body).toBeTruthy();
+                                expect(sellerRecord.log[1].createdAt).toBeTruthy();
 
                                 let verifier;
                                 let seller;
                                 try {
-                                    verifier = jwt.verify(verifierRecord[key][1].verifier[0], process.env.USER_SECRET);
-                                    seller = jwt.verify(sellerRecord[key][0].owner[0], process.env.USER_SECRET);
+                                    verifier = jwt.verify(verifierRecord[key][1].verifier[0].sign, process.env.USER_SECRET);
+                                    seller = jwt.verify(sellerRecord[key][0].owner[0].sign, process.env.USER_SECRET);
                                 } catch (e) {
                                     done(e);
                                 }
 
                                 expect(verifierRecord[key][1]._id.toHexString()).toBe(records[0][body.key][0]._id.toHexString());
-                                expect(verifierRecord[key][1].isVerified).toBeTruthy();
+                                expect(verifierRecord[key][1].verifier.length).toBe(1);
                                 expect(verifier.owner).toBe(users[2]._id.toHexString());
                                 expect(verifier.record).toBe(records[2]._id.toHexString());
                                 expect(sellerRecord[key][0]._id.toHexString()).toBe(records[0][body.key][0]._id.toHexString());
-                                expect(sellerRecord[key][0].isVerified).toBeTruthy();
+                                expect(sellerRecord[key][0].verifier.length).toBe(1);
                                 expect(seller.owner).toBe(users[0]._id.toHexString());
                                 expect(seller.record).toBe(records[0]._id.toHexString());
                             }).catch(e => done(e));
@@ -1439,17 +1436,20 @@ describe("POST /verify/v", () => {
 
                         UserData.findOne({ _creator: users[2]._id.toHexString() }).then((sellerData) => {
                             expect(sellerData.message.sent.length).toBe(1);
-                            expect(sellerData.message.sent[0].action).toBe("VERIFIED");
+                            expect(sellerData.message.sent[0].action).toBe("VERIFY");
                             expect(sellerData.message.sent[0].body.key).toBe(body.key);
                             expect(sellerData.message.sent[0].body.count).toBe(1);
+                            expect(sellerData.message.sent[0].to).toBe(users[0].email);
+                            expect(sellerData.message.sent[0].time).toBeTruthy();
                         }).catch(e => done(e));
 
                         UserData.findOne({ _creator: users[0]._id.toHexString() }).then((buyerData) => {
                             expect(buyerData.message.received.length).toBe(1);
-                            expect(buyerData.message.received[0].action).toBe("VERIFIED");
+                            expect(buyerData.message.received[0].action).toBe("VERIFY");
                             expect(buyerData.message.received[0].body.key).toBe(body.key);
                             expect(buyerData.message.received[0].body.count).toBe(1);
                             expect(buyerData.message.received[0].from).toBe(users[2].email);
+                            expect(buyerData.message.received[0].time).toBeTruthy();
                         }).catch(e => done(e));
 
                         done();
@@ -1681,37 +1681,5 @@ describe("POST /verify/v", () => {
                 });
             });
         });
-    });
-
-    describe("NOT VERIFIED", () => {
-        beforeEach(populateVerifiedRecords);
-
-        const doNotVerifyRecord = (key) => {
-            it(`should not verify ${key} if authenticated, activated, verified`, (done) => {
-                const body = {
-                    key: "allergy",
-                    sellerEmail: users[0].email
-                };
-
-                request(app)
-                    .post("/verify/v")
-                    .set("x-auth", users[2].tokens[0].token)
-                    .send(body)
-                    .expect(400)
-                    .end(done);
-            });
-        };
-
-        doNotVerifyRecord("allergy");
-
-        doNotVerifyRecord("medication");
-
-        doNotVerifyRecord("problem");
-
-        doNotVerifyRecord("immunization");
-
-        doNotVerifyRecord("vital_sign");
-
-        doNotVerifyRecord("procedure");
     });
 });

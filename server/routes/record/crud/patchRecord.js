@@ -35,16 +35,19 @@ const updateRecord = async (req, res) => {
                 // Update the record body
                 record[key].push({
                     data: val,
-                    owner: ownerToken,
-                    enteredAt: new Date().getTime().toString()
+                    owner: {
+                        email: req.user.email,
+                        sign: ownerToken
+                    },
+                    createdAt: new Date().getTime()
                 });
-            });
 
-            // Update the record log
-            record.log.push({
-                event: `POST:USER${req.user._id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
-                data: `${key}:${value}`,
-                enteredAt: new Date().toUTCString()
+                // Update the record log
+                record.log.push({
+                    action: `ADD:SELLER${req.user._id}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key, value: val },
+                    enteredAt: new Date().toUTCString()
+                });
             });
 
             // Update record
@@ -53,17 +56,17 @@ const updateRecord = async (req, res) => {
                 { $set: record }
             );
         } else if (req.user.userType === "v") {
-            // Get owner from request body
-            const { owner } = req.body;
-            // Check to
-            if (!owner) {
+            // Get sellerEmail from request body
+            const { sellerEmail } = req.body;
+            // Check sellerEmail
+            if (!sellerEmail) {
                 throw new Error();
             }
 
             // Get seller
-            const seller = await User.findOne({ email: owner });
+            const seller = await User.findOne({ email: sellerEmail, userType: "s" });
             // Check seller
-            if (!seller || seller.userType !== "s") {
+            if (!seller) {
                 throw new Error(404);
             }
 
@@ -85,18 +88,23 @@ const updateRecord = async (req, res) => {
                 // Update the record body
                 record[key].push({
                     data: val,
-                    isVerified: true,
-                    owner: ownerToken,
-                    verifier: verifierToken,
-                    enteredAt: new Date().getTime().toString()
+                    owner: {
+                        email: seller.email,
+                        sign: ownerToken
+                    },
+                    verifier: {
+                        email: req.user.email,
+                        sign: verifierToken
+                    },
+                    createdAt: new Date().getTime()
                 });
-            });
 
-            // Update the record log
-            record.log.push({
-                event: `POST:USER${seller._id}:VERIFIER${req.user._id}:REC${record._id}:DATE${new Date().getTime().toString()}`,
-                data: `${key}:${value}`,
-                enteredAt: new Date().toUTCString()
+                // Update the record log
+                record.log.push({
+                    action: `ADD:VERIFIER${req.user._id}:SELLER${seller._id}:RECORD${record._id}:DATE${new Date().getTime().toString()}`,
+                    body: { key, value: val },
+                    createdAt: new Date().getTime()
+                });
             });
 
             // Update record
@@ -137,20 +145,11 @@ const updateRecordById = async (req, res) => {
             throw new Error(404);
         }
 
-        if (req.user.userType === "s") {
-            // Update record body
-            record = await record.updateByRecordId(id, value, false);
-            // Check record
-            if (!record) {
-                throw new Error(404);
-            }
-        } else if (req.user.userType === "v") {
-            // Update record body
-            record = await record.updateByRecordId(id, value, true);
-            // Check record
-            if (!record) {
-                throw new Error(404);
-            }
+        // Update record body
+        record = await record.updateByRecordId(id, value, req.user);
+        // Check record
+        if (!record) {
+            throw new Error(404);
         }
 
         // Update record

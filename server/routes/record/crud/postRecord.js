@@ -6,9 +6,9 @@ const postRecord = async (req, res) => {
         // Create body object
         const body = {
             log: [{
-                event: "GENESIS",
-                data: "GENESIS",
-                enteredAt: new Date().toUTCString()
+                action: `GENESIS:USER${req.user._id}:DATE${new Date().getTime().toString()}`,
+                body: { userType: req.user.userType },
+                createdAt: new Date().getTime()
             }],
             _creator: req.user._id
         };

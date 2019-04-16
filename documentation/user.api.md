@@ -3,7 +3,9 @@
 ### SIGN UP USER
 >  Handle creating a user account.
 * **URL**
+  ```
   /users
+  ```
 * **Method:**
   ```
   POST
@@ -28,7 +30,7 @@
   * ***Code:*** 200
   * ***Content:***
     ```
-    { 
+    {
       email : VALID EMAIL ID,
       userType: VALID USER TYPE 
     }
@@ -58,7 +60,9 @@
 ### GET USERS
 >  Handle fetching users of a specific user type.
 * **URL**
+  ```
   /users
+  ```
 * **Method:**
   ```
   GET
@@ -120,13 +124,15 @@
 ### DELETE USER
 >  Handle deleting a user account.
 * **URL**
+  ```
   /users
+  ```
 * **Method:**
   ```
   DELETE
   ```
 * **Headers** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   x-auth
   ```
@@ -152,7 +158,9 @@
 ### UPDATE USER
 >  Handle updating a user account.
 * **URL**
+  ```
   /users
+  ```
 * **Method:**
   ```
   PATCH
@@ -175,14 +183,14 @@
   ***Constraints:***
   * Key must be valid.
   * Value must be valid.
-* **Success Response:** 
-  * ***Code:*** 
+* **Success Response:**
+  * ***Code:***
       200
   * ***Content:***
     ```
     {
-    	"message": "KEY updated",
-    	"email": VALID EMAIL ID
+      "message": "KEY updated",
+      "email": VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -211,7 +219,9 @@
 ### LOG IN USER
 >  Handle logging into a user account.
 * **URL**
+  ```
   /users/login
+  ```
 * **Method:**
   ```
   POST
@@ -269,7 +279,9 @@
 ### LOG OUT USER
 >  Handle logging out of a user account.
 * **URL**
+  ```
   /users/logout
+  ```
 * **Method:**
   ```
   DELETE
@@ -288,7 +300,7 @@
     ```
     { 
       message : "logout successful",
-      email: VALID EMAIL ID 
+      email: VALID EMAIL ID
     }
     ```
 * **Error Response:**
@@ -312,7 +324,9 @@
 ### SEND ACTIVATION MAIL TO USER
 >  Handle sending activation mail.
 * **URL**
+  ```
   /users/activate
+  ```
 * **Method:**
   ```
   GET
@@ -329,7 +343,7 @@
   * ***Code:*** 200
   * ***Content:***
     ```
-    { 
+    {
       message: "activation mail sent successfully",
       email: VALID EMAIL ID
     }
@@ -355,7 +369,9 @@
 ### ACTIVATE USER
 >  Handle activating a user account.
 * **URL**
+  ```
   /users/activate/:secret
+  ```
 * **Method:**
   ```
   POST
@@ -387,15 +403,17 @@
 ### SEND FORGOT PASSWORD MAIL TO USER
 >  Handle sending forgot password mail.
 * **URL**
+  ```
   /users/forgot
+  ```
 * **Method:**
   ```
   GET
   ```
 * **Headers**
-* **URL Params** 
+* **URL Params**
 * **Query Params** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   email = VALID EMAIL ID
   ```
@@ -430,20 +448,22 @@
 ### RESET PASSWORD FOR FORGOT PASSWORD
 >  Handle changing password of a user account for forgot password.
 * **URL**
+  ```
   /users/forgot/:secret
+  ```
 * **Method:**
   ```
   POST
   ```
 * **Headers**
 * **URL Params** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   secret = VALID SECRET
   ```
 * **Query Params**
 * **Data Params** <br />
-  ***Required:*** 
+  ***Required:***
   ```
   {
     password: VALID NEW PASSWORD
@@ -462,7 +482,7 @@
   curl --location --request POST "{{url}}/users/forgot/{{secret}}" \
   --header "Content-Type: application/json" \
   --data "{
-	  \"password\": \"new password\"
+    \"password\": \"new password\"
   }"
   ```
 * **Sample Response:**

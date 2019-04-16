@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 // Get nodeEnv from environment variable
-const nodeEnv = process.env.NODE_ENV;
+const nodeEnv = process.env.NODE_ENV || "development";
 
 if (nodeEnv === "test" || nodeEnv === "development") {
     // Get configuration
