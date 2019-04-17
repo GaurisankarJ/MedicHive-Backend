@@ -172,8 +172,8 @@ app.get("/download/:id", authenticate, (req, res) => downloadDocument(req, res))
 
 
 // Create HTTP2 server
-let server;
-// const server = http2.createServer(certificate, app);
+// let server;
+const server = http2.createServer(certificate, app);
 
 // HTTP/1 HTTP/2
 if (!server) {
