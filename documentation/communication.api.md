@@ -3,7 +3,9 @@
 ### BUYER: REQUEST DATA FROM SELLERS
 >  Handle requesting record element of sellers, by a buyer.
 * **URL**
+  ```
   /request/b
+  ```
 * **Method:**
   ```
   POST
@@ -57,7 +59,9 @@
 ### SELLER: SHARE DATA WITH BUYER
 >  Handle sharing a record element of a seller, to a buyer, by a seller.
 * **URL**
+  ```
   /share/s
+  ```
 * **Method:**
   ```
   POST
@@ -115,7 +119,9 @@
 ### SELLER: REQUEST DATA FROM VERIFIER
 >  Handle requesting a record element of a seller, from a verifier, by a seller.
 * **URL**
+  ```
   /request/s
+  ```
 * **Method:**
   ```
   POST
@@ -171,7 +177,9 @@
 ### SELLER: REQUEST DATA VERIFICATION FROM VERIFIER
 >  Handle requesting verification of a record element of a seller, from a verifier, by a seller.
 * **URL**
+  ```
   /verify/s
+  ```  
 * **Method:**
   ```
   POST
@@ -227,7 +235,9 @@
 ### VERIFIER: SHARE DATA WITH SELLER
 >  Handle sharing a record element of a seller held by the verifier, to a seller, by a verifier.
 * **URL**
+  ```
   /share/v
+  ```
 * **Method:**
   ```
   POST
@@ -285,7 +295,9 @@
 ### VERIFIER: GET DATA FROM SELLER TO VERIFY
 >  Handle fetching for verification a record element of a seller, from a seller, by a verifier.
 * **URL**
+  ```
   /verify/v
+  ```
 * **Method:**
   ```
   GET
@@ -336,7 +348,9 @@
 ### VERIFIER: VERIFY RECORD DATA OF SELLER
 >  Handle verification of a record element of a seller, by a verifier.
 * **URL**
+  ```
   /verify/v
+  ```
 * **Method:**
   ```
   POST
