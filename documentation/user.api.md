@@ -385,10 +385,13 @@
 * **Query Params**
 * **Data Params**
 * **Success Response:**
-  * ***Code:*** 302 REDIRECT
-  * ***Link:***
+  * ***Code:*** 200
+  * ***Content:***
     ```
-    HOME PAGE
+    {
+      "message": "activated successfully",
+      "email": VALID EMAIL ID
+    }
     ```
 * **Error Response:**
   * ***Code:*** 400 BAD REQUEST
@@ -397,6 +400,12 @@
   curl --location --request POST "{{url}}/users/activate/{{secret}}"
   ```
 * **Sample Response:**
+  ```
+  {
+    "message": "activated successfully",
+    "email": "seller@example.com"
+  }
+  ```
 * **Notes:**
 ***
 
@@ -470,10 +479,13 @@
   }
   ```
 * **Success Response:**
-  * ***Code:*** 302 REDIRECT
-  * ***Link:***
+  * ***Code:*** 200
+  * ***Content:***
     ```
-    HOME PAGE
+    {
+      "message": "password reset successfully",
+      "email": VALID EMAIL ID
+    }
     ```
 * **Error Response:**
   * ***Code:*** 400 BAD REQUEST
@@ -486,5 +498,11 @@
   }"
   ```
 * **Sample Response:**
+  ```
+  {
+    "message": "password reset successfully",
+    "email": "seller@example.com"
+  }
+  ```
 * **Notes:**
 ***

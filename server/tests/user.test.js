@@ -589,13 +589,17 @@ describe("GET /users/activate", () => {
     });
 });
 
-describe("POST /users/activation/:secret", () => {
+describe("POST /users/activate/:secret", () => {
     it("should activation user", (done) => {
         const { secret } = users[0].confirmation[0];
 
         request(app)
             .post(`/users/activate/${secret}`)
-            .expect(302)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.message).toBe("activated successfully");
+                expect(res.body.email).toBe(users[0].email);
+            })
             .end((err) => {
                 if (err) {
                     done(err);
@@ -655,7 +659,11 @@ describe("POST /users/forgot/:secret", () => {
         request(app)
             .post(`/users/forgot/${secret}`)
             .send(body)
-            .expect(302)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.message).toBe("password reset successfully");
+                expect(res.body.email).toBe(users[0].email);
+            })
             .end((err) => {
                 if (err) {
                     done(err);

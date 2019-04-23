@@ -65,8 +65,8 @@ const userForgotMe = async (req, res) => {
             { $set: { password } }
         );
 
-        // Redirect to home
-        res.redirect(process.env.HOME_PAGE);
+        // Send JSON body
+        res.json({ message: "password reset successfully", email: user.email });
     } catch (err) {
         if (err && process.env.NODE_ENV !== "test") { console.log(err); }
         // Error Bad Request
