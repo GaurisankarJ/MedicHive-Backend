@@ -85,7 +85,10 @@ describe("POST /users/me", () => {
             it("should create userData if authenticated", (done) => {
                 const body = {
                     name: "example",
-                    address: "example address"
+                    address: "example address",
+                    buyer: {
+                        bio: "buyer bio"
+                    }
                 };
 
                 request(app)
@@ -105,6 +108,7 @@ describe("POST /users/me", () => {
                         UserData.findOne({ _creator: users[1]._id }).then((details) => {
                             expect(details.name).toBe(body.name);
                             expect(details.address).toBe(body.address);
+                            expect(details.buyer.bio).toBe(body.buyer.bio);
                             done();
                         }).catch(e => done(e));
                     });
@@ -115,7 +119,10 @@ describe("POST /users/me", () => {
             it("should create userData if authenticated", (done) => {
                 const body = {
                     name: "example",
-                    address: "example address"
+                    address: "example address",
+                    verifier: {
+                        bio: "verifier bio"
+                    }
                 };
 
                 request(app)
@@ -135,6 +142,7 @@ describe("POST /users/me", () => {
                         UserData.findOne({ _creator: users[2]._id }).then((details) => {
                             expect(details.name).toBe(body.name);
                             expect(details.address).toBe(body.address);
+                            expect(details.verifier.bio).toBe(body.verifier.bio);
                             done();
                         }).catch(e => done(e));
                     });

@@ -77,6 +77,15 @@ const sellerShareRecord = async (req, res) => {
 
                 // Update count
                 count += 1;
+            } else {
+                // Remove existing record from buyerRecord body
+                buyerRecord[key] = _.remove(buyerRecord[key], rec => rec._id === record._id);
+
+                // Update buyerRecord body
+                buyerRecord[key].push(record);
+
+                // Update count
+                count += 1;
             }
         });
 
@@ -203,20 +212,20 @@ const verifierShareRecord = async (req, res) => {
         // Get verifierRecords from verifier
         const verifierRecords = verifierRecord.findVerifiedOwnerRecords(seller._id, key);
 
-        // Create ownerTokenSeller
-        const ownerTokenSeller = sellerRecord.generateOwnerToken(seller);
-
         // Count
         let count = 0;
         // Check verifierRecords array
         verifierRecords.forEach((record) => {
             // Check record against sellerRecord
             if (!_.find(sellerRecord[key], { _id: record._id })) {
-                // Update owner
-                record.owner.push({
-                    email: seller.email,
-                    sign: ownerTokenSeller
-                });
+                // Update sellerRecord body
+                sellerRecord[key].push(record);
+
+                // Update count
+                count += 1;
+            } else {
+                // Remove existing record from sellerRecord body
+                sellerRecord[key] = _.remove(sellerRecord[key], rec => rec._id === record._id);
 
                 // Update sellerRecord body
                 sellerRecord[key].push(record);

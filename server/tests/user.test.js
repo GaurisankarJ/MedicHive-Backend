@@ -33,6 +33,7 @@ describe("POST /users", () => {
                 expect(res.header["x-auth"]).toBeTruthy();
                 expect(res.body.email).toBe(body.email);
                 expect(res.body.userType).toBe(body.userType);
+                expect(res.body.isActive).toBeFalsy();
             })
             .end((err) => {
                 if (err) {
@@ -162,6 +163,7 @@ describe("GET /users", () => {
                     expect(res.body.users).toBeTruthy();
                     expect(res.body.users[0].email).toBe(users[2].email);
                     expect(res.body.users[0].userType).toBe(users[2].userType);
+                    expect(res.body.users[0].isActive).toBeTruthy();
                 })
                 .end(done);
         });
@@ -417,6 +419,7 @@ describe("POST /users/login", () => {
                 expect(res.header["x-auth"]).toBeTruthy();
                 expect(res.body.email).toBe(users[1].email);
                 expect(res.body.userType).toBe(users[1].userType);
+                expect(res.body.isActive).toBeTruthy();
             })
             .end((err, res) => {
                 if (err) {

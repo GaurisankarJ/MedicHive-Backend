@@ -483,7 +483,7 @@ RecordSchema.methods.toJSON = function () {
         recordObject[key].forEach((rec) => {
             const owner = rec.owner.map(res => res.email);
             const verifier = rec.verifier.map(res => res.email);
-            returnObject[key].push({ _id: rec._id, data: rec.data, owner, verifier, createdAt: rec.createdAt, updatedAt: rec.updateAt });
+            returnObject[key].push({ _id: rec._id, data: rec.data, owner, verifier, createdAt: rec.createdAt, updatedAt: rec.updatedAt });
         });
     };
 

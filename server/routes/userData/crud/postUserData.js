@@ -34,9 +34,22 @@ const postUserData = async (req, res) => {
 
             // Send JSON body
             res.json({ message: "user created", email: req.user.email });
-        } else if (userType === "b" || userType === "v") {
+        } else if (userType === "b") {
             // Create body object from request body
-            const body = _.pick(req.body, ["name", "address"]);
+            const body = _.pick(req.body, ["name", "address", "buyer"]);
+            body.userType = userType;
+            body._creator = req.user._id;
+
+            // Create instance of UserData model
+            const userData = new UserData(body);
+            // Save userData instance
+            await userData.save();
+
+            // Send JSON body
+            res.json({ message: "user created", email: req.user.email });
+        } else if (userType === "v") {
+            // Create body object from request body
+            const body = _.pick(req.body, ["name", "address", "verifier"]);
             body.userType = userType;
             body._creator = req.user._id;
 

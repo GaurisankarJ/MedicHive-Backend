@@ -99,8 +99,8 @@ UserSchema.methods.toJSON = function () {
     // Create an object
     const userObject = user.toObject();
 
-    // Return _id, email, userType from userObject
-    return _.pick(userObject, ["email", "userType"]);
+    // Return email, userType, isActive from userObject
+    return _.pick(userObject, ["email", "userType", "isActive"]);
 };
 // ###################################################################
 // *******************************************************************
