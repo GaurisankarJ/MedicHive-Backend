@@ -236,7 +236,7 @@ const verifierVerifyRecord = async (req, res) => {
 
             // Update the verifierRecord log
             verifierRecord.log.push({
-                action: `POST:SELLER${seller._id}:SELLER_RECORD${sellerRecord._id}:VERIFIER${req.user._id}:VERIFIER_RECORD${verifierRecord._id}:DATE${new Date().getTime().toString()}`,
+                action: `VERIFY:SELLER${seller._id}:SELLER_RECORD${sellerRecord._id}:VERIFIER${req.user._id}:VERIFIER_RECORD${verifierRecord._id}:DATE${new Date().getTime().toString()}`,
                 body: { key, count },
                 createdAt: new Date().getTime()
             });
